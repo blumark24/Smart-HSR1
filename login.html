@@ -31,7 +31,7 @@ input:focus{box-shadow:0 6px 18px rgba(11,39,55,0.06);border-color:#cfeff0}
   <p class="lead">تسجيل الدخول إلى لوحة القيادة</p>
 
   <div style="display:flex;gap:8px;margin-bottom:14px;justify-content:center">
-    <button id="mode-email" class="btn btn-ghost" style="max-width:160px">ايميل / كلمة مرور</button>
+    <button id="mode-email" class="btn btn-primary" style="max-width:160px">ايميل / كلمة مرور</button>
     <button id="mode-phone" class="btn btn-ghost" style="max-width:160px">رقم الجوال (OTP)</button>
   </div>
 
@@ -55,6 +55,7 @@ input:focus{box-shadow:0 6px 18px rgba(11,39,55,0.06);border-color:#cfeff0}
       <label>رقم الجوال (مثال: +9665xxxxxxxx)</label>
       <input id="phone" type="tel" placeholder="+9665xxxxxxxx" />
     </div>
+ 
     <div id="recaptcha-container"></div>
     <div class="row" style="margin-top:6px">
       <button class="btn btn-primary" onclick="sendOTP()">أرسل رمز التحقق</button>
@@ -81,7 +82,6 @@ input:focus{box-shadow:0 6px 18px rgba(11,39,55,0.06);border-color:#cfeff0}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyC5HTAq-LeJn4GObn08REwKdqIeokKmwds",
   authDomain: "smart-hsr.firebaseapp.com",
@@ -91,13 +91,13 @@ const firebaseConfig = {
   appId: "1:885545362431:web:2487096393f0fcbf29bdca",
   measurementId: "G-NH7J83MWT9"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', { size: 'invisible' }, auth);
 let confirmationResultGlobal = null, lastPhoneUsed = '';
+
+function msg(t,type){const el=document.getElementById('msg');el.innerText=t||'';el.className='message '+(type||'');}
 
 async function signupWithEmail(){
   const email=document.getElementById('email').value.trim();
@@ -106,7 +106,7 @@ async function signupWithEmail(){
   try{
     const uc=await createUserWithEmailAndPassword(auth,email,password);
     await setDoc(doc(db,'users',uc.user.uid),{email:uc.user.email,provider:'email',createdAt:serverTimestamp()});
-    msg('تم إنشاء الحساب بنجاح','success');
+    msg('تم إنشاء الحساب بنجاح. يمكنك الآن تسجيل الدخول.','success');
   }catch(e){msg(e.message,'error');}
 }
 
@@ -117,7 +117,8 @@ async function signInWithEmail(){
   try{
     await signInWithEmailAndPassword(auth,email,password);
     msg('تم تسجيل الدخول بنجاح','success');
-    window.location.href="dashboard.html";
+    // ✅ التعديل هنا: التوجيه لـ index.html
+    window.location.href="index.html";
   }catch(e){msg(e.message,'error');}
 }
 
@@ -142,7 +143,8 @@ async function verifyOTP(){
     const result=await confirmationResultGlobal.confirm(code);
     await setDoc(doc(db,'users',result.user.uid),{phone:result.user.phoneNumber,provider:'phone',createdAt:serverTimestamp()},{merge:true});
     msg('تم التحقق وتسجيل الدخول بنجاح','success');
-    window.location.href="dashboard.html";
+    // ✅ التعديل هنا: التوجيه لـ index.html
+    window.location.href="index.html";
   }catch(e){msg(e.message||'رمز غير صحيح','error');}
 }
 
@@ -158,10 +160,22 @@ function clearPhone(){
   msg('');
 }
 
-function msg(t,type){const el=document.getElementById('msg');el.innerText=t||'';el.className='message '+(type||'');}
+// تبديل طرق الدخول
+document.getElementById('mode-email').onclick=()=>{
+    document.getElementById('email-box').style.display='block';
+    document.getElementById('phone-box').style.display='none';
+    document.getElementById('mode-email').className='btn btn-primary';
+    document.getElementById('mode-phone').className='btn btn-ghost';
+    msg('');
+};
+document.getElementById('mode-phone').onclick=()=>{
+    document.getElementById('email-box').style.display='none';
+    document.getElementById('phone-box').style.display='block';
+    document.getElementById('mode-email').className='btn btn-ghost';
+    document.getElementById('mode-phone').className='btn btn-primary';
+    msg('');
+};
 
-document.getElementById('mode-email').onclick=()=>{document.getElementById('email-box').style.display='block';document.getElementById('phone-box').style.display='none';msg('');};
-document.getElementById('mode-phone').onclick=()=>{document.getElementById('email-box').style.display='none';document.getElementById('phone-box').style.display='block';msg('');};
 </script>
 </body>
 </html>
