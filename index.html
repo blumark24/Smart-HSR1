@@ -885,13 +885,14 @@
             </div>
         </footer>
 
-    </main>
+ </main>
 
     <div id="smartInputModal" class="modal no-print">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('smartInputModal')">&times;</span>
             <h2 class="text-3xl font-extrabold mb-6 pb-2 border-b" style="color: var(--color-navy);">وحدة الإدخال الذكي
                 للملاحظات (Smart HSR)</h2>
+
             <div id="modalStep1">
                 <p class="text-lg text-gray-600 mb-4">الخطوة 1: أدخل تفاصيل الملاحظة (النص، الموقع، الصورة/الفيديو)</p>
                 <textarea id="rawObservationInput" rows="5"
@@ -902,83 +903,100 @@
                 <div class="mt-4 input-group-wrapper">
                     <div
                         class="input-group p-4 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-teal-500 transition-colors">
-                        <label for="locationStatus" class="block text-sm font-medium text-gray-700 mb-2">الموقع
-                            الجغرافي (GPS):</label>
-                        <p id="locationStatus" class="text-sm font-bold text-gray-500">لم يتم التحديد بعد</p>
+                        <label for="locationStatus" class="block text-sm font-medium text-gray-700 mb-2">الموقع الجغرافي
+                            (GPS):</label>
+                        <p id="locationStatus" class="text-sm font-semibold text-gray-500">لم يتم التحديد بعد</p>
                         <input type="hidden" id="inputLatitude">
                         <input type="hidden" id="inputLongitude">
-                        <button onclick="getLocation()"
-                            class="mt-3 ai-button-secondary text-xs px-3 py-1 rounded-full flex items-center justify-center mx-auto">
-                            <i data-lucide="map-pin" class="w-4 h-4 ml-1"></i> تحديد موقعي الحالي
+                        <button id="getLocationBtn"
+                            class="ai-button-primary rounded-full px-4 py-2 text-sm font-bold mt-2 flex items-center justify-center mx-auto"
+                            onclick="getLocation()" type="button">
+                            <i data-lucide="map-pin" class="w-4 h-4 ml-2"></i> تحديد الموقع الحالي
                         </button>
                     </div>
 
                     <div
                         class="input-group p-4 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-teal-500 transition-colors">
-                        <label for="mediaFile" class="block text-sm font-medium text-gray-700 mb-2">صورة/فيديو (قبل
-                            الإصلاح):</label>
-                        <p id="mediaFileName" class="text-sm font-bold text-gray-500 overflow-hidden text-ellipsis">لم يتم
-                            اختيار ملف</p>
-                        <input type="file" id="mediaFile" accept="image/*,video/*,audio/*" class="hidden"
-                            onchange="updateFileName('mediaFile', 'mediaFileName'); checkSmartInputState();">
-                        <button onclick="document.getElementById('mediaFile').click()"
-                            class="mt-3 ai-button-secondary text-xs px-3 py-1 rounded-full flex items-center justify-center mx-auto">
-                            <i data-lucide="upload" class="w-4 h-4 ml-1"></i> رفع المرفق
+                        <label for="fileUploadInput" class="block text-sm font-medium text-gray-700 mb-2">رفع صورة أو
+                            فيديو الملاحظة:</label>
+                        <p id="fileStatus" class="text-sm font-semibold text-gray-500">لم يتم اختيار ملف بعد</p>
+                        <input type="file" id="fileUploadInput" accept="image/*,video/*" class="hidden"
+                            onchange="handleFileUpload(event)">
+                        <button
+                            class="ai-button-secondary rounded-full px-4 py-2 text-sm font-bold mt-2 flex items-center justify-center mx-auto"
+                            onclick="document.getElementById('fileUploadInput').click()" type="button">
+                            <i data-lucide="upload" class="w-4 h-4 ml-2"></i> اختيار ملف
                         </button>
                     </div>
                 </div>
 
-                <div class="flex justify-end mt-6">
-                    <button id="smartProcessBtn"
-                        class="ai-button-primary rounded-full px-6 py-3 text-lg font-bold flex items-center"
+                <div class="mt-6 text-center">
+                    <button id="processSmartInputBtn"
+                        class="ai-button-vision rounded-full px-8 py-3 text-lg font-bold flex items-center justify-center mx-auto"
                         onclick="processSmartInput()" disabled>
-                        <i data-lucide="send" class="w-5 h-5 ml-2"></i> تحليل وإرسال الملاحظة
+                        <i data-lucide="cpu" class="w-5 h-5 ml-2"></i> بدء التحليل الذكي وتوليد التقرير
                     </button>
                 </div>
             </div>
+
+            <div id="modalResult" class="mt-8 pt-6 border-t border-gray-200 hidden">
+                <h3 class="text-2xl font-bold mb-4" style="color: var(--color-teal);">الخطوة 2: معالجة البيانات بواسطة
+                    الذكاء الاصطناعي</h3>
+                <div id="modalResultContent">
+                </div>
+                <div class="mt-6 text-center">
+                    <button class="ai-button-primary rounded-full px-6 py-2 text-md font-bold"
+                        onclick="closeModal('smartInputModal')">
+                        إغلاق ومراجعة التقرير الجديد
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <div id="closeoutModal" class="modal no-print">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('closeoutModal')">&times;</span>
-            <h2 class="text-3xl font-extrabold mb-6 pb-2 border-b text-red-700">الإغلاق التنفيذي (توثيق ما بعد المعالجة)
-            </h2>
+            <span class="close-btn" onclick="closeModal('closeoutModal'); clearAfterUpload();">&times;</span>
+            <h2 class="text-3xl font-extrabold mb-6 pb-2 border-b text-green-700">🔒 لوحة الإغلاق التنفيذي للملاحظة
+                #<span id="closeoutId"></span></h2>
 
-            <p class="text-lg text-gray-600 mb-4">أرفق صورة "بعد المعالجة" واكتب المذكرة الختامية لإغلاق الملاحظة رقم:
-                <span id="closeoutObservationId" class="font-bold text-teal-600">--</span></p>
+            <p class="text-lg text-gray-600 mb-4">لإغلاق الملاحظة، يجب توثيق عملية الإصلاح بـ **صورة "بعد الإصلاح"
+                إلزامية** ومذكرة ختامية.</p>
 
-            <textarea id="resolutionNoteInput" rows="5"
-                class="w-full p-4 border border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 text-gray-700 shadow-sm"
-                placeholder="أدخل المذكرة الختامية (ملخص الإجراءات، تكلفة المعالجة، والسبب الجذري المستخلص)..."
-                oninput="checkCloseoutState()"></textarea>
+            <div class="p-6 bg-gray-50 rounded-xl border border-gray-200">
+                <h3 class="text-xl font-bold mb-3" style="color: var(--color-navy);">1. توثيق صورة الإغلاق (After Photo)
+                </h3>
 
-            <div
-                class="mt-4 input-group-wrapper justify-center p-4 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-green-500 transition-colors">
-                <div class="input-group">
-                    <label for="afterMediaFile" class="block text-sm font-medium text-gray-700 mb-2">صورة/فيديو (بعد
-                        الإصلاح) *مطلوب للإغلاق*:</label>
-                    <p id="afterMediaFileName" class="text-sm font-bold text-gray-500 overflow-hidden text-ellipsis">لم
-                        يتم اختيار ملف</p>
-                    <input type="file" id="afterMediaFile" accept="image/*,video/*" class="hidden"
-                        onchange="updateFileName('afterMediaFile', 'afterMediaFileName'); checkCloseoutState();">
-                    <button onclick="document.getElementById('afterMediaFile').click()"
-                        class="mt-3 bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded-full flex items-center justify-center mx-auto">
-                        <i data-lucide="upload" class="w-4 h-4 ml-1"></i> رفع صورة "بعد"
+                <div
+                    class="input-group p-4 border-2 border-dashed border-red-300 rounded-xl bg-white hover:border-red-500 transition-colors">
+                    <label for="afterFileUploadInput" class="block text-sm font-medium text-gray-700 mb-2">رفع صورة
+                        **بعد الإصلاح/المعالجة** (<span class="text-red-500 font-bold">إلزامي</span>):</label>
+                    <p id="afterFileStatus" class="text-sm font-semibold text-gray-500">لم يتم اختيار ملف بعد</p>
+                    <input type="file" id="afterFileUploadInput" accept="image/*" class="hidden"
+                        onchange="handleAfterFileUpload(event)">
+                    <button
+                        class="ai-button-primary rounded-full px-4 py-2 text-sm font-bold mt-2 flex items-center justify-center mx-auto"
+                        onclick="document.getElementById('afterFileUploadInput').click()" type="button">
+                        <i data-lucide="camera" class="w-4 h-4 ml-2"></i> اختيار صورة الإغلاق
                     </button>
                 </div>
+
+                <h3 class="text-xl font-bold mt-6 mb-3" style="color: var(--color-navy);">2. المذكرة الختامية</h3>
+                <textarea id="resolutionNoteInput" rows="4"
+                    class="w-full p-3 border border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 text-gray-700 shadow-sm"
+                    placeholder="اكتب المذكرة الختامية التي توضح الإجراءات التي تم اتخاذها لإغلاق الملاحظة نهائياً..."></textarea>
             </div>
 
-            <div class="flex justify-end mt-6">
-                <button id="closeoutProcessBtn"
-                    class="bg-red-600 hover:bg-red-700 text-white rounded-full px-6 py-3 text-lg font-bold flex items-center"
-                    onclick="processCloseout()" disabled>
-                    <i data-lucide="lock" class="w-5 h-5 ml-2"></i> تأكيد الإغلاق وتوثيق المعالجة
+            <div class="mt-6 text-center">
+                <button id="finalCloseoutBtn"
+                    class="bg-green-600 hover:bg-green-700 rounded-full px-8 py-3 text-lg font-bold flex items-center justify-center mx-auto transition-colors"
+                    onclick="completeObservation()" disabled>
+                    <i data-lucide="check-square" class="w-5 h-5 ml-2"></i> تأكيد الإغلاق النهائي للملاحظة
                 </button>
             </div>
         </div>
     </div>
-
 
     <script>
         // START: 1. Firebase Configuration and Initialization
