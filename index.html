@@ -26,11 +26,6 @@
     
     <link rel="stylesheet" href="output.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap"
@@ -546,7 +541,7 @@
             <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight"
                 style="color: var(--color-navy);">Smart HSR <span style="color: var(--color-teal);">Dashboard</span>
             </h1>
-            <h2 class="text-xl md:text-3xl font-extrabold text-gray-600 mt-4">نظام المراقبة وإدارة الجودة الرقمي</h2>
+            <h2 class="text-xl md:text-3xl font-extrabold text-gray-600 mt-4">نظام المراقبة وإدارة الجودة الرقمي            </h2>
             <p class="mt-4 text-lg max-w-4xl mx-auto text-gray-500 font-medium">"منصة تنفيذية ذكية لإدارة الجودة والمراقبة الرقمية، توفر رؤية دقيقة للأداء وتدعم اتخاذ القرار المبني على البيانات."</p>
         </section>
 
@@ -711,7 +706,7 @@
                             class="mt-6 pt-4 border-t border-gray-300 flex justify-end gap-3 no-print">
                             <button id="updateStatusBtn"
                                 class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-150"
-                                onclick="updateStatusToInProgress()">
+                                onclick="alert('تم تحويل الحالة إلى قيد التنفيذ (تجريبي)')">
                                 تحديث الحالة إلى "قيد التنفيذ"
                             </button>
                             <button id="completeObservationBtn"
@@ -736,6 +731,7 @@
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M17 10h.01" />
                         </svg>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -746,45 +742,11 @@
                     مؤشرات الأداء الحيوية (Vital Metrics)</h3>
                 <p class="mt-3 text-lg text-gray-600">تتبع البلاغات وحالة التوثيق بالصور لضمان كفاءة الإغلاق.</p>
             </div>
+
             <div id="kpiContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div id="kpiOpen"
-                    class="kpi-card-professional kpi-open-gradient p-6 rounded-2xl shadow-xl border-b-8 border-white">
-                    <div class="flex items-center justify-between">
-                        <h4 class="text-xl font-medium">ملاحظات مفتوحة</h4>
-                        <i data-lucide="bell" class="w-6 h-6"></i>
-                    </div>
-                    <p id="openCount" class="text-5xl font-extrabold mt-2">--</p>
-                    <p class="mt-1 text-sm opacity-80">بلاغ يتطلب إجراء فوري</p>
-                </div>
-
-                <div id="kpiClosed"
-                    class="kpi-card-professional kpi-closed-gradient p-6 rounded-2xl shadow-xl border-b-8 border-white">
-                    <div class="flex items-center justify-between">
-                        <h4 class="text-xl font-medium">ملاحظات مغلقة</h4>
-                        <i data-lucide="check-circle" class="w-6 h-6"></i>
-                    </div>
-                    <p id="closedCount" class="text-5xl font-extrabold mt-2">--</p>
-                    <p class="mt-1 text-sm opacity-80">تم إغلاقها وتوثيقها</p>
-                </div>
-
-                <div id="kpiTotalImages"
-                    class="kpi-card-professional kpi-images-gradient p-6 rounded-2xl shadow-xl border-b-8 border-white">
-                    <div class="flex items-center justify-between">
-                        <h4 class="text-xl font-medium">إجمالي التوثيق</h4>
-                        <i data-lucide="image" class="w-6 h-6"></i>
-                    </div>
-                    <p id="totalMediaCount" class="text-5xl font-extrabold mt-2">--</p>
-                    <p class="mt-1 text-sm opacity-80">مرفقات صور وفيديو</p>
-                </div>
-
-                <div id="kpiMissingComparison"
-                    class="kpi-card-professional kpi-missing-gradient p-6 rounded-2xl shadow-xl border-b-8 border-white">
-                    <div class="flex items-center justify-between">
-                        <h4 class="text-xl font-medium text-gray-900">توثيق "ما بعد" مفقود</h4>
-                        <i data-lucide="camera-off" class="w-6 h-6 text-gray-900"></i>
-                    </div>
-                    <p id="missingCloseoutCount" class="text-5xl font-extrabold mt-2 text-gray-900">--</p>
-                    <p class="mt-1 text-sm opacity-80 text-gray-900">ملاحظات مفتوحة بدون صورة إغلاق</p>
+                <div class="p-6 bg-white rounded-2xl shadow-xl border-t-4 border-gray-200">
+                    <p class="text-xl font-medium text-gray-500">جاري التحميل...</p>
+                    <p class="text-5xl font-extrabold text-gray-700 mt-2">--</p>
                 </div>
             </div>
 
@@ -797,10 +759,10 @@
                 <div id="kpi-insight-result" class="mt-6 text-sm">
                 </div>
             </div>
-
         </section>
 
-        <section id="ai-features" class="my-20 bg-white p-8 md:p-12 rounded-3xl shadow-2xl border-t-8 border-[--color-teal] no-print">
+        <section id="ai-features"
+            class="my-20 bg-white p-8 md:p-12 rounded-3xl shadow-2xl border-t-8 border-[--color-teal] no-print">
             <div class="text-center mb-12">
                 <h3 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3" style="color: var(--color-navy);">🧠
                     الذكاء الاصطناعي في صميم العملية</h3>
@@ -855,13 +817,18 @@
 
         <footer class="text-center mt-20 py-12 border-t-4 border-teal-200 bg-white rounded-t-3xl shadow-2xl no-print">
             <div class="max-w-6xl mx-auto px-4">
-                <h3 class="text-3xl md:text-4xl font-extrabold mb-4" style="color: var(--color-navy);"> ابدأ رحلة التحول
-                    الرقمي مع Smart HSR </h3>
-                <p class="mt-3 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto"> نظام ذكي يُحول بيانات الميدان إلى
-                    قرارات استراتيجية تنفيذيّة </p>
+                <h3 class="text-3xl md:text-4xl font-extrabold mb-4" style="color: var(--color-navy);">
+                    ابدأ رحلة التحول الرقمي مع Smart HSR
+                </h3>
+                <p class="mt-3 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                    نظام ذكي يُحول بيانات الميدان إلى قرارات استراتيجية تنفيذيّة
+                </p>
+                
                 <a href="http://wa.me/966507006849" target="_blank"
                     class="mt-8 inline-block bg-[--color-teal] text-white font-bold py-4 px-12 rounded-full text-xl hover:bg-[--color-navy] transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    اطلب عرضًا تجريبيًا الآن </a>
+                    اطلب عرضًا تجريبيًا الآن
+                </a>
+                
                 <div class="mt-12 pt-8 border-t border-gray-200">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600 mb-6">
                         <div>
@@ -877,15 +844,16 @@
                             <p>0507006849</p>
                         </div>
                     </div>
+                    
                     <div class="text-xs text-gray-500">
                         <p class="mb-2">&copy; 2025 Smart HSR. جميع الحقوق محفوظة.</p>
-                        <p id="userInfo">جاري تهيئة التطبيق والاتصال بقاعدة البيانات...</p>
+                        <p id="userInfo">تم تحميل البيانات بنجاح (وضع ثابت)</p>
                     </div>
                 </div>
             </div>
         </footer>
 
- </main>
+    </main>
 
     <div id="smartInputModal" class="modal no-print">
         <div class="modal-content">
@@ -999,672 +967,614 @@
     </div>
 
     <script>
-        // START: 1. Firebase Configuration and Initialization
-        // *** ⚠️ استبدل هذه القيم ببيانات اعتماد مشروعك في Firebase ⚠️ ***
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY", 
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID", // مثلاً smart-hsr-2025
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+        // --- 1. MOCK DATA FOR OBSERVATIONS LIST (Using an array named 'observationsData' for easier manipulation) ---
+        const observationsData = [
+            // تم تحديث الملاحظة 1 (الافتراضية) لتتضمن حقول الوسائط الكاملة
+            {
+                id: 1, type: "SAFETY", date: "2024-10-01", title: "ملاحظة عدم ارتداء معدات الحماية", status: "PENDING", details: "تم رصد فريق عمل في المنطقة C بدون خوذات أمان.",
+                hasImage: true, isComparative: false, location: "24.5247, 46.7135", isVideo: false, imagePath: 'https://picsum.photos/800/600?random=1', fileMimeType: 'image/jpeg',
+                actionPlan: "إصدار أمر عمل فوري لتعزيز الالتزام بمعدات الحماية الشخصية (PPE).", riskAssessment: {priority: "High", timeframe: "24 hours"},
+                resolutionNote: null, afterImagePath: null, isNewInput: false, createdAt: new Date("2024-10-01T10:00:00").getTime()
+            },
+            // ملاحظة تمت معالجتها وموثقة بصورة قبل وبعد (isComparative: true)
+            {
+                id: 2, type: "QUALITY", date: "2024-09-28", title: "تصدع في الأسفلت وإعادة رصف", status: "COMPLETED", details: "تم رصد تصدع كبير في المقطع A. تم إغلاقه بنجاح بعد عملية الإصلاح الكامل.",
+                hasImage: true, isComparative: true, location: "24.5247, 46.7135", isVideo: false,
+                imagePath: 'https://picsum.photos/800/600?random=2', // صورة قبل
+                afterImagePath: 'https://picsum.photos/800/600?random=5', // صورة بعد
+                fileMimeType: 'image/jpeg',
+                actionPlan: "إزالة الأسفلت المتضرر وإعادة بناء الطبقات وإعادة الرصف.", riskAssessment: {priority: "Low", timeframe: "7 days"},
+                resolutionNote: "تم إغلاق المقطع A بالكامل حسب المواصفات. تم استخدام خلطة إسفلت جديدة وتم اختبار جودة الرصف بنجاح في 2024-09-30.", isNewInput: false, createdAt: new Date("2024-09-28T14:30:00").getTime()
+            },
+            {
+                id: 3, type: "MAINTENANCE", date: "2024-09-25", title: "عطل في نظام التبريد الرئيسي", status: "IN_PROGRESS", details: "تم إرسال فريق صيانة عاجل لمعالجة الخلل في نظام التبريد بمنطقة B.",
+                hasImage: true, isComparative: false, location: "24.5247, 46.7135", isVideo: false, imagePath: 'https://picsum.photos/800/600?random=3', fileMimeType: 'image/jpeg',
+                actionPlan: "توفير قطع الغيار اللازمة وإصلاح العطل خلال 48 ساعة.", riskAssessment: {priority: "Medium", timeframe: "48 hours"},
+                resolutionNote: null, afterImagePath: null, isNewInput: false, createdAt: new Date("2024-09-25T08:15:00").getTime()
+            },
+            {
+                id: 4, type: "QUALITY", date: "2024-09-20", title: "تآكل في لوحة إرشادية (الشعار غير واضح)", status: "PENDING", details: "تظهر الصورة تآكلاً واضحاً في لوحة إرشادية على طريق الخدمة، مما يؤثر على وضوح الشعار والعلامات الإرشادية.",
+                hasImage: true, isComparative: false, location: "24.5247, 46.7135", isVideo: false, imagePath: 'https://picsum.photos/800/600?random=4', fileMimeType: 'image/jpeg',
+                actionPlan: "الطلب من فريق الصيانة استبدال اللوحة بلوحة جديدة ذات مواصفات عالية الجودة.", riskAssessment: {priority: "High", timeframe: "7 days"},
+                resolutionNote: null, afterImagePath: null, isNewInput: false, createdAt: new Date("2024-09-20T16:45:00").getTime()
+            }
+        ];
+
+        let currentSelectedObservation = observationsData[0]; // Set initial selection
+        const statusMap = {
+            "PENDING": {color: 'bg-red-600', text: 'قيد الانتظار'},
+            "IN_PROGRESS": {color: 'bg-yellow-600', text: 'قيد التنفيذ'},
+            "COMPLETED": {color: 'bg-green-600', text: 'تمت المعالجة'}
         };
 
-        // تهيئة Firebase والخدمات الأساسية
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = app.firestore(); // قاعدة البيانات (Firestore)
-        const storage = app.storage(); // التخزين (Cloud Storage)
-        const auth = app.auth(); // المصادقة (Auth)
-        const OBSERVATIONS_COLLECTION = "observations"; // اسم المجموعة في Firestore
+        // متغيرات لتخزين الملف المرفوع في Modal
+        let currentFile = null; // للملاحظة الجديدة (BEFORE)
+        let currentFileUrl = null;
 
-        // END: 1. Firebase Configuration and Initialization
+        let currentAfterFile = null; // لصورة الإغلاق (AFTER)
+        let currentAfterFileUrl = null;
 
+        // --- 2. CORE FUNCTIONS: CALCULATE & RENDER ---
 
-        // --- Helper Functions ---
+        function calculateKPIs() {
+            const totalReports = observationsData.length;
+            const openReports = observationsData.filter(obs => obs.status !== 'COMPLETED').length;
+            const closedReports = totalReports - openReports;
+            const reportsWithImages = observationsData.filter(obs => obs.hasImage).length;
 
-        // تحويل التاريخ إلى صيغة عربية مختصرة
-        function formatDate(date) {
-            if (!date) return 'غير محدد';
-            // التحقق من نوع البيانات، قد تكون Timestamp من Firestore
-            if (date.toDate) {
-                date = date.toDate();
-            }
-            return new Intl.DateTimeFormat('ar-SA', {
-                year: 'numeric',
-                month: 'short',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            }).format(date);
+            return {totalReports, openReports, closedReports, reportsWithImages};
         }
 
-        // عرض تفاصيل الملاحظة المختارة
-        function showObservationDetail(id) {
-            const observation = observationsData.find(o => o.id === id);
-            if (!observation) return;
+        function renderKPIs() {
+            const kpis = calculateKPIs();
+            const kpiContainer = document.getElementById('kpiContainer');
+            kpiContainer.innerHTML = '';
 
-            currentSelectedObservation = observation;
+            const kpiData = [
+                {title: 'إجمالي الملاحظات', value: kpis.totalReports, icon: 'clipboard-list', gradientClass: 'kpi-closed-gradient'},
+                {title: 'ملاحظات مفتوحة/انتظار', value: kpis.openReports, icon: 'alert-triangle', gradientClass: 'kpi-open-gradient'},
+                {title: 'ملاحظات مغلقة/معالجة', value: kpis.closedReports, icon: 'check-circle', gradientClass: 'kpi-closed-gradient'},
+                {title: 'ملاحظات موثقة بالصور', value: kpis.reportsWithImages, icon: 'image', gradientClass: 'kpi-images-gradient'}
+            ];
 
-            // تحديث العناصر النشطة
-            document.querySelectorAll('.observation-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(`obs-item-${id}`).classList.add('active');
-
-            // إخفاء الـ Placeholder وعرض التفاصيل
-            document.getElementById('detailPlaceholder').classList.add('hidden');
-            document.getElementById('observationDetail').classList.remove('hidden');
-
-            // ... (بقية منطق تحديث الواجهة بالتفاصيل يظل كما هو)
-            document.getElementById('detailTitle').textContent = observation.title;
-            document.getElementById('printTitle').textContent = observation.title;
-            document.getElementById('detailType').textContent = observation.type;
-            document.getElementById('detailLocation').textContent = observation.location;
-            document.getElementById('detailDate').textContent = formatDate(observation.createdAt);
-            document.getElementById('detailID').textContent = observation.id;
-            document.getElementById('detailDescription').textContent = observation.description;
-
-            const statusEl = document.getElementById('detailStatus');
-            statusEl.textContent = observation.status;
-            statusEl.className = 'inline-block px-3 py-1 text-sm font-semibold rounded-full text-white';
-            const actionPlanContainer = document.getElementById('actionPlanContainer');
-            const resolutionNoteContainer = document.getElementById('resolutionNoteContainer');
-            const completeObservationBtn = document.getElementById('completeObservationBtn');
-            const alreadyCompletedBtn = document.getElementById('alreadyCompletedBtn');
-            const updateStatusBtn = document.getElementById('updateStatusBtn');
-
-            // تحديث الحالة والأزرار
-            if (observation.status === 'جديد') {
-                statusEl.classList.add('bg-red-600');
-                completeObservationBtn.classList.remove('hidden');
-                alreadyCompletedBtn.classList.add('hidden');
-                updateStatusBtn.classList.remove('hidden');
-            } else if (observation.status === 'قيد التنفيذ') {
-                statusEl.classList.add('bg-orange-500');
-                completeObservationBtn.classList.remove('hidden');
-                alreadyCompletedBtn.classList.add('hidden');
-                updateStatusBtn.classList.add('hidden'); // إخفاء زر التحديث لقيد التنفيذ
-            } else {
-                statusEl.classList.add('bg-green-600');
-                completeObservationBtn.classList.add('hidden');
-                alreadyCompletedBtn.classList.remove('hidden');
-                updateStatusBtn.classList.add('hidden');
-            }
-
-            // عرض خطة العمل
-            if (observation.actionPlan) {
-                actionPlanContainer.classList.remove('hidden');
-                document.getElementById('actionPlan').textContent = observation.actionPlan;
-            } else {
-                actionPlanContainer.classList.add('hidden');
-            }
-
-            // عرض مذكرة الإغلاق
-            if (observation.resolutionNote) {
-                resolutionNoteContainer.classList.remove('hidden');
-                document.getElementById('resolutionNote').textContent = observation.resolutionNote;
-            } else {
-                resolutionNoteContainer.classList.add('hidden');
-            }
-
-            // تحديث محتوى الميديا (صورة قبل، بعد، أو فيديو)
-            const mediaContainer = document.getElementById('mediaContainer');
-            const mediaContent = document.getElementById('mediaContent');
-            const imageComparisonWrapper = document.getElementById('imageComparisonWrapper');
-            const noImageMessage = document.getElementById('noImageMessage');
-            
-            mediaContainer.classList.add('hidden');
-            imageComparisonWrapper.classList.add('hidden');
-            noImageMessage.classList.add('hidden');
-            mediaContent.innerHTML = ''; // تنظيف المحتوى السابق
-
-            if (observation.mediaUrl && observation.isComparative && observation.afterMediaUrl) {
-                // عرض مقارنة الصور (قبل وبعد)
-                imageComparisonWrapper.classList.remove('hidden');
-                document.getElementById('beforeImage').src = observation.mediaUrl;
-                document.getElementById('afterImage').src = observation.afterMediaUrl;
-                setupImageComparison();
-            } else if (observation.mediaUrl) {
-                // عرض صورة/فيديو/صوت فردي (قبل)
-                mediaContainer.classList.remove('hidden');
-                if (observation.mediaUrl.match(/\.(jpeg|jpg|png|gif|webp)$/i)) {
-                    mediaContent.innerHTML = `<img src="${observation.mediaUrl}" alt="مرفق الملاحظة" class="w-full h-auto rounded-xl shadow-lg">`;
-                } else if (observation.mediaUrl.match(/\.(mp4|webm|ogg)$/i)) {
-                    mediaContent.innerHTML = `<video src="${observation.mediaUrl}" controls class="w-full h-auto rounded-xl shadow-lg"></video>`;
-                } else if (observation.mediaUrl.match(/\.(mp3|wav|ogg)$/i)) {
-                    mediaContent.innerHTML = `<audio src="${observation.mediaUrl}" controls></audio>`;
-                } else {
-                    noImageMessage.classList.remove('hidden');
-                    mediaContainer.classList.add('hidden');
-                }
-            } else {
-                noImageMessage.classList.remove('hidden');
-            }
-        }
-
-        // إنشاء عنصر الملاحظة في القائمة
-        function createObservationItem(observation) {
-            // ... (منطق إنشاء العنصر يظل كما هو)
-            const statusColor = observation.status === 'تمت المعالجة' ? 'text-green-600' : 'text-red-600';
-            const icon = observation.status === 'تمت المعالجة' ? 'check-circle' : 'alert-triangle';
-            const item = document.createElement('div');
-            item.className = 'observation-item p-4 rounded-lg bg-white shadow-sm hover:shadow-md';
-            item.id = `obs-item-${observation.id}`;
-            item.onclick = () => showObservationDetail(observation.id);
-            item.innerHTML = `
-                <div class="flex items-start justify-between">
-                    <h5 class="font-bold text-gray-900">${observation.title}</h5>
-                    <i data-lucide="${icon}" class="w-5 h-5 ${statusColor} flex-shrink-0 mr-2"></i>
-                </div>
-                <p class="text-sm text-gray-600 mt-1">${observation.description.substring(0, 60)}...</p>
-                <div class="flex justify-between items-center text-xs mt-2">
-                    <span class="font-medium text-gray-500">${formatDate(observation.createdAt)}</span>
-                    <span class="font-semibold ${statusColor}">${observation.status}</span>
-                </div>
-            `;
-            return item;
-        }
-
-        // عرض قائمة الملاحظات
-        function renderObservationsList(data) {
-            const listContainer = document.getElementById('observationsList');
-            listContainer.innerHTML = '';
-            if (data.length === 0) {
-                listContainer.innerHTML = `<div class="text-center text-gray-500 mt-10 p-4">لا توجد ملاحظات لعرضها ضمن الفلتر الحالي.</div>`;
-                return;
-            }
-            data.forEach(observation => {
-                listContainer.appendChild(createObservationItem(observation));
+            kpiData.forEach(kpi => {
+                const kpiHTML = `
+                    <div class="kpi-card-professional p-6 ${kpi.gradientClass} flex items-center justify-between shadow-2xl">
+                        <div>
+                            <p class="text-sm md:text-md font-medium">${kpi.title}</p>
+                            <p class="text-4xl md:text-5xl font-extrabold mt-1">${kpi.value}</p>
+                        </div>
+                        <i data-lucide="${kpi.icon}" class="w-10 h-10 opacity-70"></i>
+                    </div>
+                `;
+                kpiContainer.innerHTML += kpiHTML;
             });
             lucide.createIcons();
+            document.getElementById('userInfo').innerHTML = 'تم تحديث البيانات بنجاح (وضع ثابت).';
         }
 
-        // التعامل مع الفلتر
-        function handleFilterChange() {
-            const filterValue = document.getElementById('observationFilter').value;
-            let filteredData = observationsData;
+        function renderObservationsList(observations) {
+            const list = document.getElementById('observationsList');
+            list.innerHTML = '';
 
-            if (filterValue !== 'الكل') {
-                if (['جديد', 'قيد التنفيذ', 'تمت المعالجة'].includes(filterValue)) {
-                    filteredData = observationsData.filter(obs => obs.status === filterValue);
+            if (observations.length === 0) {
+                list.innerHTML = '<div class="text-center text-gray-500 mt-10 p-4 bg-gray-100 rounded-xl">لا توجد ملاحظات مطابقة لمعيار التصفية.</div>';
+                document.getElementById('detailPlaceholder').classList.remove('hidden');
+                document.getElementById('observationDetail').classList.add('hidden');
+                return;
+            }
+
+            observations.forEach(obs => {
+                const statusInfo = statusMap[obs.status] || {color: 'bg-gray-500', text: obs.status};
+                const isSelected = obs.id === (currentSelectedObservation ? currentSelectedObservation.id : null) ? 'active' : '';
+
+                const obsHTML = `
+                    <div class="observation-item p-3 rounded-lg flex justify-between items-center ${isSelected}" onclick="showObservationDetail(${obs.id})">
+                        <div>
+                            <p class="text-md font-bold text-gray-800 truncate max-w-[200px]">${obs.title}</p>
+                            <p class="text-xs text-gray-500 mt-1">${obs.date} | ${obs.type}</p>
+                        </div>
+                        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full ${statusInfo.color} text-white">${statusInfo.text}</span>
+                    </div>
+                `;
+                list.innerHTML += obsHTML;
+            });
+        }
+
+        /**
+         * دالة لعرض تفاصيل ملاحظة محددة (تم التعديل لدعم مقارنة الصور/إغلاق المدير)
+         */
+        function showObservationDetail(id) {
+            currentSelectedObservation = observationsData.find(obs => obs.id === id);
+            if (!currentSelectedObservation) return;
+
+            document.querySelectorAll('.observation-item').forEach(item => item.classList.remove('active'));
+            const obsElement = document.querySelector(`#observationsList .observation-item[onclick="showObservationDetail(${id})"]`);
+            if (obsElement) obsElement.classList.add('active');
+
+            // تهيئة بيانات التفاصيل
+            const statusInfo = statusMap[currentSelectedObservation.status] || {color: 'bg-gray-500', text: currentSelectedObservation.status};
+            document.getElementById('detailTitle').textContent = currentSelectedObservation.title;
+            document.getElementById('printTitle').textContent = `الملاحظة: ${currentSelectedObservation.title}`; // لتقرير PDF
+            document.getElementById('detailType').textContent = currentSelectedObservation.type;
+            document.getElementById('detailDate').textContent = currentSelectedObservation.date;
+            document.getElementById('detailID').textContent = currentSelectedObservation.id;
+            document.getElementById('detailLocation').textContent = currentSelectedObservation.location;
+            document.getElementById('detailStatus').textContent = statusInfo.text;
+            document.getElementById('detailStatus').className = `inline-block px-3 py-1 text-sm font-semibold rounded-full text-white ${statusInfo.color}`;
+            document.getElementById('detailDescription').innerHTML = currentSelectedObservation.details.replace(/\n/g, '<br>');
+            document.getElementById('actionPlan').textContent = `الأولوية: ${currentSelectedObservation.riskAssessment.priority} | الإطار الزمني: ${currentSelectedObservation.riskAssessment.timeframe}. الخطة: ${currentSelectedObservation.actionPlan}`;
+            document.getElementById('actionPlanContainer').classList.remove('hidden');
+
+            // --- إدارة قسم الوسائط (الصور والفيديو) ---
+            document.getElementById('mediaContainer').classList.add('hidden');
+            document.getElementById('imageComparisonWrapper').classList.add('hidden');
+            document.getElementById('noImageMessage').classList.add('hidden');
+            document.getElementById('resolutionNoteContainer').classList.add('hidden'); // إخفاء مذكرة الإغلاق افتراضياً
+
+            const mediaContent = document.getElementById('mediaContent');
+            mediaContent.innerHTML = '';
+
+            if (currentSelectedObservation.status === 'COMPLETED' && currentSelectedObservation.afterImagePath) {
+                // حالة الإغلاق: عرض المقارنة (قبل وبعد) وعرض مذكرة الإغلاق
+                document.getElementById('imageComparisonWrapper').classList.remove('hidden');
+                document.getElementById('beforeImage').src = currentSelectedObservation.imagePath; // صورة قبل (الملاحظة الأصلية)
+                document.getElementById('afterImage').src = currentSelectedObservation.afterImagePath; // صورة بعد (صورة الإغلاق)
+                setupImageComparison();
+
+                document.getElementById('resolutionNote').textContent = currentSelectedObservation.resolutionNote || "لم يتم توفير مذكرة إغلاق تفصيلية.";
+                document.getElementById('resolutionNoteContainer').classList.remove('hidden');
+
+            } else if (currentSelectedObservation.hasImage) {
+                // حالة الانتظار/قيد التنفيذ: عرض الصورة/الفيديو الأصلية فقط
+                document.getElementById('mediaContainer').classList.remove('hidden');
+                if (currentSelectedObservation.isVideo) {
+                    const mimeType = currentSelectedObservation.fileMimeType || 'video/mp4';
+                    mediaContent.innerHTML = `
+                        <video controls class="w-full h-auto rounded-xl shadow-lg border-4 border-gray-300">
+                            <source src="${currentSelectedObservation.imagePath}" type="${mimeType}">
+                            متصفحك لا يدعم عرض الفيديو المضمن.
+                        </video>
+                         <p class="image-label">فيديو الملاحظة - (${mimeType})</p>
+                    `;
                 } else {
-                    filteredData = observationsData.filter(obs => obs.type === filterValue);
+                    mediaContent.innerHTML = `<img class="w-full h-auto rounded-xl shadow-lg" alt="صورة الملاحظة" src="${currentSelectedObservation.imagePath}">`;
                 }
-            }
-            renderObservationsList(filteredData);
-        }
-
-        // حساب مؤشرات الأداء (KPIs)
-        function calculateKPIs() {
-            // ... (منطق حساب KPIs يظل كما هو ولكن يستخدم observationsData المحملة من Firebase)
-            const openCount = observationsData.filter(obs => obs.status !== 'تمت المعالجة').length;
-            const closedCount = observationsData.filter(obs => obs.status === 'تمت المعالجة').length;
-            const totalMediaCount = observationsData.filter(obs => obs.mediaUrl).length + observationsData.filter(obs => obs.afterMediaUrl).length;
-            const missingCloseoutCount = observationsData.filter(obs => obs.status !== 'تمت المعالجة' && !obs.afterMediaUrl).length;
-
-            window.kpi = {
-                openCount,
-                closedCount,
-                totalMediaCount,
-                missingCloseoutCount,
-                total: observationsData.length
-            };
-        }
-
-        // عرض مؤشرات الأداء (KPIs)
-        function renderKPIs() {
-            // ... (منطق عرض KPIs يظل كما هو)
-            if (!window.kpi) return;
-            document.getElementById('openCount').textContent = window.kpi.openCount;
-            document.getElementById('closedCount').textContent = window.kpi.closedCount;
-            document.getElementById('totalMediaCount').textContent = window.kpi.totalMediaCount;
-            document.getElementById('missingCloseoutCount').textContent = window.kpi.missingCloseoutCount;
-        }
-
-        // ... (بقية الدوال المساعدة مثل setButtonLoading, getLocation, updateFileName, checkSmartInputState, checkCloseoutState, toggleModal, openModal, closeModal, setupImageComparison تظل كما هي) ...
-
-        function setButtonLoading(buttonId, isLoading) {
-            const button = document.getElementById(buttonId);
-            const icon = button.querySelector('i');
-            button.disabled = isLoading;
-            if (isLoading) {
-                button.innerHTML = '<span class="flex items-center"><span class="loading-spinner"></span> جاري المعالجة...</span>';
             } else {
-                // إعادة الأيقونة الأصلية حسب نوع الزر
-                if (buttonId === 'smartProcessBtn') {
-                    button.innerHTML = `<i data-lucide="send" class="w-5 h-5 ml-2"></i> تحليل وإرسال الملاحظة`;
-                } else if (buttonId === 'closeoutProcessBtn') {
-                    button.innerHTML = `<i data-lucide="lock" class="w-5 h-5 ml-2"></i> تأكيد الإغلاق وتوثيق المعالجة`;
-                } else if (buttonId === 'vision-btn') {
-                    button.innerHTML = `<i data-lucide="eye" class="w-4 h-4 ml-2"></i> تحليل الصور بالرؤية (Vision)`;
-                } else if (buttonId === 'root-cause-btn') {
-                    button.innerHTML = `<i data-lucide="microscope" class="w-4 h-4 ml-2"></i> تحليل السبب الجذري`;
-                } else if (buttonId === 'comm-btn') {
-                    button.innerHTML = `<i data-lucide="send" class="w-4 h-4 ml-2"></i> صياغة أمر العمل`;
-                } else if (buttonId === 'kpi-insight-button') {
-                    button.innerHTML = `<i data-lucide="bar-chart-3" class="w-5 h-5 ml-2"></i> ✨ توليد تقرير تنفيذي لملخص اللوحة (Gemini AI)`;
-                }
-                lucide.createIcons();
+                document.getElementById('noImageMessage').classList.remove('hidden');
             }
-        }
 
-        function getLocation() {
-            const statusEl = document.getElementById('locationStatus');
-            const latInput = document.getElementById('inputLatitude');
-            const lonInput = document.getElementById('inputLongitude');
-            statusEl.textContent = 'جاري تحديد الموقع...';
-            statusEl.classList.remove('text-gray-500', 'text-red-500');
-            statusEl.classList.add('text-teal-600');
+            // --- إدارة أزرار الإجراءات التنفيذية (Managerial Actions) ---
+            const isCompleted = currentSelectedObservation.status === 'COMPLETED';
+            document.getElementById('updateStatusBtn').classList.toggle('hidden', isCompleted);
+            document.getElementById('completeObservationBtn').classList.toggle('hidden', isCompleted);
+            document.getElementById('alreadyCompletedBtn').classList.toggle('hidden', !isCompleted);
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude.toFixed(6);
-                        const lon = position.coords.longitude.toFixed(6);
-                        statusEl.textContent = `تم التحديد: ${lat}, ${lon}`;
-                        latInput.value = lat;
-                        lonInput.value = lon;
-                        statusEl.classList.remove('text-red-500');
-                        statusEl.classList.add('text-teal-600');
-                        checkSmartInputState();
-                    },
-                    (error) => {
-                        statusEl.textContent = 'فشل تحديد الموقع!';
-                        statusEl.classList.remove('text-teal-600');
-                        statusEl.classList.add('text-red-500');
-                        latInput.value = '';
-                        lonInput.value = '';
-                        checkSmartInputState();
-                    }
-                );
-            } else {
-                statusEl.textContent = 'المتصفح لا يدعم تحديد الموقع.';
-                statusEl.classList.remove('text-teal-600');
-                statusEl.classList.add('text-red-500');
-            }
-        }
-
-        function updateFileName(fileInputId, nameElementId) {
-            const fileInput = document.getElementById(fileInputId);
-            const nameEl = document.getElementById(nameElementId);
-            if (fileInput.files.length > 0) {
-                nameEl.textContent = fileInput.files[0].name;
-                nameEl.classList.remove('text-gray-500');
-                nameEl.classList.add('text-teal-600');
-            } else {
-                nameEl.textContent = 'لم يتم اختيار ملف';
-                nameEl.classList.remove('text-teal-600');
-                nameEl.classList.add('text-gray-500');
-            }
-        }
-
-        function checkSmartInputState() {
-            const rawInput = document.getElementById('rawObservationInput').value.trim();
-            const mediaFile = document.getElementById('mediaFile').files.length > 0;
-            const submitBtn = document.getElementById('smartProcessBtn');
-
-            // يجب وجود نص (حد أدنى 10 أحرف) أو مرفق لتمكين الإرسال
-            if (rawInput.length >= 10 || mediaFile) {
-                submitBtn.disabled = false;
-            } else {
-                submitBtn.disabled = true;
-            }
-        }
-
-        function checkCloseoutState() {
-            const resolutionNote = document.getElementById('resolutionNoteInput').value.trim();
-            const afterMediaFile = document.getElementById('afterMediaFile').files.length > 0;
-            const submitBtn = document.getElementById('closeoutProcessBtn');
-
-            if (resolutionNote.length >= 10 && afterMediaFile) {
-                submitBtn.disabled = false;
-            } else {
-                submitBtn.disabled = true;
-            }
-        }
-
-        // دوال المودال (تبقى كما هي)
-        function toggleModal(modalId) {
-            document.getElementById(modalId).style.display = document.getElementById(modalId).style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function openModal(modalId) {
-            if (modalId === 'closeoutModal') {
-                if (!currentSelectedObservation) {
-                    alert('يجب اختيار ملاحظة أولاً.');
-                    return;
-                }
-                document.getElementById('closeoutObservationId').textContent = currentSelectedObservation.id;
-                document.getElementById('resolutionNoteInput').value = '';
-                document.getElementById('afterMediaFile').value = '';
-                document.getElementById('afterMediaFileName').textContent = 'لم يتم اختيار ملف';
-                document.getElementById('closeoutProcessBtn').disabled = true;
-            } else if (modalId === 'smartInputModal') {
-                // إعادة تعيين حالة الإدخال الذكي عند الفتح
-                document.getElementById('rawObservationInput').value = '';
-                document.getElementById('locationStatus').textContent = 'لم يتم التحديد بعد';
-                document.getElementById('locationStatus').classList.remove('text-teal-600');
-                document.getElementById('locationStatus').classList.add('text-gray-500');
-                document.getElementById('inputLatitude').value = '';
-                document.getElementById('inputLongitude').value = '';
-                document.getElementById('mediaFile').value = '';
-                document.getElementById('mediaFileName').textContent = 'لم يتم اختيار ملف';
-                document.getElementById('smartProcessBtn').disabled = true;
-            }
-            document.getElementById(modalId).style.display = 'flex';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-            // تنظيف نتيجة الذكاء الاصطناعي عند إغلاق أي مودال (في حالة وجوده)
+            document.getElementById('detailPlaceholder').classList.add('hidden');
+            document.getElementById('observationDetail').classList.remove('hidden');
             document.getElementById('aiResultContainer').classList.add('hidden');
         }
 
-        // مقارنة الصور (تبقى كما هي)
+        // --- وظائف لوحة الإغلاق التنفيذي (EXECUTIVE CLOSEOUT FUNCTIONS) ---
+
+        /**
+         * دالة لفتح نافذة الإغلاق التنفيذي
+         */
+        function openModal(id) {
+            document.getElementById(id).style.display = "flex";
+            if (id === 'closeoutModal') {
+                document.getElementById('closeoutId').textContent = currentSelectedObservation.id;
+                clearAfterUpload(); // تهيئة حالة الرفع
+            }
+            // ... (بقية تهيئة Smart Input Modal)
+            if (id === 'smartInputModal') {
+                document.getElementById('rawObservationInput').value = '';
+                document.getElementById('locationStatus').innerText = 'لم يتم التحديد بعد';
+                document.getElementById('fileStatus').innerText = 'لم يتم اختيار ملف بعد';
+                document.getElementById('inputLatitude').value = '';
+                document.getElementById('inputLongitude').value = '';
+                currentFile = null;
+                currentFileUrl = null;
+                document.getElementById('fileUploadInput').value = '';
+                document.getElementById('processSmartInputBtn').disabled = true;
+                document.getElementById('getLocationBtn').disabled = false;
+                document.getElementById('modalResult').classList.add('hidden');
+                document.getElementById('modalStep1').classList.remove('hidden');
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        /**
+         * دالة تهيئة حالة رفع صورة الإغلاق
+         */
+        function clearAfterUpload() {
+            currentAfterFile = null;
+            currentAfterFileUrl = null;
+            document.getElementById('afterFileUploadInput').value = '';
+            document.getElementById('afterFileStatus').innerHTML = 'لم يتم اختيار ملف بعد <span class="text-red-500 font-bold">(إلزامي)</span>';
+            document.getElementById('resolutionNoteInput').value = '';
+            document.getElementById('finalCloseoutBtn').disabled = true;
+        }
+
+        /**
+         * دالة لمعالجة رفع صورة الإغلاق (AFTER)
+         */
+        function handleAfterFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                currentAfterFile = file;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentAfterFileUrl = e.target.result;
+                    document.getElementById('finalCloseoutBtn').disabled = false; // تفعيل زر الإغلاق
+                };
+                reader.readAsDataURL(file);
+                document.getElementById('afterFileStatus').innerHTML = `<span class="text-green-600">تم اختيار الملف:</span> ${file.name}`;
+            } else {
+                currentAfterFile = null;
+                currentAfterFileUrl = null;
+                document.getElementById('afterFileStatus').innerHTML = 'لم يتم اختيار ملف بعد <span class="text-red-500 font-bold">(إلزامي)</span>';
+                document.getElementById('finalCloseoutBtn').disabled = true;
+            }
+        }
+
+        /**
+         * دالة لتأكيد الإغلاق التنفيذي وتحديث بيانات الملاحظة
+         */
+        function completeObservation() {
+            if (!currentAfterFileUrl) {
+                alert("الرجاء تحميل صورة 'بعد الإصلاح' لإتمام الإغلاق.");
+                return;
+            }
+
+            const note = document.getElementById('resolutionNoteInput').value.trim() || `تم الإغلاق التنفيذي في ${new Date().toLocaleString('ar-SA')} وتوثيقه بالصورة المرفقة.`;
+
+            // 1. تحديث بيانات الملاحظة الحالية في المصفوفة (Mock Update)
+            const obsIndex = observationsData.findIndex(obs => obs.id === currentSelectedObservation.id);
+            if (obsIndex !== -1) {
+                observationsData[obsIndex].status = 'COMPLETED';
+                observationsData[obsIndex].isComparative = true;
+                observationsData[obsIndex].afterImagePath = currentAfterFileUrl;
+                observationsData[obsIndex].resolutionNote = note;
+                currentSelectedObservation = observationsData[obsIndex]; // تحديث الملاحظة المختارة
+            }
+
+            // 2. إغلاق النافذة المنبثقة
+            closeModal('closeoutModal');
+            clearAfterUpload();
+
+            // 3. إعادة عرض القائمة والتفاصيل لتعكس التغيير
+            handleFilterChange(); // لإعادة ترتيب وفرز القائمة
+            showObservationDetail(currentSelectedObservation.id);
+
+            alert(`تم إغلاق الملاحظة رقم ${currentSelectedObservation.id} وتوثيقها بالصورة النهائية والمذكرة الختامية بنجاح!`);
+        }
+
+        // --- وظائف توليد التقارير (PDF REPORTING) ---
+
+        /**
+         * دالة لتوليد تقرير PDF باستخدام خاصية الطباعة في المتصفح
+         */
+        function generatePdfReport() {
+            // هذا التغيير البسيط يسهل على المتصفح حفظ الصفحة كملف PDF
+            // عند استخدام وظيفة الطباعة (Ctrl+P أو Cmd+P).
+            window.print();
+        }
+
+
+        // --- وظائف أخرى (تم تركها كما هي) ---
+
+        function handleFilterChange() {
+            // ... (Same function as before)
+            const filterValue = document.getElementById('observationFilter').value;
+            let filteredList = observationsData;
+
+            if (filterValue !== 'الكل') {
+                const filterKey = {
+                    "جديد": "PENDING",
+                    "قيد التنفيذ": "IN_PROGRESS",
+                    "تمت المعالجة": "COMPLETED",
+                    "جودة": "QUALITY",
+                    "صيانة": "MAINTENANCE",
+                    "سلامة": "SAFETY",
+                    "بيئة": "ENVIRONMENT"
+                }[filterValue] || filterValue;
+
+                filteredList = observationsData.filter(obs => obs.type === filterKey || obs.status === filterKey);
+            }
+
+            renderObservationsList(filteredList);
+
+            if (filteredList.length > 0) {
+                showObservationDetail(filteredList[0].id);
+            } else {
+                document.getElementById('detailPlaceholder').classList.remove('hidden');
+                document.getElementById('observationDetail').classList.add('hidden');
+            }
+        }
+
         function setupImageComparison() {
+            // ... (Same function as before)
             const wrapper = document.getElementById('imageComparisonWrapper');
             const divider = document.getElementById('comparisonDivider');
             const afterImageContainer = document.getElementById('afterImageContainer');
 
+            if (!wrapper) return;
+
+            afterImageContainer.style.width = '50%';
+            divider.style.left = '50%';
+
             let isDragging = false;
 
-            // تحديد موقع الـ divider بناءً على موضع الماوس
-            function moveDivider(x) {
-                const rect = wrapper.getBoundingClientRect();
-                let percentage = (x - rect.left) / rect.width;
-
-                // تحديد الحدود
-                if (percentage < 0.1) percentage = 0.1;
-                if (percentage > 0.9) percentage = 0.9;
-
-                const newWidth = percentage * 100;
-
-                afterImageContainer.style.width = `${newWidth}%`;
-                divider.style.left = `${newWidth}%`;
-            }
-
-            // تفعيل السحب
-            divider.onmousedown = (e) => {
-                isDragging = true;
-                e.preventDefault();
-                divider.style.cursor = 'grabbing';
-            };
-            wrapper.onmousemove = (e) => {
+            const onMove = (clientX) => {
                 if (!isDragging) return;
-                moveDivider(e.clientX);
+                const wrapperRect = wrapper.getBoundingClientRect();
+                let newLeft = clientX - wrapperRect.left;
+                newLeft = Math.max(0, Math.min(newLeft, wrapperRect.width));
+
+                divider.style.left = `${newLeft}px`;
+                afterImageContainer.style.width = `${newLeft}px`;
             };
-            wrapper.onmouseup = () => {
+
+            const onMouseMove = (e) => onMove(e.clientX);
+            const onTouchMove = (e) => onMove(e.touches[0].clientX);
+
+            const onMouseUp = () => {
                 isDragging = false;
-                divider.style.cursor = 'grab';
+                wrapper.classList.remove('dragging');
+                window.removeEventListener('mousemove', onMouseMove);
+                window.removeEventListener('touchmove', onTouchMove);
+                window.removeEventListener('mouseup', onMouseUp);
+                window.removeEventListener('touchend', onMouseUp);
             };
 
-            // تهيئة الموضع الأولي
-            moveDivider(wrapper.getBoundingClientRect().left + wrapper.offsetWidth / 2);
+            const onMouseDown = (e) => {
+                e.preventDefault();
+                isDragging = true;
+                wrapper.classList.add('dragging');
+
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                onMove(clientX);
+
+                window.addEventListener('mousemove', onMouseMove);
+                window.addEventListener('touchmove', onTouchMove);
+                window.addEventListener('mouseup', onMouseUp);
+                window.addEventListener('touchend', onMouseUp);
+            };
+            const onTouchStart = (e) => onMouseDown(e);
+
+            divider.removeEventListener('mousedown', onMouseDown);
+            divider.removeEventListener('touchstart', onTouchStart);
+            wrapper.removeEventListener('mousedown', onMouseDown);
+            wrapper.removeEventListener('touchstart', onTouchStart);
+
+            divider.addEventListener('mousedown', onMouseDown);
+            divider.addEventListener('touchstart', onTouchStart);
+
+            wrapper.addEventListener('mousedown', onMouseDown);
+            wrapper.addEventListener('touchstart', onTouchStart);
         }
 
-        // --- Firebase Data Structures (Now Dynamically Loaded) ---
+        // --- دوال AI Mock (للتكامل الكامل) ---
+        function getLocation() {
+            document.getElementById('locationStatus').innerHTML = '<span class="text-yellow-600">جاري البحث...</span>';
+            document.getElementById('getLocationBtn').disabled = true;
 
-        let currentSelectedObservation = null;
-
-        // البيانات الآن سيتم تخزينها هنا بعد جلبها من Firestore
-        let observationsData = []; 
-
-        // ------------------------------------------------------------------------------------
-        // START: 2. Firebase Database Operations
-        // ------------------------------------------------------------------------------------
-
-        // دالة جلب البيانات الرئيسية من Firestore
-        async function fetchObservations() {
-            try {
-                // عرض رسالة التحميل
-                const listContainer = document.getElementById('observationsList');
-                listContainer.innerHTML = `<div class="text-center text-gray-500 mt-10 p-4">جاري تحميل الملاحظات من Firebase...</div>`;
-
-                // استخدام orderBy للفرز حسب تاريخ الإنشاء (الأحدث أولاً)
-                const snapshot = await db.collection(OBSERVATIONS_COLLECTION).orderBy('createdAt', 'desc').get();
-                
-                observationsData = snapshot.docs.map(doc => {
-                    const data = doc.data();
-                    return {
-                        ...data,
-                        id: doc.id, // استخدام معرف المستند كمعرف للملاحظة
-                        createdAt: data.createdAt ? data.createdAt.toDate() : new Date() // تحويل Timestamp إلى Date
-                    };
-                });
-
-                // تحديث مؤشرات الأداء وعرض القائمة
-                calculateKPIs();
-                renderKPIs();
-                renderObservationsList(observationsData);
-
-                // عرض تفاصيل أول ملاحظة أو ترك المكان فارغاً
-                if (observationsData.length > 0) {
-                    // محاكاة اختيار الملاحظة رقم 4 أو أول ملاحظة
-                    const logoObservation = observationsData.find(obs => obs.id === '4'); // إذا كان لديك مستند برقم 4
-                    if (logoObservation) {
-                        showObservationDetail(logoObservation.id);
-                    } else {
-                        showObservationDetail(observationsData[0].id);
-                    }
-                } else {
-                    document.getElementById('observationDetail').classList.add('hidden');
-                    document.getElementById('detailPlaceholder').classList.remove('hidden');
-                }
-
-                document.getElementById('userInfo').textContent = `تم تحميل ${observationsData.length} ملاحظة بنجاح من Firestore.`;
-
-            } catch (error) {
-                console.error("Error fetching documents from Firestore: ", error);
-                document.getElementById('observationsList').innerHTML = `<div class="text-center text-red-500 mt-10 p-4 border border-red-200 rounded-lg">فشل تحميل البيانات! تحقق من اتصال Firebase وقواعد الأمان.</div>`;
-                document.getElementById('userInfo').textContent = `فشل الاتصال بقاعدة البيانات.`;
+            setTimeout(() => {
+                const lat = 24.5247;
+                const lon = 46.7135;
+                document.getElementById('inputLatitude').value = lat;
+                document.getElementById('inputLongitude').value = lon;
+                document.getElementById('locationStatus').innerHTML = `<span class="text-green-600">تم التحديد:</span> ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                document.getElementById('getLocationBtn').disabled = false;
+                checkSmartInputState();
+            }, 1500);
+        }
+        function checkSmartInputState() {
+            const rawText = document.getElementById('rawObservationInput').value.trim();
+            const lat = document.getElementById('inputLatitude').value;
+            if (rawText.length > 0 || currentFile || lat) {
+                document.getElementById('processSmartInputBtn').disabled = false;
+            } else {
+                document.getElementById('processSmartInputBtn').disabled = true;
             }
         }
-        
-        // ------------------------------------------------------------------------------------
-        // START: 3. Core Logic Modifications (CRUD)
-        // ------------------------------------------------------------------------------------
-        
-        // الإغلاق التنفيذي - تحديث وحفظ صورة "بعد" في Storage
-        async function processCloseout() {
-            if (!currentSelectedObservation) return;
-
-            const resolutionNote = document.getElementById('resolutionNoteInput').value;
-            const afterMediaFile = document.getElementById('afterMediaFile').files[0];
-
-            if (!afterMediaFile || resolutionNote.trim() === '') {
-                alert("يجب إرفاق صورة بعد المعالجة وكتابة مذكرة ختامية للإغلاق.");
-                return;
-            }
-
-            const buttonId = 'closeoutProcessBtn';
-            setButtonLoading(buttonId, true);
-            
-            try {
-                let afterMediaDownloadUrl = null;
-                
-                // 1. تحميل صورة ما بعد المعالجة إلى Cloud Storage
-                const fileExtension = afterMediaFile.name.split('.').pop();
-                const fileName = `observations/${currentSelectedObservation.id}_after_${new Date().getTime()}.${fileExtension}`;
-                const fileRef = storage.ref(fileName);
-                
-                await fileRef.put(afterMediaFile);
-                afterMediaDownloadUrl = await fileRef.getDownloadURL();
-                
-                // 2. تحديث المستند في Firestore
-                await db.collection(OBSERVATIONS_COLLECTION).doc(currentSelectedObservation.id).update({
-                    status: 'تمت المعالجة',
-                    resolutionNote: resolutionNote,
-                    afterMediaUrl: afterMediaDownloadUrl, // تخزين رابط التخزين لصورة "بعد"
-                    isComparative: true,
-                    closedAt: firebase.firestore.Timestamp.fromDate(new Date())
-                });
-                
-                alert(`تم إغلاق الملاحظة رقم ${currentSelectedObservation.id} بنجاح وتوثيقها بصورة بعد المعالجة.`);
-
-                // 3. إعادة تحميل البيانات وعرض التفاصيل المحدثة
-                closeModal('closeoutModal');
-                await fetchObservations(); 
-
-            } catch (error) {
-                console.error("Error processing closeout or saving to Firebase: ", error);
-                alert("حدث خطأ أثناء إغلاق الملاحظة: " + error.message);
-            } finally {
-                setButtonLoading(buttonId, false);
-                document.getElementById('closeoutProcessBtn').disabled = true;
-            }
-        }
-
-        // الإدخال الذكي - حفظ البيانات والصور في Firebase
-        async function processSmartInput() {
-            const rawInput = document.getElementById('rawObservationInput').value;
-            const latitude = document.getElementById('inputLatitude').value;
-            const longitude = document.getElementById('inputLongitude').value;
-            const mediaFile = document.getElementById('mediaFile').files[0];
-            
-            // تحقق بسيط من المدخلات
-            if (rawInput.trim().length < 10 && !mediaFile) {
-                alert('يجب إدخال وصف كافٍ أو إرفاق ملف لإنشاء الملاحظة.');
-                return;
-            }
-            
-            setButtonLoading('smartProcessBtn', true);
-
-            try {
-                let mediaDownloadUrl = null;
-                
-                // 1. تحميل الملف إلى Firebase Storage (إذا كان موجوداً)
-                if (mediaFile) {
-                    const fileExtension = mediaFile.name.split('.').pop();
-                    const fileName = `observations/${new Date().getTime()}_before.${fileExtension}`;
-                    const fileRef = storage.ref(fileName);
-                    
-                    await fileRef.put(mediaFile);
-                    mediaDownloadUrl = await fileRef.getDownloadURL();
-                    console.log("File uploaded successfully:", mediaDownloadUrl);
-                }
-                
-                // 2. محاكاة تحليل Gemini (نحافظ عليه كـ Mock مؤقتاً)
-                const mockAIAnalysis = {
-                    title: rawInput.length > 50 ? rawInput.substring(0, 47) + '...' : rawInput,
-                    type: rawInput.includes('مياه') || rawInput.includes('انزلاق') ? 'سلامة' : (rawInput.includes('طلاء') ? 'جودة' : 'صيانة'),
-                    actionPlan: "إصدار أمر عمل عاجل. يجب التنسيق مع فريق الصيانة للتوجه الفوري للموقع وإجراء المعالجة المطلوبة وفقاً للوصف وتفاصيل الموقع الجغرافي.",
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                currentFile = file;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentFileUrl = e.target.result;
+                    checkSmartInputState();
                 };
-                
-                // 3. تخزين البيانات في Firestore
-                const newObservationData = {
-                    title: mockAIAnalysis.title,
-                    description: rawInput,
-                    location: latitude && longitude ? `${latitude}, ${longitude}` : 'موقع غير محدد',
-                    type: mockAIAnalysis.type,
-                    status: "جديد",
-                    mediaUrl: mediaDownloadUrl || null, // تخزين رابط التخزين
-                    afterMediaUrl: null,
+                reader.readAsDataURL(file);
+                document.getElementById('fileStatus').innerText = `تم اختيار الملف: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+
+            } else {
+                currentFile = null;
+                currentFileUrl = null;
+                document.getElementById('fileStatus').innerText = 'لم يتم اختيار ملف بعد';
+                checkSmartInputState();
+            }
+        }
+        function processSmartInput() {
+            const rawText = document.getElementById('rawObservationInput').value.trim();
+            const lat = document.getElementById('inputLatitude').value || "غير محدد";
+            const lon = document.getElementById('inputLongitude').value || "غير محدد";
+            const fileSource = currentFile ? currentFile.name : null;
+            const isVideoFile = currentFile ? currentFile.type.startsWith('video') : false;
+            const fileMimeType = currentFile ? currentFile.type : null;
+
+            if (!rawText && !currentFile) {
+                alert("الرجاء إدخال وصف أو تحميل ملف (صورة/فيديو) لبدء التحليل.");
+                return;
+            }
+
+            document.getElementById('modalStep1').classList.add('hidden');
+            document.getElementById('modalResult').classList.remove('hidden');
+            document.getElementById('modalResultContent').innerHTML = `
+                <div class="text-center py-10">
+                    <div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin: 0 auto; width: 40px; height: 40px;"></div>
+                    <p class="mt-4 text-xl font-extrabold text-teal-700">جاري تحليل البيانات بواسطة Gemini AI...</p>
+                    <p class="text-md text-gray-500 mt-2">يرجى الانتظار قليلاً أثناء معالجة الملف وتوليد التقرير.</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const newId = observationsData.length + 1;
+                const newDate = new Date().toISOString().slice(0, 10);
+
+                const newObservation = {
+                    id: newId,
+                    type: "MAINTENANCE",
+                    date: newDate,
+                    title: rawText.substring(0, 50) + (rawText.length > 50 ? '...' : '') || (fileSource ? `ملاحظة ميدانية (${fileSource})` : "تقرير آلي عن ملاحظة"),
+                    status: "PENDING",
+                    details: `**تم توليد هذا التقرير آلياً.**\nالوصف الأولي: "${rawText || 'لم يتم إدخال وصف نصي.'}"\nالموقع: (${lat}, ${lon})\nالملف المرفق: ${fileSource || 'لا يوجد ملف'}`,
+                    hasImage: !!currentFile,
+                    imagePath: currentFileUrl,
+                    fileMimeType: fileMimeType,
                     isComparative: false,
+                    isVideo: isVideoFile,
+                    actionPlan: "إصلاح فوري لأضرار الطريق عبر رقعة الإسفلت (Patching).",
+                    riskAssessment: {
+                        priority: "High",
+                        timeframe: "48 hours"
+                    },
+                    location: `${lat}, ${lon}`,
+                    createdAt: new Date().getTime(),
+                    isNewInput: true,
                     resolutionNote: null,
-                    actionPlan: mockAIAnalysis.actionPlan,
-                    createdAt: firebase.firestore.Timestamp.fromDate(new Date()) // استخدام Timestamp
+                    afterImagePath: null
                 };
 
-                const docRef = await db.collection(OBSERVATIONS_COLLECTION).add(newObservationData);
-                
-                alert(`تم إنشاء الملاحظة برقم ${docRef.id} بنجاح وحفظها في Firebase.`);
+                observationsData.unshift(newObservation);
 
-                // 4. إعادة تحميل البيانات وعرض التفاصيل
-                closeModal('smartInputModal');
-                await fetchObservations(); 
-                
+                renderObservationsList(observationsData);
+                showObservationDetail(newId);
 
-            } catch (error) {
-                console.error("Error processing smart input or saving to Firebase: ", error);
-                alert("حدث خطأ أثناء حفظ الملاحظة: " + error.message);
-            } finally {
-                setButtonLoading('smartProcessBtn', false);
-                document.getElementById('smartProcessBtn').disabled = true;
-            }
-        }
-        
-        // تحديث الحالة إلى "قيد التنفيذ"
-        async function updateStatusToInProgress() {
-            if (!currentSelectedObservation) return;
-
-            const updateStatusBtn = document.getElementById('updateStatusBtn');
-            updateStatusBtn.disabled = true;
-            updateStatusBtn.innerHTML = '<span class="flex items-center"><span class="loading-spinner"></span> تحديث...</span>';
-            lucide.createIcons();
-            
-            try {
-                 await db.collection(OBSERVATIONS_COLLECTION).doc(currentSelectedObservation.id).update({
-                    status: 'قيد التنفيذ',
-                    inProgressAt: firebase.firestore.Timestamp.fromDate(new Date())
-                });
-                
-                alert(`تم تحديث حالة الملاحظة رقم ${currentSelectedObservation.id} إلى "قيد التنفيذ" بنجاح.`);
-                
-                await fetchObservations(); 
-
-            } catch (error) {
-                console.error("Error updating status to in-progress in Firebase: ", error);
-                alert("حدث خطأ أثناء تحديث الحالة: " + error.message);
-            } finally {
-                updateStatusBtn.disabled = false;
-                updateStatusBtn.innerHTML = 'تحديث الحالة إلى "قيد التنفيذ"';
+                document.getElementById('modalResultContent').innerHTML = `
+                    <div class="p-6 bg-green-50 rounded-xl border-4 border-green-200 text-center">
+                        <i data-lucide="check-circle" class="w-10 h-10 mx-auto text-green-600 mb-3"></i>
+                        <h4 class="text-2xl font-extrabold text-green-700">تمت معالجة الملاحظة بنجاح!</h4>
+                        <p class="text-lg text-gray-700 mt-2">تم إضافة ملاحظتك الجديدة بنجاح في القائمة.</p>
+                        <p class="text-sm text-gray-500 mt-1">الملف: **${fileSource || 'لا يوجد'}** (تم إدراجه كـ **${isVideoFile ? 'فيديو' : 'صورة'}**).</p>
+                    </div>
+                `;
                 lucide.createIcons();
+            }, 3000);
+        }
+
+        function analyzeImage(tool) {
+            const title = {'vision': 'تحليل الرؤية (Vision)', 'root-cause': 'تحليل السبب الجذري'}[tool] || 'التحليل';
+            document.getElementById('aiResultTitle').textContent = `جاري تنفيذ ${title}...`;
+            document.getElementById('aiResultContent').innerHTML = `<div class="flex items-center text-teal-700 font-bold"><div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin-left: 8px;"></div> يرجى الانتظار</div>`;
+            document.getElementById('aiResultContainer').classList.remove('hidden');
+
+            setTimeout(() => {
+                let analysisResult = "";
+                if (tool === 'vision') {
+                    if (currentSelectedObservation && (currentSelectedObservation.isNewInput === true || currentSelectedObservation.title.includes("طريق خربان"))) {
+                        analysisResult = `
+                            <p class="communication-draft">
+                                **وصف Gemini للمشكلة (تحليل الصورة):** تظهر الصورة تصدعات وتشققات عميقة (Potholes) في طبقة الإسفلت على الطريق الرئيسي، مما يهدد سلامة المركبات ويعرضها لأضرار الإطارات. **نسبة التلف المقدرة: 15% من عرض المسار.**<br>
+                                **حالة الإغلاق المثالية:** يجب إزالة الإسفلت المتضرر، معالجة الطبقة الأساسية (Sub-Base)، وإعادة سفلتة المنطقة المتضررة بالكامل (Full Depth Repair).
+                            </p>
+                        `;
+                    } else if (currentSelectedObservation && currentSelectedObservation.id === 4) {
+                        analysisResult = `
+                            <p class="communication-draft">
+                                **وصف Gemini للمشكلة:** تآكل واضح وشديد يغطي ما يقارب 60% من سطح اللوحة الإرشادية. الشعار والتعليمات على وشك أن تصبح غير قابلة للقراءة. هذا يقلل من كفاءة التشغيل والسلامة.<br>
+                                **حالة الإغلاق المثالية:** استبدال اللوحة الإرشادية بالكامل بلوحة جديدة ذات مواصفات مقاومة للعوامل الجوية.
+                            </p>
+                        `;
+                    } else {
+                        analysisResult = `<p class="communication-draft">**وصف Gemini للمشكلة (افتراضي):** تظهر الصورة تجمعاً للمياه في المنطقة المحددة، مما يشير إلى فشل محتمل في نظام الصرف الصحي أو عيب في طبقة الأسفلت. يجب تصنيف هذا على أنه ملاحظة صيانة عالية الأولوية لمنع المزيد من التدهور أو الحوادث. (هذا تحليل افتراضي للملاحظات غير المخصصة).</p>`;
+                    }
+                } else if (tool === 'root-cause') {
+                    analysisResult = `<p class="communication-draft">**السبب الجذري المقترح (5 Whys Analysis):**<br>... (تحليل 5 أسباب يبقى كما هو).<br>5. **السبب الجذري النهائي:** (عدم تفعيل نظام Smart HSR لتتبع جدول الصيانة الدورية).</p>`;
+                }
+                document.getElementById('aiResultTitle').textContent = `نتائج ${title} مكتملة:`;
+                document.getElementById('aiResultContent').innerHTML = analysisResult;
+            }, 2000);
+        }
+        function generateCommunicationDraft() {
+            document.getElementById('aiResultTitle').textContent = 'صياغة أمر العمل الآلي...';
+            document.getElementById('aiResultContent').innerHTML = `<div class="flex items-center text-teal-700 font-bold"><div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin-left: 8px;"></div> يرجى الانتظار</div>`;
+            document.getElementById('aiResultContainer').classList.remove('hidden');
+
+            setTimeout(() => {
+                document.getElementById('aiResultTitle').textContent = 'صياغة أمر العمل الآلي (مكتملة):';
+                document.getElementById('aiResultContent').innerHTML = `
+                    <div class="communication-draft p-4 border rounded-lg">
+                        <p class="font-bold text-lg mb-2 text-red-800">أمر عمل عاجل: معالجة ${currentSelectedObservation.title} [ID: ${currentSelectedObservation.id}]</p>
+                        <p class="mt-3 font-bold text-sm text-red-600">الأولوية: ${currentSelectedObservation.riskAssessment.priority} | الإطار الزمني المستهدف: ${currentSelectedObservation.riskAssessment.timeframe}</p>
+                    </div>
+                 `;
+            }, 2000);
+        }
+        function generateKpiInsights() {
+            document.getElementById('kpi-insight-result').innerHTML = `<div class="kpi-insight-container p-4 mt-4 bg-white"><p class="font-bold text-lg text-teal-700">ملخص تنفيذي مقترح:</p><p class="text-gray-700 mt-2">تظهر البيانات أن هناك ${calculateKPIs().openReports} ملاحظات مفتوحة، مع تركيز في قسم الصيانة (MAINTENANCE) بسبب مشكلة الطريق التي تم إدخالها حديثاً. يجب على الفريق التنفيذي مراجعة خطط العمل الفورية لتقليل متوسط زمن الإغلاق والتركيز على توثيق جميع الملاحظات بالصور لضمان جودة الإغلاق.</p></div>`;
+        }
+        
+        // --- New: Smart Logout Function ---
+        function smartLogout() {
+            const button = document.getElementById('logout-btn');
+            button.disabled = true;
+            // استخدام تصميم التحميل الموجود
+            // قلب ترتيب العناصر ليتناسب مع اتجاه النص أثناء التحميل
+            button.innerHTML = '<div class="loading-spinner" style="border-top: 4px solid var(--color-teal);"></div> جاري تسجيل الخروج...';
+            button.classList.add('flex-row-reverse', 'justify-center');
+            button.style.backgroundColor = 'gray'; 
+
+            // في تطبيق حقيقي متكامل مع Firebase (كما يوحي ملف الدخول):
+            // if (typeof firebase !== 'undefined' && firebase.auth) {
+            //     firebase.auth().signOut().then(() => {
+            //         window.location.href = "login.html"; 
+            //     });
+            //     return;
+            // }
+
+            // محاكاة عملية تسجيل الخروج
+            setTimeout(() => {
+                alert("تم تسجيل الخروج بنجاح. سيتم توجيهك إلى صفحة الدخول.");
+                // التوجيه إلى صفحة الدخول (login.html)
+                window.location.href = "login.html"; 
+            }, 1000); 
+        }
+
+
+        // --- Initialization ---
+
+        function calculateAndRenderAll() {
+            calculateKPIs();
+            renderKPIs();
+            observationsData.sort((a, b) => b.createdAt - a.createdAt);
+            renderObservationsList(observationsData);
+
+            if (observationsData.length > 0) {
+                const logoObservation = observationsData.find(obs => obs.id === 4);
+                if (logoObservation) {
+                    showObservationDetail(logoObservation.id);
+                } else {
+                    showObservationDetail(observationsData[0].id);
+                }
             }
         }
 
-        // ------------------------------------------------------------------------------------
-        // END: 3. Core Logic Modifications (CRUD)
-        // ------------------------------------------------------------------------------------
-
-
-        // دوال الذكاء الاصطناعي (تبقى كما هي كمحاكاة)
-        
-        async function analyzeImage(type) {
-            // محاكاة استدعاء نموذج Gemini
-            // ...
-        }
-        
-        function generateCommunicationDraft() {
-            // محاكاة صياغة مسودة
-            // ...
-        }
-
-        function generatePdfReport() {
-            // محاكاة توليد تقرير PDF
-            window.print();
-        }
-
-        function generateKpiInsights() {
-            // محاكاة توليد تقرير KPIs
-            // ...
-        }
-
-        // ------------------------------------------------------------------------------------
-        // START: 4. Initialization and Authentication
-        // ------------------------------------------------------------------------------------
-
-        // وظيفة تسجيل الخروج تستخدم Firebase Auth
-        function smartLogout() {
-             auth.signOut().then(() => {
-                 // في حالة نجاح تسجيل الخروج، يتم التوجيه لصفحة الدخول
-                 window.location.href = "login.html"; 
-             }).catch((error) => {
-                 console.error("Logout Error:", error);
-                 alert("فشل تسجيل الخروج: " + error.message);
-             });
-        }
-
-
-        // الوظيفة الأساسية لتهيئة التطبيق - الآن تستدعي fetchObservations
         function initApp() {
-            fetchObservations(); // 👈 ستبدأ عملية التحميل من Firebase
-            lucide.createIcons();
+            calculateAndRenderAll();
+            if (currentSelectedObservation && currentSelectedObservation.isComparative) {
+                setupImageComparison();
+            }
+            lucide.createIcons(); // تأكد من إنشاء أيقونات lucide عند التحميل
         }
 
-        // استدعاء التهيئة عند تحميل الصفحة
         window.onload = initApp;
-
-        // ------------------------------------------------------------------------------------
-        // END: 4. Initialization and Authentication
-        // ------------------------------------------------------------------------------------
 
     </script>
 </body>
