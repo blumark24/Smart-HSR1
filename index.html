@@ -1599,12 +1599,14 @@
   firebase.initializeApp(firebaseConfig);
   console.log("✅ Firebase connected successfully!");
 </script>
-<!-- Firebase SDKs -->
+</body>
+
+<!-- ✅ Firebase SDKs (مرة واحدة فقط) -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
 
-<!-- Firebase Config & Initialization -->
+<!-- ✅ Firebase Config & Initialization -->
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
@@ -1616,12 +1618,14 @@
     appId: "1:399213527987:web:4531958edfe9dbb95a81c6"
   };
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  console.log("✅ Firebase connected successfully!");
+  // Initialize Firebase once
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    console.log("✅ Firebase connected successfully!");
+  }
 </script>
 
-<!-- كود الملاحظات (الإدخال الذكي) -->
+<!-- ✅ كود الملاحظات (الإدخال الذكي) -->
 <script>
   const db = firebase.firestore();
   const storage = firebase.storage();
@@ -1679,5 +1683,4 @@
   loadNotes();
 </script>
 
-</body>
 </html>
