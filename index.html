@@ -1578,29 +1578,6 @@
 
     </script>
 </body>
-<!-- ✅ Firebase SDKs (compat versions) -->
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
-
-<!-- ✅ Firebase Config & Initialization -->
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
-    authDomain: "smart-hsr-6c2cf.firebaseapp.com",
-    databaseURL: "https://smart-hsr-6c2cf-default-rtdb.firebaseio.com",
-    projectId: "smart-hsr-6c2cf",
-    storageBucket: "smart-hsr-6c2cf.firebasestorage.app",
-    messagingSenderId: "399213527987",
-    appId: "1:399213527987:web:4531958edfe9dbb95a81c6"
-  };
-
-  // ✅ تهيئة Firebase
-  firebase.initializeApp(firebaseConfig);
-  console.log("✅ Firebase connected successfully!");
-</script>
-</body>
-
 <!-- ✅ Firebase SDKs (مرة واحدة فقط) -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
@@ -1618,7 +1595,6 @@
     appId: "1:399213527987:web:4531958edfe9dbb95a81c6"
   };
 
-  // Initialize Firebase once
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
     console.log("✅ Firebase connected successfully!");
@@ -1682,5 +1658,3 @@
 
   loadNotes();
 </script>
-
-</html>
