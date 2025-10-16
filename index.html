@@ -1599,5 +1599,85 @@
   firebase.initializeApp(firebaseConfig);
   console.log("✅ Firebase connected successfully!");
 </script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
 
+<!-- Firebase Config & Initialization -->
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
+    authDomain: "smart-hsr-6c2cf.firebaseapp.com",
+    databaseURL: "https://smart-hsr-6c2cf-default-rtdb.firebaseio.com",
+    projectId: "smart-hsr-6c2cf",
+    storageBucket: "smart-hsr-6c2cf.firebasestorage.app",
+    messagingSenderId: "399213527987",
+    appId: "1:399213527987:web:4531958edfe9dbb95a81c6"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  console.log("✅ Firebase connected successfully!");
+</script>
+
+<!-- كود الملاحظات (الإدخال الذكي) -->
+<script>
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  const addNoteButton = document.querySelector("button");
+  const noteInput = document.querySelector("textarea");
+  const imageInput = document.querySelector("input[type='file']");
+  const notesContainer = document.getElementById("notesContainer");
+
+  addNoteButton.addEventListener("click", async () => {
+    const noteText = noteInput.value.trim();
+    const imageFile = imageInput.files[0];
+
+    if (!noteText && !imageFile) {
+      alert("الرجاء إدخال ملاحظة أو صورة أولاً.");
+      return;
+    }
+
+    let imageUrl = null;
+
+    if (imageFile) {
+      const storageRef = storage.ref("notes/" + Date.now() + "-" + imageFile.name);
+      await storageRef.put(imageFile);
+      imageUrl = await storageRef.getDownloadURL();
+    }
+
+    await db.collection("notes").add({
+      text: noteText,
+      image: imageUrl,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    noteInput.value = "";
+    imageInput.value = "";
+    alert("تمت إضافة الملاحظة بنجاح ✅");
+  });
+
+  function loadNotes() {
+    db.collection("notes").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+      notesContainer.innerHTML = "";
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const noteDiv = document.createElement("div");
+        noteDiv.classList.add("note-card");
+        noteDiv.innerHTML = `
+          <p>${data.text || ""}</p>
+          ${data.image ? `<img src="${data.image}" style="max-width:200px;border-radius:10px;margin-top:10px;">` : ""}
+          <hr>
+        `;
+        notesContainer.appendChild(noteDiv);
+      });
+    });
+  }
+
+  loadNotes();
+</script>
+
+</body>
 </html>
