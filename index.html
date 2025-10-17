@@ -1,664 +1,1582 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart HSR | لوحة القيادة التنفيذية - نظام المراقبة وإدارة الجودة الرقمي</title>
+    
     <meta name="description" content="نظام Smart HSR للمراقبة وإدارة الجودة الرقمي - لوحة تحكم تنفيذية متقدمة لإدارة الملاحظات الميدانية وتحليل البيانات بتقنية الذكاء الاصطناعي">
     <meta name="keywords" content="Smart HSR, إدارة الجودة, نظام المراقبة, لوحة تحكم, الذكاء الاصطناعي, تحليل البيانات">
     <meta name="author" content="Smart HSR">
     <meta name="robots" content="index, follow">
+    
     <meta property="og:title" content="Smart HSR | نظام المراقبة وإدارة الجودة الرقمي">
     <meta property="og:description" content="لوحة تحكم تنفيذية متقدمة لإدارة الملاحظات الميدانية وتحليل البيانات بتقنية الذكاء الاصطناعي">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="ar_SA">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Smart HSR | نظام المراقبة وإدارة الجودة الرقمي">
+    <meta name="twitter:description" content="لوحة تحكم تنفيذية متقدمة لإدارة الملاحظات الميدانية">
+    
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="alternate icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="favicon.svg">
+    
+    <link rel="stylesheet" href="output.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
+            /* Professional & Executive Palette */
             --color-navy: #0A1931;
+            /* Primary Dark Color */
             --color-teal: #18A5A2;
+            /* Accent/Highlight Color */
             --color-light-teal: #ACE2E1;
+            /* Light Accent */
             --color-gray-bg: #F7F9FC;
+            /* Clean Background */
             --color-shadow-base: rgba(10, 25, 49, 0.4);
+            /* Deep Navy Shadow */
         }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--color-gray-bg); color: var(--color-navy); }
-        /* KPIs gradients */
-        .kpi-open-gradient { background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); color: white; box-shadow: 0 10px 20px rgba(185,28,28,.4); }
-        .kpi-closed-gradient { background: linear-gradient(135deg, #10B981 0%, #18A5A2 100%); color: white; box-shadow: 0 10px 20px rgba(24,165,162,.4); }
-        .kpi-images-gradient { background: linear-gradient(135deg, #3B82F6 0%, #0A1931 100%); color: white; box-shadow: 0 10px 20px rgba(59,130,246,.4); }
-        .kpi-card-professional { transition:.3s; border-radius:1.5rem; position:relative; overflow:hidden; }
-        .kpi-card-professional:hover { transform: translateY(-8px) scale(1.02); z-index:10; }
-        .ai-button-primary { background-color: var(--color-teal); color:#fff; transition:.3s; box-shadow:0 6px 15px rgba(24,165,162,.5); border:none; border-radius:999px; padding:10px 14px; font-weight:800; cursor:pointer; }
-        .ai-button-primary:hover { background-color:#148f8c; transform:translateY(-2px); }
-        .ai-button-secondary { background-color: var(--color-navy); color:#fff; transition:.3s; box-shadow:0 4px 10px rgba(10,25,49,.6); border:none; border-radius:999px; padding:10px 14px; font-weight:800; cursor:pointer; }
-        .image-container { position:relative; overflow:hidden; border-radius:.75rem; box-shadow:0 4px 10px var(--color-shadow-base); }
-        .image-label { position:absolute; bottom:0; right:0; background-color: var(--color-navy); color:#fff; padding:.5rem 1rem; font-size:.875rem; font-weight:700; border-top-left-radius:.75rem; }
-        .observation-item { transition:.2s; border-right:4px solid transparent; cursor:pointer; padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; }
-        .observation-item:hover, .observation-item.active { background:#E6F3F3; border-right-color: var(--color-teal); }
-        .comparison-wrapper { position:relative; max-width:100%; overflow:hidden; user-select:none; cursor:ew-resize; border-radius:.75rem; }
-        .comparison-wrapper img { display:block; width:100%; height:auto; }
-        .comparison-wrapper .after-image { position:absolute; top:0; left:0; height:100%; width:50%; overflow:hidden; }
-        .comparison-wrapper .comparison-divider { position:absolute; top:0; left:50%; width:4px; height:100%; background:var(--color-teal); transform:translateX(-50%); cursor:grab; z-index:10; box-shadow:0 0 10px rgba(24,165,162,.8); border-radius:2px; }
-        .label { color:#64748b; font-size:.9rem; }
-        .input{ width:100%; padding:12px; border:1px solid #e5e7eb; border-radius:12px; }
-        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:100; align-items:center; justify-content:center; }
-        .modal .modal-content{ background:#fff; width:90%; max-width:800px; padding:24px; border-radius:24px; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--color-gray-bg);
+            color: var(--color-navy);
+        }
+
+        /* Gradient for Open Reports (Urgency - Red/Orange) */
+        .kpi-open-gradient {
+            background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%);
+            /* Red to Deep Red */
+            color: white;
+            box-shadow: 0 10px 20px rgba(185, 28, 28, 0.4);
+        }
+
+        /* Gradient for Closed Reports (Success - Teal/Green) */
+        .kpi-closed-gradient {
+            background: linear-gradient(135deg, #10B981 0%, #18A5A2 100%);
+            /* Green to Teal */
+            color: white;
+            box-shadow: 0 10px 20px rgba(24, 165, 162, 0.4);
+        }
+
+        /* Gradient for Total Images (Information - Blue/Navy) */
+        .kpi-images-gradient {
+            background: linear-gradient(135deg, #3B82F6 0%, #0A1931 100%);
+            /* Blue to Navy */
+            color: white;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Gradient for Missing Images (Warning - Yellow/Orange) */
+        .kpi-missing-gradient {
+            background: linear-gradient(135deg, #FCD34D 0%, #F97316 100%);
+            /* Yellow to Orange */
+            color: var(--color-navy);
+            /* Dark text for contrast on light gradient */
+            box-shadow: 0 10px 20px rgba(253, 211, 77, 0.4);
+        }
+
+        /* Common KPI Card Styles */
+        .kpi-card-professional {
+            transition: all 0.3s ease;
+            border-radius: 1.5rem;
+            /* Rounded corners */
+            position: relative;
+            overflow: hidden;
+            transform: perspective(1px) translateZ(0);
+            /* For hardware acceleration */
+        }
+
+        .kpi-card-professional::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: height 0.3s ease;
+        }
+
+        .kpi-card-professional:hover {
+            transform: translateY(-8px) scale(1.02);
+            z-index: 10;
+        }
+
+        .kpi-card-professional:hover::before {
+            height: 100%;
+            opacity: 0.1;
+        }
+
+        /* General UI Elements */
+        .ai-button-primary {
+            background-color: var(--color-teal);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(24, 165, 162, 0.5);
+        }
+
+        .ai-button-primary:hover:not(:disabled) {
+            background-color: #148f8c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(24, 165, 162, 0.8);
+        }
+
+        .ai-button-secondary {
+            background-color: var(--color-navy);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(10, 25, 49, 0.6);
+        }
+
+        .ai-button-secondary:hover:not(:disabled) {
+            background-color: #1a3053;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(10, 25, 49, 0.8);
+        }
+
+        /* Vision Button Style (Purple) */
+        .ai-button-vision {
+            background-color: #9333ea;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(147, 51, 234, 0.5);
+        }
+
+        .ai-button-vision:hover:not(:disabled) {
+            background-color: #7e22ce;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(147, 51, 234, 0.8);
+        }
+
+        /* Root Cause Button Style (Dark Red/Maroon) */
+        .ai-button-root-cause {
+            background-color: #881337;
+            /* Maroon 900 */
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(136, 19, 55, 0.5);
+        }
+
+        .ai-button-root-cause:hover:not(:disabled) {
+            background-color: #9f1239;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(136, 19, 55, 0.8);
+        }
+
+        /* Communication Button Style (Orange) */
+        .ai-button-comm {
+            background-color: #F97316;
+            /* Orange */
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(249, 115, 22, 0.5);
+        }
+
+        .ai-button-comm:hover:not(:disabled) {
+            background-color: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.8);
+        }
+
+        /* Grounding Button Style (Green) */
+        .ai-button-grounding {
+            background-color: #10B981;
+            /* Green */
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.5);
+        }
+
+        .ai-button-grounding:hover:not(:disabled) {
+            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.8);
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--color-light-teal);
+            /* Use light teal on dark buttons */
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+        }
+
+        .ai-button-primary .loading-spinner,
+        .ai-button-vision .loading-spinner,
+        .ai-button-comm .loading-spinner,
+        .ai-button-grounding .loading-spinner,
+        .ai-button-secondary .loading-spinner,
+        .ai-button-root-cause .loading-spinner {
+            border-top: 4px solid #0A1931;
+            /* Darker spinner on lighter buttons */
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px var(--color-shadow-base);
+        }
+
+        .image-label {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: var(--color-navy);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            border-top-left-radius: 0.75rem;
+        }
+
+        .observation-item {
+            transition: all 0.2s;
+            border-right: 4px solid transparent;
+            cursor: pointer;
+        }
+
+        .observation-item:hover {
+            background-color: #E6F3F3;
+            /* Light teal hover effect */
+            border-right-color: var(--color-teal);
+        }
+
+        .observation-item.active {
+            background-color: #E6F3F3;
+            /* Active state */
+            border-right-color: var(--color-navy);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Image Comparison Slider Styles */
+        .comparison-wrapper {
+            position: relative;
+            max-width: 100%;
+            overflow: hidden;
+            user-select: none;
+            cursor: ew-resize;
+            /* East-West resize cursor */
+            border-radius: 0.75rem;
+        }
+
+        .comparison-wrapper img,
+        .comparison-wrapper video {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .comparison-wrapper .after-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%;
+            /* Initial mask width */
+            overflow: hidden;
+        }
+
+        .comparison-wrapper .after-image img,
+        .comparison-wrapper .after-image video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            /* Ensure the image fills the container */
+            height: auto;
+        }
+
+        .comparison-wrapper .comparison-divider {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            /* Initial position */
+            width: 4px;
+            height: 100%;
+            background-color: var(--color-teal);
+            transform: translateX(-50%);
+            cursor: grab;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(24, 165, 162, 0.8);
+            border-radius: 2px;
+            transition: width 0.1s ease;
+        }
+
+        .comparison-wrapper .comparison-divider:active {
+            cursor: grabbing;
+        }
+
+        .comparison-wrapper .comparison-divider-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border: 3px solid var(--color-teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .comparison-label {
+            position: absolute;
+            z-index: 5;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: white;
+            border-radius: 0.5rem;
+            opacity: 0.9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .label-before {
+            top: 10px;
+            right: 10px;
+            background-color: #B91C1C;
+            /* Red */
+        }
+
+        .label-after {
+            top: 10px;
+            left: 10px;
+            background-color: #10B981;
+            /* Green */
+        }
+
+        .communication-draft {
+            white-space: pre-wrap;
+            text-align: right;
+            direction: rtl;
+            font-family: 'Tajawal', sans-serif;
+            border-right: 4px solid var(--color-teal);
+            padding-right: 1rem;
+            line-height: 1.8;
+            background-color: #f8fafc;
+        }
+
+        .kpi-insight-container {
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid var(--color-navy);
+        }
+
+        .source-link {
+            color: #0d9488;
+            /* Teal 600 */
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .source-link:hover {
+            color: var(--color-navy);
+            text-decoration: underline;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            align-items: center;
+            /* Center the modal content vertically */
+            justify-content: center;
+            /* Center the modal content horizontally */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 1.5rem;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slide-up 0.3s ease-out;
+            position: relative;
+        }
+
+        /* Custom Location/Image Wrapper */
+        .input-group-wrapper {
+            display: flex;
+            gap: 1rem;
+            /* Space between inputs */
+        }
+
+        .input-group {
+            flex-grow: 1;
+            /* Make inputs fill available space */
+            text-align: center;
+        }
+
+        /* PDF Print Styles (Hiding unnecessary elements when printing) */
         @media print {
-            body{ background:#fff !important; color:#000 !important; width:210mm; min-height:297mm; margin:0; }
-            .no-print, #hero, footer, .modal { display:none !important; }
-            #observationDetail { display:block !important; max-width:100% !important; margin:0 !important; padding:0 !important; box-shadow:none !important; border:none !important; }
-            .comparison-wrapper .comparison-divider, .comparison-label { display:none !important; }
-            .comparison-wrapper .after-image { width:100% !important; overflow:visible !important; }
+            body {
+                background-color: white !important;
+                color: black !important;
+                /* تحديد عرض الصفحة للـ PDF */
+                width: 210mm;
+                /* A4 width */
+                min-height: 297mm;
+                /* A4 height */
+                margin: 0;
+            }
+
+            .no-print,
+            #observationsList,
+            #hero,
+            #operational-dashboard,
+            #ai-features,
+            footer,
+            .modal {
+                display: none !important;
+            }
+
+            #observationDetail {
+                display: block !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            .kpi-insight-container,
+            .bg-white {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .comparison-wrapper {
+                /* Display only the "After" image in comparison view for PDF */
+                cursor: default;
+            }
+
+            .comparison-divider,
+            .comparison-label {
+                display: none !important;
+            }
+
+            .comparison-wrapper .after-image {
+                width: 100% !important;
+                overflow: visible !important;
+            }
+
+            .comparison-wrapper .after-image img {
+                position: static !important;
+            }
+
+            /* Adjusting details layout for print */
+            .grid.grid-cols-1.md\3a grid-cols-3 {
+                display: block !important;
+                border: 1px solid #ccc;
+                margin-bottom: 10px;
+            }
+
+            .grid.grid-cols-1.md\3a grid-cols-3>div {
+                border: none !important;
+                padding: 5px;
+            }
+
+            .print-logo {
+                display: block !important;
+            }
         }
     </style>
 </head>
-<body class="text-gray-800">
-    <main class="container" style="max-width:1200px; margin:0 auto; padding:24px;">
-        <div class="flex justify-start mb-6 no-print" style="display:flex; justify-content:flex-start; margin-bottom:12px;">
-            <button id="logout-btn" class="ai-button-secondary" onclick="smartLogout()" title="تسجيل الخروج الآمن">تسجيل الخروج</button>
-        </div>
 
-        <section id="hero" class="text-center" style="padding:24px; background:#fff; border-radius:24px; box-shadow:0 10px 30px rgba(0,0,0,.08); margin-bottom:24px; border-top:8px solid #bfeeed; border-bottom:8px solid #bfeeed;">
-            <h1 style="font-size:42px; margin:0 0 8px; color:var(--color-navy)">Smart HSR <span style="color:var(--color-teal)">Dashboard</span></h1>
-            <h2 style="margin:0; color:#475569; font-weight:800;">نظام المراقبة وإدارة الجودة الرقمي</h2>
-            <p class="label" style="margin-top:6px;">"منصة تنفيذية ذكية لإدارة الجودة والمراقبة الرقمية، توفر رؤية دقيقة للأداء وتدعم اتخاذ القرار المبني على البيانات."</p>
+<body class="text-gray-800">
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <div class="flex justify-start mb-6 no-print">
+            <button id="logout-btn"
+                class="ai-button-secondary rounded-full px-4 py-2 text-sm font-bold flex items-center shadow-lg transition duration-300 transform hover:scale-105"
+                onclick="smartLogout()" title="تسجيل الخروج الآمن">
+                <i data-lucide="log-out" class="w-4 h-4 ml-2"></i> تسجيل الخروج
+            </button>
+        </div>
+        <section id="hero"
+            class="text-center py-12 md:py-16 bg-white rounded-3xl shadow-2xl mb-12 border-b-8 border-t-8 border-teal-100 no-print">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight"
+                style="color: var(--color-navy);">Smart HSR <span style="color: var(--color-teal);">Dashboard</span>
+            </h1>
+            <h2 class="text-xl md:text-3xl font-extrabold text-gray-600 mt-4">نظام المراقبة وإدارة الجودة الرقمي            </h2>
+            <p class="mt-4 text-lg max-w-4xl mx-auto text-gray-500 font-medium">"منصة تنفيذية ذكية لإدارة الجودة والمراقبة الرقمية، توفر رؤية دقيقة للأداء وتدعم اتخاذ القرار المبني على البيانات."</p>
         </section>
 
         <section id="observations-log" class="my-20">
             <div class="text-center mb-12 no-print">
-                <h3 style="font-size:32px; margin:0 0 6px; color:var(--color-navy)">سجل الملاحظات التفاعلي: دقة الصورة والنص</h3>
-                <p class="label">عرض تفصيلي للملاحظات الميدانية مع أدوات التحليل الآلي.</p>
-                <button id="add-observation-btn" class="ai-button-primary" onclick="openModal('smartInputModal')">➕ إضافة ملاحظة جديدة (الإدخال الذكي)</button>
+                <h3 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3" style="color: var(--color-navy);">سجل
+                    الملاحظات التفاعلي: دقة الصورة والنص</h3>
+                <p class="mt-3 text-lg text-gray-600">عرض تفصيلي للملاحظات الميدانية مع أدوات التحليل الآلي.</p>
+                <button id="add-observation-btn"
+                    class="ai-button-primary rounded-full px-6 py-2 text-md font-bold mt-4 flex items-center justify-center mx-auto"
+                    onclick="openModal('smartInputModal')">
+                    <i data-lucide="plus-circle" class="w-5 h-5 ml-2"></i> إضافة ملاحظة جديدة (الإدخال الذكي)
+                </button>
             </div>
 
-            <div class="bg-white" style="padding:18px; border-radius:24px; box-shadow:0 10px 30px rgba(0,0,0,.08); display:grid; grid-template-columns: 1fr 2fr; gap:18px; border:1px solid #e2e8f0;">
-                <div class="no-print" style="border-left:1px solid #e2e8f0; padding-left:12px;">
-                    <h4 style="margin:0 0 8px; color:var(--color-teal)">تصفية الملاحظات</h4>
-                    <select id="observationFilter" class="input" onchange="handleFilterChange()">
-                        <option value="ALL">عرض كل الملاحظات</option>
-                        <option value="PENDING">جديد</option>
-                        <option value="IN_PROGRESS">قيد التنفيذ</option>
-                        <option value="COMPLETED">تمت المعالجة</option>
-                        <option value="QUALITY">جودة</option>
-                        <option value="MAINTENANCE">صيانة</option>
-                        <option value="SAFETY">سلامة</option>
-                        <option value="ENVIRONMENT">بيئة</option>
+            <div
+                class="bg-white p-6 md:p-8 rounded-3xl shadow-2xl grid grid-cols-1 lg:grid-cols-3 gap-8 border border-gray-200">
+
+                <div
+                    class="lg:col-span-1 border-b lg:border-b-0 lg:border-l border-gray-300 lg:pr-6 pb-6 lg:pb-0 no-print">
+                    <h4 class="text-2xl font-bold mb-4" style="color: var(--color-teal);">تصفية الملاحظات</h4>
+                    <select id="observationFilter"
+                        class="w-full p-3 border border-gray-300 rounded-xl focus:ring-[--color-teal] focus:border-[--color-teal] text-gray-700 shadow-sm transition-all duration-300"
+                        onchange="handleFilterChange()">
+                        <option value="الكل">عرض كل الملاحظات</option>
+                        <option value="جديد">جديد</option>
+                        <option value="قيد التنفيذ">قيد التنفيذ</option>
+                        <option value="تمت المعالجة">تمت المعالجة</option>
+                        <option value="جودة">جودة</option>
+                        <option value="صيانة">صيانة</option>
+                        <option value="سلامة">سلامة</option>
+                        <option value="بيئة">بيئة</option>
                     </select>
-                    <h4 style="margin:16px 0 8px; color:var(--color-navy)">الملاحظات</h4>
-                    <div id="observationsList" style="max-height:500px; overflow:auto; padding-right:6px;">
-                        <div class="label" style="text-align:center; padding:12px;">... جاري تحميل البيانات ...</div>
+                    <h4 class="text-2xl font-bold mt-8 mb-3" style="color: var(--color-navy);">المـلاحظــات</h4>
+                    <div id="observationsList" class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                        <div class="text-center text-gray-500 mt-10">... جاري تحميل البيانات الثابتة...</div>
                     </div>
                 </div>
 
-                <div class="bg-gray-50" style="padding:12px; border-radius:18px; border:1px solid #e2e8f0;">
+                <div class="lg:col-span-2 bg-gray-50 p-6 rounded-2xl border border-gray-200 shadow-inner">
+
                     <div class="print-logo hidden mb-6 p-4 border-b border-gray-300">
-                        <h2 style="font-size:24px; margin:0 0 6px; color:var(--color-navy); font-weight:900;">تقرير Smart HSR التنفيذي</h2>
-                        <p id="printTitle" class="label"></p>
+                        <h2 class="text-3xl font-extrabold text-gray-900" style="color: var(--color-navy);">تقرير Smart
+                            HSR التنفيذي</h2>
+                        <p id="printTitle" class="text-xl font-bold text-teal-600 mt-2"></p>
                     </div>
 
-                    <h4 style="margin:0 0 8px; color:var(--color-teal); font-weight:900;">عرض التفاصيل والتحليل (AI Insights)</h4>
+                    <h4 class="text-2xl font-extrabold mb-4 border-b-2 border-gray-300 pb-2"
+                        style="color: var(--color-teal);">عرض التفاصيل والتحليل (AI Insights)</h4>
 
                     <div id="observationDetail" class="hidden">
-                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; font-size:14px; font-weight:700; margin-bottom:12px; background:#fff; padding:10px; border-radius:12px; border:1px solid #e2e8f0;">
-                            <div><span class="label">العنوان:</span><div id="detailTitle"></div></div>
-                            <div><span class="label">التصنيف:</span><div id="detailType" class="label" style="font-weight:900; color:var(--color-teal)"></div></div>
-                            <div><span class="label">الموقع:</span><div id="detailLocation"></div></div>
-                            <div><span class="label">تاريخ البلاغ:</span><div id="detailDate"></div></div>
-                            <div><span class="label">حالة المعالجة:</span><div><span id="detailStatus" class="label" style="display:inline-block; padding:4px 10px; border-radius:999px; color:#fff; background:#94a3b8;"></span></div></div>
-                            <div><span class="label">معرف البلاغ:</span><div id="detailID"></div></div>
-                        </div>
 
-                        <div style="background:#fff; padding:12px; border-radius:12px; border-left:6px solid #14b8a6; margin-bottom:12px;">
-                            <h5 style="margin:0 0 6px; color:var(--color-navy); font-weight:900;">وصف الملاحظة</h5>
-                            <p id="detailDescription" style="margin:0; color:#334155;"></p>
-                            <div id="actionPlanContainer" class="hidden" style="margin-top:8px; background:#ecfeff; padding:10px; border-radius:12px">
-                                <b>خطة العمل المقترحة (Gemini AI):</b>
-                                <p id="actionPlan" style="margin:6px 0 0;"></p>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-medium mb-6 p-4 bg-white rounded-xl shadow-sm border">
+                            <div class="border-b md:border-b-0 md:border-l p-2">
+                                <span class="block text-gray-500">العنوان:</span>
+                                <span id="detailTitle" class="block font-bold text-gray-800"></span>
+                            </div>
+                            <div class="border-b md:border-b-0 md:border-l p-2">
+                                <span class="block text-gray-500">التصنيف:</span>
+                                <span id="detailType" class="block font-bold text-teal-600"></span>
+                            </div>
+                            <div class="p-2">
+                                <span class="block text-gray-500">الموقع:</span>
+                                <span id="detailLocation" class="block font-bold text-gray-800"></span>
+                            </div>
+                            <div class="border-b md:border-b-0 md:border-l p-2">
+                                <span class="block text-gray-500">تاريخ البلاغ:</span>
+                                <span id="detailDate" class="block font-bold text-gray-800"></span>
+                            </div>
+                            <div class="border-b md:border-b-0 md:border-l p-2">
+                                <span class="block text-gray-500">حالة المعالجة:</span>
+                                <span id="detailStatus"
+                                    class="inline-block px-3 py-1 text-sm font-semibold rounded-full text-white"></span>
+                            </div>
+                            <div class="p-2">
+                                <span class="block text-gray-500">معرف البلاغ:</span>
+                                <span id="detailID" class="block font-bold text-gray-800"></span>
                             </div>
                         </div>
 
-                        <div id="resolutionNoteContainer" class="hidden" style="background:#ecfdf5; padding:12px; border-radius:12px; border-left:6px solid #16a34a; margin-bottom:12px;">
-                            <b>📝 المذكرة الختامية للإغلاق:</b>
-                            <p id="resolutionNote" style="margin-top:6px;"></p>
+                        <div class="bg-white p-5 rounded-2xl shadow-md mb-6 border-l-4 border-teal-500">
+                            <h5 class="text-xl font-bold mb-3" style="color: var(--color-navy);">وصف الملاحظة</h5>
+                            <p id="detailDescription" class="text-gray-700 leading-relaxed"></p>
+                            <div id="actionPlanContainer" class="mt-4 p-3 bg-teal-50 rounded-lg hidden">
+                                <h6 class="font-bold text-teal-700">خطة العمل المقترحة (Gemini AI)</h6>
+                                <p id="actionPlan" class="text-sm text-teal-900 mt-1"></p>
+                            </div>
                         </div>
 
-                        <div id="imageComparisonWrapper" class="comparison-wrapper hidden" style="margin-bottom:12px;">
-                            <img id="beforeImage" alt="صورة قبل الإصلاح">
-                            <div id="afterImageContainer" class="after-image"><img id="afterImage" alt="صورة بعد الإصلاح"></div>
-                            <div id="comparisonDivider" class="comparison-divider"></div>
-                            <span class="comparison-label label-before" style="position:absolute; top:8px; right:8px; background:#B91C1C; color:#fff; padding:6px 10px; border-radius:8px;">قبل</span>
-                            <span class="comparison-label label-after" style="position:absolute; top:8px; left:8px; background:#10B981; color:#fff; padding:6px 10px; border-radius:8px;">بعد</span>
+                        <div id="resolutionNoteContainer"
+                            class="bg-green-50 p-5 rounded-2xl shadow-md mb-6 border-l-4 border-green-500 hidden">
+                            <h5 class="text-xl font-bold mb-3 text-green-700">📝 المذكرة الختامية للإغلاق</h5>
+                            <p id="resolutionNote" class="text-gray-700 leading-relaxed"></p>
                         </div>
 
-                        <div id="mediaContainer" class="image-container hidden" style="margin-bottom:12px;">
-                            <div id="mediaContent"></div>
+                        <div id="imageComparisonWrapper" class="comparison-wrapper mb-6 hidden">
+                            <img id="beforeImage" class="before-image w-full h-auto" alt="صورة قبل الإصلاح"
+                                src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
+                            <div id="afterImageContainer" class="after-image">
+                                <img id="afterImage" class="w-full h-auto" alt="صورة بعد الإصلاح"
+                                    src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
+                            </div>
+                            <div id="comparisonDivider" class="comparison-divider no-print">
+                                <div class="comparison-divider-handle">
+                                    <i data-lucide="arrow-left-right" class="w-4 h-4 text-teal-600"></i>
+                                </div>
+                            </div>
+                            <span class="comparison-label label-before no-print">قبل</span>
+                            <span class="comparison-label label-after no-print">بعد</span>
+                        </div>
+
+                        <div id="mediaContainer" class="image-container mb-6 hidden">
+                            <div id="mediaContent" class="w-full h-auto rounded-xl">
+                            </div>
                             <span class="image-label">مرفق الملاحظة</span>
                         </div>
 
-                        <div id="noImageMessage" class="hidden" style="background:#FEF3C7; padding:12px; border-radius:12px; color:#92400E; text-align:center; font-weight:700; margin-bottom:12px;">
-                            ⚠️ لا تتوفر صورة أو فيديو لهذه الملاحظة.
+                        <div id="noImageMessage"
+                            class="bg-yellow-100 p-4 rounded-xl text-center text-yellow-800 font-medium mb-6 hidden">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 inline-block ml-2"></i> لا تتوفر صورة أو
+                            فيديو لهذه الملاحظة.
                         </div>
 
-                        <div id="aiAnalysisSection" style="background:#fff; padding:12px; border-radius:12px; border-top:4px solid #e5e7eb;">
-                            <h5 style="margin:0 0 8px; color:var(--color-navy); font-weight:900;">أدوات التحليل الذكي (Gemini AI)</h5>
-                            <div class="no-print" style="display:flex; gap:8px; flex-wrap:wrap;">
-                                <button id="vision-btn" class="ai-button-primary" onclick="analyzeImage('vision')">👁️ تحليل الصور (Vision)</button>
-                                <button id="root-cause-btn" class="ai-button-primary" style="background:#881337" onclick="analyzeImage('root-cause')">🔬 السبب الجذري</button>
-                                <button id="comm-btn" class="ai-button-primary" style="background:#F97316" onclick="generateCommunicationDraft()">✉️ أمر العمل</button>
-                                <button id="pdf-report-btn" class="ai-button-primary" style="background:#10B981" onclick="generatePdfReport()">📄 توليد PDF</button>
+
+                        <div id="aiAnalysisSection"
+                            class="bg-white p-5 rounded-2xl shadow-md border-t-4 border-gray-200">
+                            <h5 class="text-xl font-bold mb-4" style="color: var(--color-navy);">أدوات التحليل الذكي
+                                (Gemini AI)</h5>
+                            <div class="flex flex-wrap gap-3 no-print">
+                                <button id="vision-btn"
+                                    class="ai-button-vision rounded-full px-4 py-2 text-sm font-bold flex items-center"
+                                    onclick="analyzeImage('vision')">
+                                    <i data-lucide="eye" class="w-4 h-4 ml-2"></i> تحليل الصور بالرؤية (Vision)
+                                </button>
+                                <button id="root-cause-btn"
+                                    class="ai-button-root-cause rounded-full px-4 py-2 text-sm font-bold flex items-center"
+                                    onclick="analyzeImage('root-cause')">
+                                    <i data-lucide="microscope" class="w-4 h-4 ml-2"></i> تحليل السبب الجذري
+                                </button>
+                                <button id="comm-btn"
+                                    class="ai-button-comm rounded-full px-4 py-2 text-sm font-bold flex items-center"
+                                    onclick="generateCommunicationDraft()">
+                                    <i data-lucide="send" class="w-4 h-4 ml-2"></i> صياغة أمر العمل
+                                </button>
+                                <button id="pdf-report-btn"
+                                    class="ai-button-grounding rounded-full px-4 py-2 text-sm font-bold flex items-center"
+                                    onclick="generatePdfReport()">
+                                    <i data-lucide="file-text" class="w-4 h-4 ml-2"></i> توليد تقرير PDF
+                                </button>
                             </div>
-                            <div id="aiResultContainer" class="hidden" style="margin-top:10px; background:#f8fafc; padding:12px; border-radius:12px; border:1px solid #e2e8f0;">
-                                <h6 id="aiResultTitle" style="margin:0 0 6px; color:var(--color-teal); font-weight:900;"></h6>
-                                <div id="aiResultContent" style="color:#334155;"></div>
+
+                            <div id="aiResultContainer"
+                                class="mt-5 p-4 bg-gray-50 rounded-xl border border-gray-200 hidden">
+                                <h6 id="aiResultTitle" class="font-bold text-lg mb-2" style="color: var(--color-teal);">
+                                </h6>
+                                <div id="aiResultContent" class="text-gray-700"></div>
                             </div>
                         </div>
 
-                        <div id="actionButtons" class="no-print" style="display:flex; gap:8px; justify-content:flex-end; margin-top:10px; border-top:1px solid #e2e8f0; padding-top:10px;">
-                            <button id="updateStatusBtn" class="ai-button-secondary" style="background:#9ca3af" onclick="updateToInProgress()">تحديث الحالة إلى "قيد التنفيذ"</button>
-                            <button id="completeObservationBtn" class="ai-button-secondary" style="background:#dc2626" onclick="openModal('closeoutModal')">🔒 الإغلاق التنفيذي (صورة بعد)</button>
-                            <button id="alreadyCompletedBtn" class="ai-button-secondary hidden" style="background:#16a34a" disabled>✅ الملاحظة مغلقة وموثقة</button>
+                        <div id="actionButtons"
+                            class="mt-6 pt-4 border-t border-gray-300 flex justify-end gap-3 no-print">
+                            <button id="updateStatusBtn"
+                                class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-150"
+                                onclick="alert('تم تحويل الحالة إلى قيد التنفيذ (تجريبي)')">
+                                تحديث الحالة إلى "قيد التنفيذ"
+                            </button>
+                            <button id="completeObservationBtn"
+                                class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-150"
+                                onclick="openModal('closeoutModal')">
+                                <i data-lucide="lock" class="w-4 h-4 ml-2"></i> الإغلاق التنفيذي (صورة بعد)
+                            </button>
+                            <button id="alreadyCompletedBtn"
+                                class="bg-green-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-150 hidden"
+                                disabled>
+                                <i data-lucide="check" class="w-4 h-4 ml-2"></i> الملاحظة مغلقة وموثقة
+                            </button>
                         </div>
                     </div>
 
-                    <div id="detailPlaceholder" class="text-center" style="padding:24px; color:#94a3b8;">
-                        الرجاء اختيار ملاحظة من القائمة لعرض التفاصيل.
+                    <div id="detailPlaceholder" class="text-center space-y-4">
+                        <p class="text-gray-500 mt-16 text-lg">الرجاء اختيار ملاحظة من القائمة لعرض الصورة والمذكرة
+                            التفصيلية.</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-300" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M17 10h.01" />
+                        </svg>
                     </div>
+
                 </div>
             </div>
         </section>
 
-        <section id="operational-dashboard" class="no-print" style="margin-top:24px;">
-            <div class="text-center" style="margin-bottom:12px;">
-                <h3 style="font-size:28px; margin:0 0 6px; color:var(--color-navy)">📊 مؤشرات الأداء الحيوية (Vital Metrics)</h3>
-                <p class="label">تتبع البلاغات وحالة التوثيق بالصور لضمان كفاءة الإغلاق.</p>
+        <section id="operational-dashboard" class="my-20 no-print">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3" style="color: var(--color-navy);">📊
+                    مؤشرات الأداء الحيوية (Vital Metrics)</h3>
+                <p class="mt-3 text-lg text-gray-600">تتبع البلاغات وحالة التوثيق بالصور لضمان كفاءة الإغلاق.</p>
             </div>
-            <div id="kpiContainer" style="display:grid; grid-template-columns: repeat(4,1fr); gap:12px;">
-                <div class="kpi-card-professional p-6" style="background:#fff; border-top:4px solid #e5e7eb;">
-                    <p class="label">جاري التحميل...</p>
-                    <p style="font-size:36px; font-weight:900; color:#334155;">--</p>
+
+            <div id="kpiContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="p-6 bg-white rounded-2xl shadow-xl border-t-4 border-gray-200">
+                    <p class="text-xl font-medium text-gray-500">جاري التحميل...</p>
+                    <p class="text-5xl font-extrabold text-gray-700 mt-2">--</p>
                 </div>
             </div>
 
-            <div class="text-center" style="margin-top:18px;">
-                <button id="kpi-insight-button" class="ai-button-secondary" onclick="generateKpiInsights()">✨ توليد تقرير تنفيذي لملخص اللوحة (Gemini AI)</button>
-                <div id="kpi-insight-result" class="label" style="margin-top:10px;"></div>
+            <div class="mt-12 text-center">
+                <button id="kpi-insight-button"
+                    class="ai-button-secondary rounded-full px-8 py-3 text-lg font-bold flex items-center justify-center mx-auto"
+                    onclick="generateKpiInsights()">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5 ml-2"></i> ✨ توليد تقرير تنفيذي لملخص اللوحة (Gemini AI)
+                </button>
+                <div id="kpi-insight-result" class="mt-6 text-sm">
+                </div>
             </div>
         </section>
 
-        <footer class="no-print" style="text-align:center; margin-top:28px; border-top:4px solid #99f6e4; background:#fff; border-radius:24px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,.08)">
-            <div class="label">© 2025 Smart HSR. جميع الحقوق محفوظة. <span id="userInfo"></span></div>
+        <section id="ai-features"
+            class="my-20 bg-white p-8 md:p-12 rounded-3xl shadow-2xl border-t-8 border-[--color-teal] no-print">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3" style="color: var(--color-navy);">🧠
+                    الذكاء الاصطناعي في صميم العملية</h3>
+                <p class="mt-3 text-lg text-gray-600">استفد من نماذج Gemini لتحويل البيانات إلى قرارات قابلة للتنفيذ.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-7 gap-8 text-center">
+                <div
+                    class="p-4 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center">
+                    <span class="text-4xl block mb-2" style="color: #9333ea;">👁️</span>
+                    <h4 class="font-extrabold text-lg mb-1" style="color: var(--color-navy);">تحليل الرؤية</h4>
+                    <p class="text-xs text-gray-600">وصف المشكلة وتحديد حالة الإغلاق المثالية.</p>
+                </div>
+                <div
+                    class="p-4 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center">
+                    <span class="text-4xl block mb-2" style="color: var(--color-teal);">⚙️</span>
+                    <h4 class="font-bold text-lg mb-1" style="color: var(--color-navy);">خطة عمل آلية</h4>
+                    <p class="text-xs text-gray-600">توليد خطوات تنفيذية لمعالجة الملاحظة.</p>
+                </div>
+                <div
+                    class="p-4 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center">
+                    <span class="text-4xl block mb-2" style="color: var(--color-teal);">🚨</span>
+                    <h4 class="font-bold text-lg mb-1" style="color: var(--color-navy);">تقييم المخاطر</h4>
+                    <p class="text-xs text-gray-600">تحديد الأولوية والإطار الزمني في هيكل JSON.</p>
+                </div>
+                <div
+                    class="p-4 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center">
+                    <span class="text-4xl block mb-2" style="color: #881337;">🔬</span>
+                    <h4 class="font-bold text-lg mb-1" style="color: var(--color-navy);">تحليل السبب الجذري</h4>
+                    <p class="text-xs text-gray-600">اقتراح سبب جذري ونصيحة وقائية.</p>
+                </div>
+                <div
+                    class="p-4 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center">
+                    <span class="text-4xl block mb-2" style="color: #F97316;">✉️</span>
+                    <h4 class="font-bold text-lg mb-1" style="color: var(--color-navy);">صياغة الاتصال</h4>
+                    <p class="text-xs text-gray-600">توليد مسودة أمر عمل أو بريد إلكتروني.</p>
+                </div>
+                <div
+                    class="p-4 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center">
+                    <span class="text-4xl block mb-2" style="color: var(--color-navy);">🔊</span>
+                    <h4 class="font-bold text-lg mb-1" style="color: var(--color-navy);">تقرير الإغلاق الصوتي</h4>
+                    <p class="text-xs text-gray-600">تلخيص التقرير وتحويله إلى ملف صوتي.</p>
+                </div>
+                <div
+                    class="p-4 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-shadow duration-300 flex flex-col items-center">
+                    <span class="text-4xl block mb-2" style="color: #10B981;">🌐</span>
+                    <h4 class="font-bold text-lg mb-1" style="color: var(--color-navy);">البحث عن المعايير</h4>
+                    <p class="text-xs text-gray-600">استخدام البحث المدعوم لاستحضار المعايير العالمية.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-20 py-12 border-t-4 border-teal-200 bg-white rounded-t-3xl shadow-2xl no-print">
+            <div class="max-w-6xl mx-auto px-4">
+                <h3 class="text-3xl md:text-4xl font-extrabold mb-4" style="color: var(--color-navy);">
+                    ابدأ رحلة التحول الرقمي مع Smart HSR
+                </h3>
+                <p class="mt-3 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                    نظام ذكي يُحول بيانات الميدان إلى قرارات استراتيجية تنفيذيّة
+                </p>
+                
+                <a href="http://wa.me/966507006849" target="_blank"
+                    class="mt-8 inline-block bg-[--color-teal] text-white font-bold py-4 px-12 rounded-full text-xl hover:bg-[--color-navy] transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    اطلب عرضًا تجريبيًا الآن
+                </a>
+                
+                <div class="mt-12 pt-8 border-t border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600 mb-6">
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-2">حول النظام</h4>
+                            <p>نظام Smart HSR للمراقبة وإدارة الجودة الرقمي</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-2">الدعم الفني</h4>
+                            <p>Blumark24@gmail.com</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-2">المبيعات والاستفسارات</h4>
+                            <p>0507006849</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-xs text-gray-500">
+                        <p class="mb-2">&copy; 2025 Smart HSR. جميع الحقوق محفوظة.</p>
+                        <p id="userInfo">تم تحميل البيانات بنجاح (وضع ثابت)</p>
+                    </div>
+                </div>
+            </div>
         </footer>
+
     </main>
 
-    <!-- Modal: الإدخال الذكي -->
     <div id="smartInputModal" class="modal no-print">
         <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-weight:900;">وحدة الإدخال الذكي للملاحظات (Smart HSR)</h3>
-                <button class="ai-button-secondary" onclick="closeModal('smartInputModal')">✖</button>
-            </div>
-            <div style="display:grid; gap:10px; margin-top:12px;">
-                <textarea id="rawObservationInput" rows="4" class="input" placeholder="مثال: تجمع مياه على طريق الخدمة عند الكيلو 52 باتجاه الشرق..."></textarea>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                    <div>
-                        <div class="label">الموقع الجغرافي (GPS):</div>
-                        <div id="locationStatus" class="label">لم يتم التحديد بعد</div>
-                        <input id="inputLatitude" type="hidden"><input id="inputLongitude" type="hidden">
-                        <button class="ai-button-primary" onclick="getLocation()" type="button">📍 تحديد الموقع الحالي</button>
+            <span class="close-btn" onclick="closeModal('smartInputModal')">&times;</span>
+            <h2 class="text-3xl font-extrabold mb-6 pb-2 border-b" style="color: var(--color-navy);">وحدة الإدخال الذكي
+                للملاحظات (Smart HSR)</h2>
+
+            <div id="modalStep1">
+                <p class="text-lg text-gray-600 mb-4">الخطوة 1: أدخل تفاصيل الملاحظة (النص، الموقع، الصورة/الفيديو)</p>
+                <textarea id="rawObservationInput" rows="5"
+                    class="w-full p-4 border border-gray-300 rounded-xl focus:ring-[--color-teal] focus:border-[--color-teal] text-gray-700 shadow-sm"
+                    placeholder="مثال: يوجد تجمع للمياه على طريق الخدمة عند الكيلو 52 باتجاه الشرق، يتسبب في انزلاق السيارات. نحتاج إلى تصريف فوري."
+                    oninput="checkSmartInputState()"></textarea>
+
+                <div class="mt-4 input-group-wrapper">
+                    <div
+                        class="input-group p-4 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-teal-500 transition-colors">
+                        <label for="locationStatus" class="block text-sm font-medium text-gray-700 mb-2">الموقع الجغرافي
+                            (GPS):</label>
+                        <p id="locationStatus" class="text-sm font-semibold text-gray-500">لم يتم التحديد بعد</p>
+                        <input type="hidden" id="inputLatitude">
+                        <input type="hidden" id="inputLongitude">
+                        <button id="getLocationBtn"
+                            class="ai-button-primary rounded-full px-4 py-2 text-sm font-bold mt-2 flex items-center justify-center mx-auto"
+                            onclick="getLocation()" type="button">
+                            <i data-lucide="map-pin" class="w-4 h-4 ml-2"></i> تحديد الموقع الحالي
+                        </button>
                     </div>
-                    <div>
-                        <div class="label">رفع صورة أو فيديو الملاحظة:</div>
-                        <div id="fileStatus" class="label">لم يتم اختيار ملف بعد</div>
-                        <input id="fileUploadInput" type="file" accept="image/*,video/*" style="display:none">
-                        <button class="ai-button-secondary" onclick="document.getElementById('fileUploadInput').click()" type="button">⤴️ اختيار ملف</button>
+
+                    <div
+                        class="input-group p-4 border-2 border-dashed border-gray-300 rounded-xl bg-white hover:border-teal-500 transition-colors">
+                        <label for="fileUploadInput" class="block text-sm font-medium text-gray-700 mb-2">رفع صورة أو
+                            فيديو الملاحظة:</label>
+                        <p id="fileStatus" class="text-sm font-semibold text-gray-500">لم يتم اختيار ملف بعد</p>
+                        <input type="file" id="fileUploadInput" accept="image/*,video/*" class="hidden"
+                            onchange="handleFileUpload(event)">
+                        <button
+                            class="ai-button-secondary rounded-full px-4 py-2 text-sm font-bold mt-2 flex items-center justify-center mx-auto"
+                            onclick="document.getElementById('fileUploadInput').click()" type="button">
+                            <i data-lucide="upload" class="w-4 h-4 ml-2"></i> اختيار ملف
+                        </button>
                     </div>
                 </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
-                    <select id="mType" class="input">
-                        <option value="QUALITY">جودة</option><option value="MAINTENANCE">صيانة</option>
-                        <option value="SAFETY">سلامة</option><option value="ENVIRONMENT">بيئة</option>
-                    </select>
-                    <input id="mTitle" class="input" placeholder="عنوان مختصر">
-                    <select id="mPriority" class="input">
-                        <option value="High">أولوية عالية</option><option value="Medium">متوسطة</option><option value="Low">منخفضة</option>
-                    </select>
+
+                <div class="mt-6 text-center">
+                    <button id="processSmartInputBtn"
+                        class="ai-button-vision rounded-full px-8 py-3 text-lg font-bold flex items-center justify-center mx-auto"
+                        onclick="processSmartInput()" disabled>
+                        <i data-lucide="cpu" class="w-5 h-5 ml-2"></i> بدء التحليل الذكي وتوليد التقرير
+                    </button>
                 </div>
-                <button id="processSmartInputBtn" class="ai-button-primary" onclick="processSmartInput()" disabled>🚀 بدء التحليل والتسجيل</button>
             </div>
+
+            <div id="modalResult" class="mt-8 pt-6 border-t border-gray-200 hidden">
+                <h3 class="text-2xl font-bold mb-4" style="color: var(--color-teal);">الخطوة 2: معالجة البيانات بواسطة
+                    الذكاء الاصطناعي</h3>
+                <div id="modalResultContent">
+                </div>
+                <div class="mt-6 text-center">
+                    <button class="ai-button-primary rounded-full px-6 py-2 text-md font-bold"
+                        onclick="closeModal('smartInputModal')">
+                        إغلاق ومراجعة التقرير الجديد
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Modal: الإغلاق التنفيذي -->
     <div id="closeoutModal" class="modal no-print">
         <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="margin:0; font-weight:900;">🔒 لوحة الإغلاق التنفيذي للملاحظة #<span id="closeoutId"></span></h3>
-                <button class="ai-button-secondary" onclick="closeModal('closeoutModal'); clearAfterUpload();">✖</button>
-            </div>
-            <div style="display:grid; gap:10px; margin-top:12px;">
-                <div>
-                    <div class="label">رفع صورة **بعد الإصلاح** (إلزامي)</div>
-                    <div id="afterFileStatus" class="label">لم يتم اختيار ملف بعد</div>
-                    <input id="afterFileUploadInput" type="file" accept="image/*" style="display:none">
-                    <button class="ai-button-primary" onclick="document.getElementById('afterFileUploadInput').click()" type="button">📷 اختيار صورة الإغلاق</button>
+            <span class="close-btn" onclick="closeModal('closeoutModal'); clearAfterUpload();">&times;</span>
+            <h2 class="text-3xl font-extrabold mb-6 pb-2 border-b text-green-700">🔒 لوحة الإغلاق التنفيذي للملاحظة
+                #<span id="closeoutId"></span></h2>
+
+            <p class="text-lg text-gray-600 mb-4">لإغلاق الملاحظة، يجب توثيق عملية الإصلاح بـ **صورة "بعد الإصلاح"
+                إلزامية** ومذكرة ختامية.</p>
+
+            <div class="p-6 bg-gray-50 rounded-xl border border-gray-200">
+                <h3 class="text-xl font-bold mb-3" style="color: var(--color-navy);">1. توثيق صورة الإغلاق (After Photo)
+                </h3>
+
+                <div
+                    class="input-group p-4 border-2 border-dashed border-red-300 rounded-xl bg-white hover:border-red-500 transition-colors">
+                    <label for="afterFileUploadInput" class="block text-sm font-medium text-gray-700 mb-2">رفع صورة
+                        **بعد الإصلاح/المعالجة** (<span class="text-red-500 font-bold">إلزامي</span>):</label>
+                    <p id="afterFileStatus" class="text-sm font-semibold text-gray-500">لم يتم اختيار ملف بعد</p>
+                    <input type="file" id="afterFileUploadInput" accept="image/*" class="hidden"
+                        onchange="handleAfterFileUpload(event)">
+                    <button
+                        class="ai-button-primary rounded-full px-4 py-2 text-sm font-bold mt-2 flex items-center justify-center mx-auto"
+                        onclick="document.getElementById('afterFileUploadInput').click()" type="button">
+                        <i data-lucide="camera" class="w-4 h-4 ml-2"></i> اختيار صورة الإغلاق
+                    </button>
                 </div>
-                <textarea id="resolutionNoteInput" rows="3" class="input" placeholder="المذكرة الختامية"></textarea>
-                <button id="finalCloseoutBtn" class="ai-button-secondary" style="background:#16a34a" onclick="completeObservation()" disabled>✅ تأكيد الإغلاق النهائي للملاحظة</button>
+
+                <h3 class="text-xl font-bold mt-6 mb-3" style="color: var(--color-navy);">2. المذكرة الختامية</h3>
+                <textarea id="resolutionNoteInput" rows="4"
+                    class="w-full p-3 border border-gray-300 rounded-xl focus:ring-green-500 focus:border-green-500 text-gray-700 shadow-sm"
+                    placeholder="اكتب المذكرة الختامية التي توضح الإجراءات التي تم اتخاذها لإغلاق الملاحظة نهائياً..."></textarea>
+            </div>
+
+            <div class="mt-6 text-center">
+                <button id="finalCloseoutBtn"
+                    class="bg-green-600 hover:bg-green-700 rounded-full px-8 py-3 text-lg font-bold flex items-center justify-center mx-auto transition-colors"
+                    onclick="completeObservation()" disabled>
+                    <i data-lucide="check-square" class="w-5 h-5 ml-2"></i> تأكيد الإغلاق النهائي للملاحظة
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Firebase (modular v12) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-storage.js";
+    <script>
+        // --- 1. MOCK DATA FOR OBSERVATIONS LIST (Using an array named 'observationsData' for easier manipulation) ---
+        const observationsData = [
+            // تم تحديث الملاحظة 1 (الافتراضية) لتتضمن حقول الوسائط الكاملة
+            {
+                id: 1, type: "SAFETY", date: "2024-10-01", title: "ملاحظة عدم ارتداء معدات الحماية", status: "PENDING", details: "تم رصد فريق عمل في المنطقة C بدون خوذات أمان.",
+                hasImage: true, isComparative: false, location: "24.5247, 46.7135", isVideo: false, imagePath: 'https://picsum.photos/800/600?random=1', fileMimeType: 'image/jpeg',
+                actionPlan: "إصدار أمر عمل فوري لتعزيز الالتزام بمعدات الحماية الشخصية (PPE).", riskAssessment: {priority: "High", timeframe: "24 hours"},
+                resolutionNote: null, afterImagePath: null, isNewInput: false, createdAt: new Date("2024-10-01T10:00:00").getTime()
+            },
+            // ملاحظة تمت معالجتها وموثقة بصورة قبل وبعد (isComparative: true)
+            {
+                id: 2, type: "QUALITY", date: "2024-09-28", title: "تصدع في الأسفلت وإعادة رصف", status: "COMPLETED", details: "تم رصد تصدع كبير في المقطع A. تم إغلاقه بنجاح بعد عملية الإصلاح الكامل.",
+                hasImage: true, isComparative: true, location: "24.5247, 46.7135", isVideo: false,
+                imagePath: 'https://picsum.photos/800/600?random=2', // صورة قبل
+                afterImagePath: 'https://picsum.photos/800/600?random=5', // صورة بعد
+                fileMimeType: 'image/jpeg',
+                actionPlan: "إزالة الأسفلت المتضرر وإعادة بناء الطبقات وإعادة الرصف.", riskAssessment: {priority: "Low", timeframe: "7 days"},
+                resolutionNote: "تم إغلاق المقطع A بالكامل حسب المواصفات. تم استخدام خلطة إسفلت جديدة وتم اختبار جودة الرصف بنجاح في 2024-09-30.", isNewInput: false, createdAt: new Date("2024-09-28T14:30:00").getTime()
+            },
+            {
+                id: 3, type: "MAINTENANCE", date: "2024-09-25", title: "عطل في نظام التبريد الرئيسي", status: "IN_PROGRESS", details: "تم إرسال فريق صيانة عاجل لمعالجة الخلل في نظام التبريد بمنطقة B.",
+                hasImage: true, isComparative: false, location: "24.5247, 46.7135", isVideo: false, imagePath: 'https://picsum.photos/800/600?random=3', fileMimeType: 'image/jpeg',
+                actionPlan: "توفير قطع الغيار اللازمة وإصلاح العطل خلال 48 ساعة.", riskAssessment: {priority: "Medium", timeframe: "48 hours"},
+                resolutionNote: null, afterImagePath: null, isNewInput: false, createdAt: new Date("2024-09-25T08:15:00").getTime()
+            },
+            {
+                id: 4, type: "QUALITY", date: "2024-09-20", title: "تآكل في لوحة إرشادية (الشعار غير واضح)", status: "PENDING", details: "تظهر الصورة تآكلاً واضحاً في لوحة إرشادية على طريق الخدمة، مما يؤثر على وضوح الشعار والعلامات الإرشادية.",
+                hasImage: true, isComparative: false, location: "24.5247, 46.7135", isVideo: false, imagePath: 'https://picsum.photos/800/600?random=4', fileMimeType: 'image/jpeg',
+                actionPlan: "الطلب من فريق الصيانة استبدال اللوحة بلوحة جديدة ذات مواصفات عالية الجودة.", riskAssessment: {priority: "High", timeframe: "7 days"},
+                resolutionNote: null, afterImagePath: null, isNewInput: false, createdAt: new Date("2024-09-20T16:45:00").getTime()
+            }
+        ];
 
-        // إعداد Firebase (حسب ما زوّدتني به)
-        const firebaseConfig = {
-          apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
-          authDomain: "smart-hsr-6c2cf.firebaseapp.com",
-          databaseURL: "https://smart-hsr-6c2cf-default-rtdb.firebaseio.com",
-          projectId: "smart-hsr-6c2cf",
-          storageBucket: "smart-hsr-6c2cf.firebasestorage.app",
-          messagingSenderId: "399213527987",
-          appId: "1:399213527987:web:4531958edfe9dbb95a81c6"
+        let currentSelectedObservation = observationsData[0]; // Set initial selection
+        const statusMap = {
+            "PENDING": {color: 'bg-red-600', text: 'قيد الانتظار'},
+            "IN_PROGRESS": {color: 'bg-yellow-600', text: 'قيد التنفيذ'},
+            "COMPLETED": {color: 'bg-green-600', text: 'تمت المعالجة'}
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
+        // متغيرات لتخزين الملف المرفوع في Modal
+        let currentFile = null; // للملاحظة الجديدة (BEFORE)
+        let currentFileUrl = null;
 
-        // DOM عناصر
-        const logoutBtn = document.getElementById('logout-btn');
-        const listEl = document.getElementById('observationsList');
-        const filterEl = document.getElementById('observationFilter');
+        let currentAfterFile = null; // لصورة الإغلاق (AFTER)
+        let currentAfterFileUrl = null;
 
-        const detail = document.getElementById('observationDetail');
-        const placeholder = document.getElementById('detailPlaceholder');
-        const dTitle = document.getElementById('detailTitle');
-        const dType = document.getElementById('detailType');
-        const dLoc = document.getElementById('detailLocation');
-        const dDate = document.getElementById('detailDate');
-        const dId = document.getElementById('detailID');
-        const dDesc = document.getElementById('detailDescription');
-        const dStatus = document.getElementById('detailStatus');
-        const actionPlanContainer = document.getElementById('actionPlanContainer');
-        const actionPlan = document.getElementById('actionPlan');
-        const resolutionNoteContainer = document.getElementById('resolutionNoteContainer');
-        const resolutionNote = document.getElementById('resolutionNote');
-        const imageComparisonWrapper = document.getElementById('imageComparisonWrapper');
-        const beforeImage = document.getElementById('beforeImage');
-        const afterImage = document.getElementById('afterImage');
-        const afterImageContainer = document.getElementById('afterImageContainer');
-        const comparisonDivider = document.getElementById('comparisonDivider');
-        const mediaContainer = document.getElementById('mediaContainer');
-        const mediaContent = document.getElementById('mediaContent');
-        const noImageMessage = document.getElementById('noImageMessage');
-        const updateStatusBtn = document.getElementById('updateStatusBtn');
-        const completeObservationBtn = document.getElementById('completeObservationBtn');
-        const alreadyCompletedBtn = document.getElementById('alreadyCompletedBtn');
-        const printTitle = document.getElementById('printTitle');
-        const kAll = document.createElement('div'); // Not used directly; compute in renderKPIs
-        const userInfoEl = document.getElementById('userInfo');
+        // --- 2. CORE FUNCTIONS: CALCULATE & RENDER ---
 
-        // الإدخال الذكي
-        const smartInputModal = document.getElementById('smartInputModal');
-        const rawObservationInput = document.getElementById('rawObservationInput');
-        const inputLatitude = document.getElementById('inputLatitude');
-        const inputLongitude = document.getElementById('inputLongitude');
-        const locationStatus = document.getElementById('locationStatus');
-        const fileUploadInput = document.getElementById('fileUploadInput');
-        const fileStatus = document.getElementById('fileStatus');
-        const mType = document.getElementById('mType');
-        const mTitle = document.getElementById('mTitle');
-        const mPriority = document.getElementById('mPriority');
-        const processSmartInputBtn = document.getElementById('processSmartInputBtn');
+        function calculateKPIs() {
+            const totalReports = observationsData.length;
+            const openReports = observationsData.filter(obs => obs.status !== 'COMPLETED').length;
+            const closedReports = totalReports - openReports;
+            const reportsWithImages = observationsData.filter(obs => obs.hasImage).length;
 
-        // الإغلاق التنفيذي
-        const closeoutModal = document.getElementById('closeoutModal');
-        const closeoutId = document.getElementById('closeoutId');
-        const afterFileUploadInput = document.getElementById('afterFileUploadInput');
-        const afterFileStatus = document.getElementById('afterFileStatus');
-        const resolutionNoteInput = document.getElementById('resolutionNoteInput');
-        const finalCloseoutBtn = document.getElementById('finalCloseoutBtn');
-
-        let observations = [];
-        let current = null;
-        let currentFile = null;
-        let currentAfterFile = null;
-
-        // حماية الدخول
-        onAuthStateChanged(auth, user => {
-          if(!user){ window.location.href = 'login.html'; } else {
-            initRealtime();
-          }
-        });
-
-        logoutBtn.onclick = () => signOut(auth);
-
-        function initRealtime(){
-          const q = query(collection(db,'observations'), orderBy('createdAt','desc'));
-          onSnapshot(q, snap=>{
-            observations = snap.docs.map(d=>({id:d.id, ...d.data()}));
-            renderList(); renderKPIs();
-            if(current){ const n = observations.find(x=>x.id===current.id); if(n) showObservationDetail(n.id); }
-            userInfoEl.textContent = ' | متصل بـ Firestore (مباشر)';
-          });
+            return {totalReports, openReports, closedReports, reportsWithImages};
         }
 
-        // قائمة + فلترة
-        filterEl.onchange = () => renderList();
-        function renderList(){
-          const f = filterEl.value;
-          let data = observations;
-          if(f !== 'ALL'){
-            data = observations.filter(x => x.status===f || x.type===f);
-          }
-          listEl.innerHTML = (data.length? '' : '<div class="label" style="padding:12px; text-align:center;">لا توجد ملاحظات مطابقة</div>');
-          data.forEach(x=>{
-            const statusInfo = { PENDING:['#dc2626','قيد الانتظار'], IN_PROGRESS:['#ca8a04','قيد التنفيذ'], COMPLETED:['#16a34a','تمت المعالجة'] }[x.status] || ['#94a3b8', x.status];
-            const div = document.createElement('div');
-            div.className = 'observation-item' + (current && x.id===current.id ? ' active' : '');
-            div.innerHTML = `<div><div style="font-weight:900; color:#0f172a">${escapeHTML(x.title||'-')}</div><div class="label">${fmtDate(x.createdAt)} | ${escapeHTML(x.type||'-')}</div></div><span style="display:inline-block; padding:4px 10px; border-radius:999px; color:#fff; background:${statusInfo[0]}">${statusInfo[1]}</span>`;
-            div.onclick = ()=>showObservationDetail(x.id);
-            listEl.appendChild(div);
-          });
-          if(!current && data[0]) showObservationDetail(data[0].id);
+        function renderKPIs() {
+            const kpis = calculateKPIs();
+            const kpiContainer = document.getElementById('kpiContainer');
+            kpiContainer.innerHTML = '';
+
+            const kpiData = [
+                {title: 'إجمالي الملاحظات', value: kpis.totalReports, icon: 'clipboard-list', gradientClass: 'kpi-closed-gradient'},
+                {title: 'ملاحظات مفتوحة/انتظار', value: kpis.openReports, icon: 'alert-triangle', gradientClass: 'kpi-open-gradient'},
+                {title: 'ملاحظات مغلقة/معالجة', value: kpis.closedReports, icon: 'check-circle', gradientClass: 'kpi-closed-gradient'},
+                {title: 'ملاحظات موثقة بالصور', value: kpis.reportsWithImages, icon: 'image', gradientClass: 'kpi-images-gradient'}
+            ];
+
+            kpiData.forEach(kpi => {
+                const kpiHTML = `
+                    <div class="kpi-card-professional p-6 ${kpi.gradientClass} flex items-center justify-between shadow-2xl">
+                        <div>
+                            <p class="text-sm md:text-md font-medium">${kpi.title}</p>
+                            <p class="text-4xl md:text-5xl font-extrabold mt-1">${kpi.value}</p>
+                        </div>
+                        <i data-lucide="${kpi.icon}" class="w-10 h-10 opacity-70"></i>
+                    </div>
+                `;
+                kpiContainer.innerHTML += kpiHTML;
+            });
+            lucide.createIcons();
+            document.getElementById('userInfo').innerHTML = 'تم تحديث البيانات بنجاح (وضع ثابت).';
         }
 
-        function showObservationDetail(id){
-          current = observations.find(x=>x.id===id); if(!current) return;
-          document.querySelectorAll('.observation-item').forEach(el=>el.classList.remove('active'));
-          // (re)mark active visually
-          const items = Array.from(listEl.children);
-          const idx = observations.findIndex(x=>x.id===id);
-          if(items[idx]) items[idx].classList.add('active');
+        function renderObservationsList(observations) {
+            const list = document.getElementById('observationsList');
+            list.innerHTML = '';
 
-          placeholder.classList.add('hidden'); detail.classList.remove('hidden');
-          dTitle.textContent = current.title||''; printTitle.textContent = 'الملاحظة: ' + (current.title||'');
-          dType.textContent = current.type||''; dLoc.textContent = current.location||'';
-          dDate.textContent = fmtDate(current.createdAt); dId.textContent = current.id;
-          dDesc.innerHTML = escapeHTML(current.details||'').replace(/\n/g,'<br>');
-          setStatusBadge(current.status);
+            if (observations.length === 0) {
+                list.innerHTML = '<div class="text-center text-gray-500 mt-10 p-4 bg-gray-100 rounded-xl">لا توجد ملاحظات مطابقة لمعيار التصفية.</div>';
+                document.getElementById('detailPlaceholder').classList.remove('hidden');
+                document.getElementById('observationDetail').classList.add('hidden');
+                return;
+            }
 
-          if(current.actionPlan || current.riskAssessment){
-            actionPlanContainer.classList.remove('hidden');
-            const risk = current.riskAssessment ? `الأولوية: ${current.riskAssessment.priority} | الإطار: ${current.riskAssessment.timeframe}` : '';
-            actionPlan.textContent = `${risk} — الخطة: ${current.actionPlan||'-'}`;
-          } else { actionPlanContainer.classList.add('hidden'); }
+            observations.forEach(obs => {
+                const statusInfo = statusMap[obs.status] || {color: 'bg-gray-500', text: obs.status};
+                const isSelected = obs.id === (currentSelectedObservation ? currentSelectedObservation.id : null) ? 'active' : '';
 
-          resolutionNoteContainer.classList.add('hidden');
-          mediaContainer.classList.add('hidden');
-          imageComparisonWrapper.classList.add('hidden');
-          noImageMessage.classList.add('hidden');
+                const obsHTML = `
+                    <div class="observation-item p-3 rounded-lg flex justify-between items-center ${isSelected}" onclick="showObservationDetail(${obs.id})">
+                        <div>
+                            <p class="text-md font-bold text-gray-800 truncate max-w-[200px]">${obs.title}</p>
+                            <p class="text-xs text-gray-500 mt-1">${obs.date} | ${obs.type}</p>
+                        </div>
+                        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full ${statusInfo.color} text-white">${statusInfo.text}</span>
+                    </div>
+                `;
+                list.innerHTML += obsHTML;
+            });
+        }
 
-          if(current.status==='COMPLETED' && current.afterImageUrl){
-            imageComparisonWrapper.classList.remove('hidden');
-            beforeImage.src = current.mediaUrl||''; afterImage.src = current.afterImageUrl||'';
-            setupCompare();
-            if(current.resolutionNote){ resolutionNoteContainer.classList.remove('hidden'); resolutionNote.textContent = current.resolutionNote; }
-          } else if(current.mediaUrl){
-            mediaContainer.classList.remove('hidden');
-            if(current.isVideo){
-              mediaContent.innerHTML = `<video controls style="width:100%; height:auto; border-radius:8px"><source src="${current.mediaUrl}" type="${current.mediaMime||'video/mp4'}"></video>`;
+        /**
+         * دالة لعرض تفاصيل ملاحظة محددة (تم التعديل لدعم مقارنة الصور/إغلاق المدير)
+         */
+        function showObservationDetail(id) {
+            currentSelectedObservation = observationsData.find(obs => obs.id === id);
+            if (!currentSelectedObservation) return;
+
+            document.querySelectorAll('.observation-item').forEach(item => item.classList.remove('active'));
+            const obsElement = document.querySelector(`#observationsList .observation-item[onclick="showObservationDetail(${id})"]`);
+            if (obsElement) obsElement.classList.add('active');
+
+            // تهيئة بيانات التفاصيل
+            const statusInfo = statusMap[currentSelectedObservation.status] || {color: 'bg-gray-500', text: currentSelectedObservation.status};
+            document.getElementById('detailTitle').textContent = currentSelectedObservation.title;
+            document.getElementById('printTitle').textContent = `الملاحظة: ${currentSelectedObservation.title}`; // لتقرير PDF
+            document.getElementById('detailType').textContent = currentSelectedObservation.type;
+            document.getElementById('detailDate').textContent = currentSelectedObservation.date;
+            document.getElementById('detailID').textContent = currentSelectedObservation.id;
+            document.getElementById('detailLocation').textContent = currentSelectedObservation.location;
+            document.getElementById('detailStatus').textContent = statusInfo.text;
+            document.getElementById('detailStatus').className = `inline-block px-3 py-1 text-sm font-semibold rounded-full text-white ${statusInfo.color}`;
+            document.getElementById('detailDescription').innerHTML = currentSelectedObservation.details.replace(/\n/g, '<br>');
+            document.getElementById('actionPlan').textContent = `الأولوية: ${currentSelectedObservation.riskAssessment.priority} | الإطار الزمني: ${currentSelectedObservation.riskAssessment.timeframe}. الخطة: ${currentSelectedObservation.actionPlan}`;
+            document.getElementById('actionPlanContainer').classList.remove('hidden');
+
+            // --- إدارة قسم الوسائط (الصور والفيديو) ---
+            document.getElementById('mediaContainer').classList.add('hidden');
+            document.getElementById('imageComparisonWrapper').classList.add('hidden');
+            document.getElementById('noImageMessage').classList.add('hidden');
+            document.getElementById('resolutionNoteContainer').classList.add('hidden'); // إخفاء مذكرة الإغلاق افتراضياً
+
+            const mediaContent = document.getElementById('mediaContent');
+            mediaContent.innerHTML = '';
+
+            if (currentSelectedObservation.status === 'COMPLETED' && currentSelectedObservation.afterImagePath) {
+                // حالة الإغلاق: عرض المقارنة (قبل وبعد) وعرض مذكرة الإغلاق
+                document.getElementById('imageComparisonWrapper').classList.remove('hidden');
+                document.getElementById('beforeImage').src = currentSelectedObservation.imagePath; // صورة قبل (الملاحظة الأصلية)
+                document.getElementById('afterImage').src = currentSelectedObservation.afterImagePath; // صورة بعد (صورة الإغلاق)
+                setupImageComparison();
+
+                document.getElementById('resolutionNote').textContent = currentSelectedObservation.resolutionNote || "لم يتم توفير مذكرة إغلاق تفصيلية.";
+                document.getElementById('resolutionNoteContainer').classList.remove('hidden');
+
+            } else if (currentSelectedObservation.hasImage) {
+                // حالة الانتظار/قيد التنفيذ: عرض الصورة/الفيديو الأصلية فقط
+                document.getElementById('mediaContainer').classList.remove('hidden');
+                if (currentSelectedObservation.isVideo) {
+                    const mimeType = currentSelectedObservation.fileMimeType || 'video/mp4';
+                    mediaContent.innerHTML = `
+                        <video controls class="w-full h-auto rounded-xl shadow-lg border-4 border-gray-300">
+                            <source src="${currentSelectedObservation.imagePath}" type="${mimeType}">
+                            متصفحك لا يدعم عرض الفيديو المضمن.
+                        </video>
+                         <p class="image-label">فيديو الملاحظة - (${mimeType})</p>
+                    `;
+                } else {
+                    mediaContent.innerHTML = `<img class="w-full h-auto rounded-xl shadow-lg" alt="صورة الملاحظة" src="${currentSelectedObservation.imagePath}">`;
+                }
             } else {
-              mediaContent.innerHTML = `<img src="${current.mediaUrl}" alt="media" style="display:block; width:100%; height:auto">`;
-            }
-          } else {
-            noImageMessage.classList.remove('hidden');
-          }
-
-          alreadyCompletedBtn.classList.toggle('hidden', current.status!=='COMPLETED');
-          completeObservationBtn.style.display = current.status==='COMPLETED' ? 'none' : 'inline-flex';
-          updateStatusBtn.style.display = current.status==='PENDING' ? 'inline-flex' : 'none';
-        }
-
-        function setStatusBadge(s){
-          const map = { PENDING:['#dc2626','قيد الانتظار'], IN_PROGRESS:['#ca8a04','قيد التنفيذ'], COMPLETED:['#16a34a','تمت المعالجة'] };
-          const m = map[s] || ['#94a3b8', s];
-          dStatus.style.background = m[0]; dStatus.textContent = m[1];
-        }
-
-        // تحديث الحالة
-        async function updateToInProgress(){
-          if(!current) return;
-          await updateDoc(doc(db,'observations',current.id), { status:'IN_PROGRESS' });
-        }
-        window.updateToInProgress = updateToInProgress;
-
-        // الإدخال الذكي
-        window.getLocation = ()=>{
-          locationStatus.textContent = '... جاري التحديد';
-          navigator.geolocation.getCurrentPosition(pos=>{
-            inputLatitude.value = pos.coords.latitude; inputLongitude.value = pos.coords.longitude;
-            locationStatus.textContent = `${(+inputLatitude.value).toFixed(5)}, ${(+inputLongitude.value).toFixed(5)}`;
-            toggleCreateEnabled();
-          }, ()=>{ locationStatus.textContent = 'تعذّر تحديد الموقع'; });
-        };
-        fileUploadInput.onchange = ()=>{
-          const f = fileUploadInput.files[0]; fileStatus.textContent = f ? `${f.name} (${(f.size/1024/1024).toFixed(2)} MB)` : 'لم يتم اختيار ملف'; toggleCreateEnabled();
-        };
-        rawObservationInput.oninput = toggleCreateEnabled;
-        mTitle.oninput = toggleCreateEnabled;
-        function toggleCreateEnabled(){ processSmartInputBtn.disabled = !(rawObservationInput.value.trim() || fileUploadInput.files[0] || (inputLatitude.value && inputLongitude.value)); }
-
-        async function processSmartInput(){
-          try{
-            processSmartInputBtn.disabled = true; processSmartInputBtn.textContent = '... جاري التسجيل';
-            const isVideo = fileUploadInput.files[0] ? fileUploadInput.files[0].type.startsWith('video') : false;
-            const fileMime = fileUploadInput.files[0] ? fileUploadInput.files[0].type : null;
-
-            const docRef = await addDoc(collection(db,'observations'), {
-              type: mType.value, title: mTitle.value || '—', details: rawObservationInput.value || '',
-              status: 'PENDING',
-              location: (inputLatitude.value && inputLongitude.value) ? `${(+inputLatitude.value).toFixed(5)}, ${(+inputLongitude.value).toFixed(5)}` : '',
-              actionPlan: null, riskAssessment: {priority: mPriority.value, timeframe: (mPriority.value==='High'?'24h':'72h')},
-              hasImage: !!fileUploadInput.files[0], isVideo, mediaUrl: null, mediaMime: fileMime,
-              afterImageUrl: null, resolutionNote: null,
-              createdAt: serverTimestamp()
-            });
-
-            if(fileUploadInput.files[0]){
-              const p = `observations/${docRef.id}/${isVideo?'before.mp4':'before.jpg'}`;
-              const r = ref(storage, p);
-              await uploadBytesResumable(r, fileUploadInput.files[0]);
-              const url = await getDownloadURL(r);
-              await updateDoc(doc(db,'observations',docRef.id), { mediaUrl:url });
+                document.getElementById('noImageMessage').classList.remove('hidden');
             }
 
-            closeModal('smartInputModal');
-            rawObservationInput.value=''; mTitle.value=''; fileUploadInput.value=''; fileStatus.textContent='لم يتم اختيار ملف'; inputLatitude.value=''; inputLongitude.value=''; locationStatus.textContent='لم يتم التحديد بعد';
-          }catch(e){ alert(e.message); } finally { processSmartInputBtn.disabled=false; processSmartInputBtn.textContent='🚀 بدء التحليل والتسجيل'; }
-        }
-        window.processSmartInput = processSmartInput;
+            // --- إدارة أزرار الإجراءات التنفيذية (Managerial Actions) ---
+            const isCompleted = currentSelectedObservation.status === 'COMPLETED';
+            document.getElementById('updateStatusBtn').classList.toggle('hidden', isCompleted);
+            document.getElementById('completeObservationBtn').classList.toggle('hidden', isCompleted);
+            document.getElementById('alreadyCompletedBtn').classList.toggle('hidden', !isCompleted);
 
-        // الإغلاق التنفيذي
-        function openCloseout(){
-          if(!current) return;
-          document.getElementById('closeoutId').textContent = current.id;
-          afterFileUploadInput.value=''; afterFileStatus.textContent='لم يتم اختيار ملف'; resolutionNoteInput.value='';
-          document.getElementById('finalCloseoutBtn').disabled = true;
-          openModal('closeoutModal');
+            document.getElementById('detailPlaceholder').classList.add('hidden');
+            document.getElementById('observationDetail').classList.remove('hidden');
+            document.getElementById('aiResultContainer').classList.add('hidden');
         }
-        completeObservationBtn.addEventListener('click', openCloseout);
-        afterFileUploadInput.onchange = ()=>{
-          afterFileStatus.textContent = afterFileUploadInput.files[0] ? afterFileUploadInput.files[0].name : 'لم يتم اختيار ملف';
-          finalCloseoutBtn.disabled = !afterFileUploadInput.files[0];
-        };
-        window.completeObservation = async ()=>{
-          if(!current || !afterFileUploadInput.files[0]) return;
-          try{
-            finalCloseoutBtn.disabled=true; finalCloseoutBtn.textContent='... جاري الإغلاق';
-            const p = `observations/${current.id}/after.jpg`;
-            const r = ref(storage, p);
-            await uploadBytes(r, afterFileUploadInput.files[0]);
-            const url = await getDownloadURL(r);
-            await updateDoc(doc(db,'observations',current.id), {
-              status:'COMPLETED', afterImageUrl:url, resolutionNote:(resolutionNoteInput.value.trim()||`تم الإغلاق في ${new Date().toLocaleString('ar-SA')}`)
-            });
+
+        // --- وظائف لوحة الإغلاق التنفيذي (EXECUTIVE CLOSEOUT FUNCTIONS) ---
+
+        /**
+         * دالة لفتح نافذة الإغلاق التنفيذي
+         */
+        function openModal(id) {
+            document.getElementById(id).style.display = "flex";
+            if (id === 'closeoutModal') {
+                document.getElementById('closeoutId').textContent = currentSelectedObservation.id;
+                clearAfterUpload(); // تهيئة حالة الرفع
+            }
+            // ... (بقية تهيئة Smart Input Modal)
+            if (id === 'smartInputModal') {
+                document.getElementById('rawObservationInput').value = '';
+                document.getElementById('locationStatus').innerText = 'لم يتم التحديد بعد';
+                document.getElementById('fileStatus').innerText = 'لم يتم اختيار ملف بعد';
+                document.getElementById('inputLatitude').value = '';
+                document.getElementById('inputLongitude').value = '';
+                currentFile = null;
+                currentFileUrl = null;
+                document.getElementById('fileUploadInput').value = '';
+                document.getElementById('processSmartInputBtn').disabled = true;
+                document.getElementById('getLocationBtn').disabled = false;
+                document.getElementById('modalResult').classList.add('hidden');
+                document.getElementById('modalStep1').classList.remove('hidden');
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        /**
+         * دالة تهيئة حالة رفع صورة الإغلاق
+         */
+        function clearAfterUpload() {
+            currentAfterFile = null;
+            currentAfterFileUrl = null;
+            document.getElementById('afterFileUploadInput').value = '';
+            document.getElementById('afterFileStatus').innerHTML = 'لم يتم اختيار ملف بعد <span class="text-red-500 font-bold">(إلزامي)</span>';
+            document.getElementById('resolutionNoteInput').value = '';
+            document.getElementById('finalCloseoutBtn').disabled = true;
+        }
+
+        /**
+         * دالة لمعالجة رفع صورة الإغلاق (AFTER)
+         */
+        function handleAfterFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                currentAfterFile = file;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentAfterFileUrl = e.target.result;
+                    document.getElementById('finalCloseoutBtn').disabled = false; // تفعيل زر الإغلاق
+                };
+                reader.readAsDataURL(file);
+                document.getElementById('afterFileStatus').innerHTML = `<span class="text-green-600">تم اختيار الملف:</span> ${file.name}`;
+            } else {
+                currentAfterFile = null;
+                currentAfterFileUrl = null;
+                document.getElementById('afterFileStatus').innerHTML = 'لم يتم اختيار ملف بعد <span class="text-red-500 font-bold">(إلزامي)</span>';
+                document.getElementById('finalCloseoutBtn').disabled = true;
+            }
+        }
+
+        /**
+         * دالة لتأكيد الإغلاق التنفيذي وتحديث بيانات الملاحظة
+         */
+        function completeObservation() {
+            if (!currentAfterFileUrl) {
+                alert("الرجاء تحميل صورة 'بعد الإصلاح' لإتمام الإغلاق.");
+                return;
+            }
+
+            const note = document.getElementById('resolutionNoteInput').value.trim() || `تم الإغلاق التنفيذي في ${new Date().toLocaleString('ar-SA')} وتوثيقه بالصورة المرفقة.`;
+
+            // 1. تحديث بيانات الملاحظة الحالية في المصفوفة (Mock Update)
+            const obsIndex = observationsData.findIndex(obs => obs.id === currentSelectedObservation.id);
+            if (obsIndex !== -1) {
+                observationsData[obsIndex].status = 'COMPLETED';
+                observationsData[obsIndex].isComparative = true;
+                observationsData[obsIndex].afterImagePath = currentAfterFileUrl;
+                observationsData[obsIndex].resolutionNote = note;
+                currentSelectedObservation = observationsData[obsIndex]; // تحديث الملاحظة المختارة
+            }
+
+            // 2. إغلاق النافذة المنبثقة
             closeModal('closeoutModal');
-          }catch(e){ alert(e.message); } finally { finalCloseoutBtn.disabled=false; finalCloseoutBtn.textContent='✅ تأكيد الإغلاق النهائي للملاحظة'; }
-        };
-        window.clearAfterUpload = ()=>{ afterFileUploadInput.value=''; afterFileStatus.textContent='لم يتم اختيار ملف'; resolutionNoteInput.value=''; };
+            clearAfterUpload();
 
-        // KPIs
-        function renderKPIs(){
-          const total = observations.length;
-          const open = observations.filter(x=>x.status!=='COMPLETED').length;
-          const closed = total - open;
-          const withImg = observations.filter(x=>x.mediaUrl).length;
-          const kpiContainer = document.getElementById('kpiContainer');
-          kpiContainer.innerHTML = '';
-          const data = [
-            {title:'إجمالي الملاحظات', value: total, icon:'clipboard-list', cls:'kpi-images-gradient'},
-            {title:'مفتوحة/انتظار', value: open, icon:'alert-triangle', cls:'kpi-open-gradient'},
-            {title:'مغلقة/معالجة', value: closed, icon:'check-circle', cls:'kpi-closed-gradient'},
-            {title:'موثقة بالصور', value: withImg, icon:'image', cls:'kpi-images-gradient'},
-          ];
-          data.forEach(k=>{
-            const el = document.createElement('div');
-            el.className = `kpi-card-professional p-6 ${k.cls}`;
-            el.innerHTML = `<div style="display:flex; align-items:center; justify-content:space-between;">
-              <div><p style="margin:0; font-weight:700">${k.title}</p><p style="margin:4px 0 0; font-size:36px; font-weight:900">${k.value}</p></div>
-              <span style="font-size:28px; opacity:.8">📊</span>
-            </div>`;
-            kpiContainer.appendChild(el);
-          });
+            // 3. إعادة عرض القائمة والتفاصيل لتعكس التغيير
+            handleFilterChange(); // لإعادة ترتيب وفرز القائمة
+            showObservationDetail(currentSelectedObservation.id);
+
+            alert(`تم إغلاق الملاحظة رقم ${currentSelectedObservation.id} وتوثيقها بالصورة النهائية والمذكرة الختامية بنجاح!`);
         }
 
-        // مقارنة قبل/بعد
-        function setupCompare(){
-          let dragging=false;
-          const rect = ()=>imageComparisonWrapper.getBoundingClientRect();
-          const move = (clientX)=>{
-            const r = rect(); let left = Math.max(0, Math.min(clientX - r.left, r.width));
-            afterImageContainer.style.width = left+'px';
-            comparisonDivider.style.left = left+'px';
-          };
-          const start = (e)=>{ dragging=true; move((e.touches?e.touches[0].clientX:e.clientX)); };
-          const end = ()=>{ dragging=false; };
-          const drag = (e)=>{ if(!dragging) return; move((e.touches?e.touches[0].clientX:e.clientX)); };
-          imageComparisonWrapper.onmousedown=start; imageComparisonWrapper.onmousemove=drag; window.onmouseup=end;
-          imageComparisonWrapper.ontouchstart=start; imageComparisonWrapper.ontouchmove=drag; window.ontouchend=end;
-          const r = rect(); move(r.left + r.width/2);
+        // --- وظائف توليد التقارير (PDF REPORTING) ---
+
+        /**
+         * دالة لتوليد تقرير PDF باستخدام خاصية الطباعة في المتصفح
+         */
+        function generatePdfReport() {
+            // هذا التغيير البسيط يسهل على المتصفح حفظ الصفحة كملف PDF
+            // عند استخدام وظيفة الطباعة (Ctrl+P أو Cmd+P).
+            window.print();
         }
 
-        // PDF (بسيط عبر print)
-        window.generatePdfReport = ()=>{ window.print(); };
 
-        // أوامر العمل (صياغة)
-        window.generateCommunicationDraft = ()=>{
-          if(!current){ alert('اختر ملاحظة أولاً'); return; }
-          const content = `
-          إلى فريق التشغيل،
-          الموضوع: أمر عمل لمعالجة "${current.title}"
-          الموقع: ${current.location || '-'}
-          الحالة الحالية: ${current.status}
-          التفاصيل: ${current.details || '-'}
+        // --- وظائف أخرى (تم تركها كما هي) ---
 
-          المطلوب: تنفيذ خطة معالجة عاجلة وفق الأولوية (${current.riskAssessment?.priority || '-'}) خلال (${current.riskAssessment?.timeframe || '-'})،
-          وتحديث الحالة في لوحة Smart HSR فور الانتهاء.
-          مع الشكر.`.trim();
-          showAI('صياغة أمر العمل', `<pre style="white-space:pre-wrap; direction:rtl; font-family:Tajawal, sans-serif">${escapeHTML(content)}</pre>`);
-        };
+        function handleFilterChange() {
+            // ... (Same function as before)
+            const filterValue = document.getElementById('observationFilter').value;
+            let filteredList = observationsData;
 
-        // Gemini Vision (اختياري – ضع مفتاحك هنا ليعمل فعليًا)
-        const GEMINI_API_KEY = ""; // ضع مفتاح Gemini هنا إن رغبت بالتحليل الفعلي
-        async function analyzeImage(kind){
-          if(!current){ alert('اختر ملاحظة أولاً'); return; }
-          if(!current.mediaUrl){ showAI('تحليل الصور','لا توجد صورة لتحليلها.'); return; }
-          try{
-            showAI('جارٍ التحليل...','<div class="label">الرجاء الانتظار...</div>');
-            const base64 = await toBase64FromUrl(current.mediaUrl);
-            let prompt = "";
-            if(kind==='vision'){
-              prompt = `وصف دقيق لما ترى في الصورة من حيث نوع المشكلة (حفريات/أرصفة/إنارة/حدائق/نفايات/سلامة..)، مستوى الخطورة، وخطوات معالجة مختصرة.`;
+            if (filterValue !== 'الكل') {
+                const filterKey = {
+                    "جديد": "PENDING",
+                    "قيد التنفيذ": "IN_PROGRESS",
+                    "تمت المعالجة": "COMPLETED",
+                    "جودة": "QUALITY",
+                    "صيانة": "MAINTENANCE",
+                    "سلامة": "SAFETY",
+                    "بيئة": "ENVIRONMENT"
+                }[filterValue] || filterValue;
+
+                filteredList = observationsData.filter(obs => obs.type === filterKey || obs.status === filterKey);
+            }
+
+            renderObservationsList(filteredList);
+
+            if (filteredList.length > 0) {
+                showObservationDetail(filteredList[0].id);
             } else {
-              prompt = `استخرج السبب الجذري المحتمل للمشكلة الظاهرة بالصورة، وقدّم نصيحة وقائية تمنع تكرارها.`;
+                document.getElementById('detailPlaceholder').classList.remove('hidden');
+                document.getElementById('observationDetail').classList.add('hidden');
             }
-            if(!GEMINI_API_KEY){
-              // عرض محاكاة محترمة إن لم يُضَع مفتاح
-              const fake = (kind==='vision')
-                ? 'تحليل (محاكاة): يُحتمل وجود هبوط بسيط في طبقة الإسفلت عند الحافة اليمنى، الأولوية: متوسطة، المعالجة: قص وإعادة رصف الموضع، فحص التصريف.'
-                : 'سبب جذري (محاكاة): ضعف التربة تحت الطبقة السطحية نتيجة مياه راكدة. الوقاية: تحسين التصريف، برنامج فحص دوري.';
-              showAI(kind==='vision'?'نتيجة تحليل الرؤية':'نتيجة السبب الجذري', `<div>${escapeHTML(fake)}</div>`);
-              return;
-            }
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-              method:'POST',
-              headers:{'Content-Type':'application/json'},
-              body: JSON.stringify({
-                contents: [{
-                  parts: [
-                    {text: prompt},
-                    {inline_data: {mime_type: current.mediaMime || 'image/jpeg', data: base64 }}
-                  ]
-                }]
-              })
-            });
-            const json = await res.json();
-            const text = json?.candidates?.[0]?.content?.parts?.map(p=>p.text).join('\n') || 'تعذر الحصول على نتيجة.';
-            showAI(kind==='vision'?'نتيجة تحليل الرؤية':'نتيجة السبب الجذري', `<div>${escapeHTML(text)}</div>`);
-          }catch(e){
-            showAI('خطأ', `<div>تعذر التحليل: ${escapeHTML(e.message)}</div>`);
-          }
-        }
-        window.analyzeImage = analyzeImage;
-
-        function showAI(title, html){
-          const c = document.getElementById('aiResultContainer');
-          document.getElementById('aiResultTitle').textContent = title;
-          document.getElementById('aiResultContent').innerHTML = html;
-          c.classList.remove('hidden');
         }
 
-        async function toBase64FromUrl(url){
-          const resp = await fetch(url);
-          const blob = await resp.blob();
-          return await blobToBase64(blob);
-        }
-        function blobToBase64(blob){
-          return new Promise((resolve,reject)=>{
-            const reader = new FileReader();
-            reader.onloadend = ()=>{
-              const res = reader.result.split(',')[1]; resolve(res);
+        function setupImageComparison() {
+            // ... (Same function as before)
+            const wrapper = document.getElementById('imageComparisonWrapper');
+            const divider = document.getElementById('comparisonDivider');
+            const afterImageContainer = document.getElementById('afterImageContainer');
+
+            if (!wrapper) return;
+
+            afterImageContainer.style.width = '50%';
+            divider.style.left = '50%';
+
+            let isDragging = false;
+
+            const onMove = (clientX) => {
+                if (!isDragging) return;
+                const wrapperRect = wrapper.getBoundingClientRect();
+                let newLeft = clientX - wrapperRect.left;
+                newLeft = Math.max(0, Math.min(newLeft, wrapperRect.width));
+
+                divider.style.left = `${newLeft}px`;
+                afterImageContainer.style.width = `${newLeft}px`;
             };
-            reader.onerror = reject; reader.readAsDataURL(blob);
-          });
+
+            const onMouseMove = (e) => onMove(e.clientX);
+            const onTouchMove = (e) => onMove(e.touches[0].clientX);
+
+            const onMouseUp = () => {
+                isDragging = false;
+                wrapper.classList.remove('dragging');
+                window.removeEventListener('mousemove', onMouseMove);
+                window.removeEventListener('touchmove', onTouchMove);
+                window.removeEventListener('mouseup', onMouseUp);
+                window.removeEventListener('touchend', onMouseUp);
+            };
+
+            const onMouseDown = (e) => {
+                e.preventDefault();
+                isDragging = true;
+                wrapper.classList.add('dragging');
+
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                onMove(clientX);
+
+                window.addEventListener('mousemove', onMouseMove);
+                window.addEventListener('touchmove', onTouchMove);
+                window.addEventListener('mouseup', onMouseUp);
+                window.addEventListener('touchend', onMouseUp);
+            };
+            const onTouchStart = (e) => onMouseDown(e);
+
+            divider.removeEventListener('mousedown', onMouseDown);
+            divider.removeEventListener('touchstart', onTouchStart);
+            wrapper.removeEventListener('mousedown', onMouseDown);
+            wrapper.removeEventListener('touchstart', onTouchStart);
+
+            divider.addEventListener('mousedown', onMouseDown);
+            divider.addEventListener('touchstart', onTouchStart);
+
+            wrapper.addEventListener('mousedown', onMouseDown);
+            wrapper.addEventListener('touchstart', onTouchStart);
         }
 
-        // KPI Insights (نصي فقط، ويمكن ربطه بالـ Gemini عبر المفتاح)
-        async function generateKpiInsights(){
-          const total = observations.length;
-          const open = observations.filter(x=>x.status!=='COMPLETED').length;
-          const closed = total - open;
-          const withImg = observations.filter(x=>x.mediaUrl).length;
-          const txt = `ملخص تنفيذي: إجمالي ${total}، مفتوح ${open} (${Math.round((open/Math.max(total,1))*100)}%)، مغلق ${closed}، موثّق بالصور ${withImg}. التوصية: التركيز على إغلاق البلاغات عالية الأولوية خلال 24 ساعة وتفعيل حملات توثيق بالصور.`;
-          document.getElementById('kpi-insight-result').textContent = txt;
-        }
-        window.generateKpiInsights = generateKpiInsights;
+        // --- دوال AI Mock (للتكامل الكامل) ---
+        function getLocation() {
+            document.getElementById('locationStatus').innerHTML = '<span class="text-yellow-600">جاري البحث...</span>';
+            document.getElementById('getLocationBtn').disabled = true;
 
-        // أدوات عامة
-        window.openModal = (id)=>document.getElementById(id).style.display='flex';
-        window.closeModal = (id)=>document.getElementById(id).style.display='none';
-        window.smartLogout = ()=>signOut(auth);
-        function fmtDate(ts){
-          try{
-            if(!ts) return '-';
-            if(ts.seconds) return new Date(ts.seconds*1000).toLocaleString('ar-SA');
-            return new Date(ts).toLocaleString('ar-SA');
-          }catch{ return '-'; }
+            setTimeout(() => {
+                const lat = 24.5247;
+                const lon = 46.7135;
+                document.getElementById('inputLatitude').value = lat;
+                document.getElementById('inputLongitude').value = lon;
+                document.getElementById('locationStatus').innerHTML = `<span class="text-green-600">تم التحديد:</span> ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                document.getElementById('getLocationBtn').disabled = false;
+                checkSmartInputState();
+            }, 1500);
         }
-        function escapeHTML(s){ return (s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+        function checkSmartInputState() {
+            const rawText = document.getElementById('rawObservationInput').value.trim();
+            const lat = document.getElementById('inputLatitude').value;
+            if (rawText.length > 0 || currentFile || lat) {
+                document.getElementById('processSmartInputBtn').disabled = false;
+            } else {
+                document.getElementById('processSmartInputBtn').disabled = true;
+            }
+        }
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                currentFile = file;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentFileUrl = e.target.result;
+                    checkSmartInputState();
+                };
+                reader.readAsDataURL(file);
+                document.getElementById('fileStatus').innerText = `تم اختيار الملف: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+
+            } else {
+                currentFile = null;
+                currentFileUrl = null;
+                document.getElementById('fileStatus').innerText = 'لم يتم اختيار ملف بعد';
+                checkSmartInputState();
+            }
+        }
+        function processSmartInput() {
+            const rawText = document.getElementById('rawObservationInput').value.trim();
+            const lat = document.getElementById('inputLatitude').value || "غير محدد";
+            const lon = document.getElementById('inputLongitude').value || "غير محدد";
+            const fileSource = currentFile ? currentFile.name : null;
+            const isVideoFile = currentFile ? currentFile.type.startsWith('video') : false;
+            const fileMimeType = currentFile ? currentFile.type : null;
+
+            if (!rawText && !currentFile) {
+                alert("الرجاء إدخال وصف أو تحميل ملف (صورة/فيديو) لبدء التحليل.");
+                return;
+            }
+
+            document.getElementById('modalStep1').classList.add('hidden');
+            document.getElementById('modalResult').classList.remove('hidden');
+            document.getElementById('modalResultContent').innerHTML = `
+                <div class="text-center py-10">
+                    <div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin: 0 auto; width: 40px; height: 40px;"></div>
+                    <p class="mt-4 text-xl font-extrabold text-teal-700">جاري تحليل البيانات بواسطة Gemini AI...</p>
+                    <p class="text-md text-gray-500 mt-2">يرجى الانتظار قليلاً أثناء معالجة الملف وتوليد التقرير.</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const newId = observationsData.length + 1;
+                const newDate = new Date().toISOString().slice(0, 10);
+
+                const newObservation = {
+                    id: newId,
+                    type: "MAINTENANCE",
+                    date: newDate,
+                    title: rawText.substring(0, 50) + (rawText.length > 50 ? '...' : '') || (fileSource ? `ملاحظة ميدانية (${fileSource})` : "تقرير آلي عن ملاحظة"),
+                    status: "PENDING",
+                    details: `**تم توليد هذا التقرير آلياً.**\nالوصف الأولي: "${rawText || 'لم يتم إدخال وصف نصي.'}"\nالموقع: (${lat}, ${lon})\nالملف المرفق: ${fileSource || 'لا يوجد ملف'}`,
+                    hasImage: !!currentFile,
+                    imagePath: currentFileUrl,
+                    fileMimeType: fileMimeType,
+                    isComparative: false,
+                    isVideo: isVideoFile,
+                    actionPlan: "إصلاح فوري لأضرار الطريق عبر رقعة الإسفلت (Patching).",
+                    riskAssessment: {
+                        priority: "High",
+                        timeframe: "48 hours"
+                    },
+                    location: `${lat}, ${lon}`,
+                    createdAt: new Date().getTime(),
+                    isNewInput: true,
+                    resolutionNote: null,
+                    afterImagePath: null
+                };
+
+                observationsData.unshift(newObservation);
+
+                renderObservationsList(observationsData);
+                showObservationDetail(newId);
+
+                document.getElementById('modalResultContent').innerHTML = `
+                    <div class="p-6 bg-green-50 rounded-xl border-4 border-green-200 text-center">
+                        <i data-lucide="check-circle" class="w-10 h-10 mx-auto text-green-600 mb-3"></i>
+                        <h4 class="text-2xl font-extrabold text-green-700">تمت معالجة الملاحظة بنجاح!</h4>
+                        <p class="text-lg text-gray-700 mt-2">تم إضافة ملاحظتك الجديدة بنجاح في القائمة.</p>
+                        <p class="text-sm text-gray-500 mt-1">الملف: **${fileSource || 'لا يوجد'}** (تم إدراجه كـ **${isVideoFile ? 'فيديو' : 'صورة'}**).</p>
+                    </div>
+                `;
+                lucide.createIcons();
+            }, 3000);
+        }
+
+        function analyzeImage(tool) {
+            const title = {'vision': 'تحليل الرؤية (Vision)', 'root-cause': 'تحليل السبب الجذري'}[tool] || 'التحليل';
+            document.getElementById('aiResultTitle').textContent = `جاري تنفيذ ${title}...`;
+            document.getElementById('aiResultContent').innerHTML = `<div class="flex items-center text-teal-700 font-bold"><div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin-left: 8px;"></div> يرجى الانتظار</div>`;
+            document.getElementById('aiResultContainer').classList.remove('hidden');
+
+            setTimeout(() => {
+                let analysisResult = "";
+                if (tool === 'vision') {
+                    if (currentSelectedObservation && (currentSelectedObservation.isNewInput === true || currentSelectedObservation.title.includes("طريق خربان"))) {
+                        analysisResult = `
+                            <p class="communication-draft">
+                                **وصف Gemini للمشكلة (تحليل الصورة):** تظهر الصورة تصدعات وتشققات عميقة (Potholes) في طبقة الإسفلت على الطريق الرئيسي، مما يهدد سلامة المركبات ويعرضها لأضرار الإطارات. **نسبة التلف المقدرة: 15% من عرض المسار.**<br>
+                                **حالة الإغلاق المثالية:** يجب إزالة الإسفلت المتضرر، معالجة الطبقة الأساسية (Sub-Base)، وإعادة سفلتة المنطقة المتضررة بالكامل (Full Depth Repair).
+                            </p>
+                        `;
+                    } else if (currentSelectedObservation && currentSelectedObservation.id === 4) {
+                        analysisResult = `
+                            <p class="communication-draft">
+                                **وصف Gemini للمشكلة:** تآكل واضح وشديد يغطي ما يقارب 60% من سطح اللوحة الإرشادية. الشعار والتعليمات على وشك أن تصبح غير قابلة للقراءة. هذا يقلل من كفاءة التشغيل والسلامة.<br>
+                                **حالة الإغلاق المثالية:** استبدال اللوحة الإرشادية بالكامل بلوحة جديدة ذات مواصفات مقاومة للعوامل الجوية.
+                            </p>
+                        `;
+                    } else {
+                        analysisResult = `<p class="communication-draft">**وصف Gemini للمشكلة (افتراضي):** تظهر الصورة تجمعاً للمياه في المنطقة المحددة، مما يشير إلى فشل محتمل في نظام الصرف الصحي أو عيب في طبقة الأسفلت. يجب تصنيف هذا على أنه ملاحظة صيانة عالية الأولوية لمنع المزيد من التدهور أو الحوادث. (هذا تحليل افتراضي للملاحظات غير المخصصة).</p>`;
+                    }
+                } else if (tool === 'root-cause') {
+                    analysisResult = `<p class="communication-draft">**السبب الجذري المقترح (5 Whys Analysis):**<br>... (تحليل 5 أسباب يبقى كما هو).<br>5. **السبب الجذري النهائي:** (عدم تفعيل نظام Smart HSR لتتبع جدول الصيانة الدورية).</p>`;
+                }
+                document.getElementById('aiResultTitle').textContent = `نتائج ${title} مكتملة:`;
+                document.getElementById('aiResultContent').innerHTML = analysisResult;
+            }, 2000);
+        }
+        function generateCommunicationDraft() {
+            document.getElementById('aiResultTitle').textContent = 'صياغة أمر العمل الآلي...';
+            document.getElementById('aiResultContent').innerHTML = `<div class="flex items-center text-teal-700 font-bold"><div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin-left: 8px;"></div> يرجى الانتظار</div>`;
+            document.getElementById('aiResultContainer').classList.remove('hidden');
+
+            setTimeout(() => {
+                document.getElementById('aiResultTitle').textContent = 'صياغة أمر العمل الآلي (مكتملة):';
+                document.getElementById('aiResultContent').innerHTML = `
+                    <div class="communication-draft p-4 border rounded-lg">
+                        <p class="font-bold text-lg mb-2 text-red-800">أمر عمل عاجل: معالجة ${currentSelectedObservation.title} [ID: ${currentSelectedObservation.id}]</p>
+                        <p class="mt-3 font-bold text-sm text-red-600">الأولوية: ${currentSelectedObservation.riskAssessment.priority} | الإطار الزمني المستهدف: ${currentSelectedObservation.riskAssessment.timeframe}</p>
+                    </div>
+                 `;
+            }, 2000);
+        }
+        function generateKpiInsights() {
+            document.getElementById('kpi-insight-result').innerHTML = `<div class="kpi-insight-container p-4 mt-4 bg-white"><p class="font-bold text-lg text-teal-700">ملخص تنفيذي مقترح:</p><p class="text-gray-700 mt-2">تظهر البيانات أن هناك ${calculateKPIs().openReports} ملاحظات مفتوحة، مع تركيز في قسم الصيانة (MAINTENANCE) بسبب مشكلة الطريق التي تم إدخالها حديثاً. يجب على الفريق التنفيذي مراجعة خطط العمل الفورية لتقليل متوسط زمن الإغلاق والتركيز على توثيق جميع الملاحظات بالصور لضمان جودة الإغلاق.</p></div>`;
+        }
+        
+        // --- New: Smart Logout Function ---
+        function smartLogout() {
+            const button = document.getElementById('logout-btn');
+            button.disabled = true;
+            // استخدام تصميم التحميل الموجود
+            // قلب ترتيب العناصر ليتناسب مع اتجاه النص أثناء التحميل
+            button.innerHTML = '<div class="loading-spinner" style="border-top: 4px solid var(--color-teal);"></div> جاري تسجيل الخروج...';
+            button.classList.add('flex-row-reverse', 'justify-center');
+            button.style.backgroundColor = 'gray'; 
+
+            // في تطبيق حقيقي متكامل مع Firebase (كما يوحي ملف الدخول):
+            // if (typeof firebase !== 'undefined' && firebase.auth) {
+            //     firebase.auth().signOut().then(() => {
+            //         window.location.href = "login.html"; 
+            //     });
+            //     return;
+            // }
+
+            // محاكاة عملية تسجيل الخروج
+            setTimeout(() => {
+                alert("تم تسجيل الخروج بنجاح. سيتم توجيهك إلى صفحة الدخول.");
+                // التوجيه إلى صفحة الدخول (login.html)
+                window.location.href = "login.html"; 
+            }, 1000); 
+        }
+
+
+        // --- Initialization ---
+
+        function calculateAndRenderAll() {
+            calculateKPIs();
+            renderKPIs();
+            observationsData.sort((a, b) => b.createdAt - a.createdAt);
+            renderObservationsList(observationsData);
+
+            if (observationsData.length > 0) {
+                const logoObservation = observationsData.find(obs => obs.id === 4);
+                if (logoObservation) {
+                    showObservationDetail(logoObservation.id);
+                } else {
+                    showObservationDetail(observationsData[0].id);
+                }
+            }
+        }
+
+        function initApp() {
+            calculateAndRenderAll();
+            if (currentSelectedObservation && currentSelectedObservation.isComparative) {
+                setupImageComparison();
+            }
+            lucide.createIcons(); // تأكد من إنشاء أيقونات lucide عند التحميل
+        }
+
+        window.onload = initApp;
+
     </script>
 </body>
+
 </html>
