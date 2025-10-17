@@ -1581,10 +1581,10 @@
     <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { 
-  getFirestore, collection, addDoc, onSnapshot, serverTimestamp 
+  getFirestore, collection, addDoc, getDocs, onSnapshot, serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ✅ إعداد Firebase
+// إعداد Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
   authDomain: "smart-hsr-6c2cf.firebaseapp.com",
@@ -1593,7 +1593,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🟢 تحويل الصورة إلى Base64
+// تحويل الصورة إلى Base64
 function toBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -1603,51 +1603,62 @@ function toBase64(file) {
   });
 }
 
-// 🟢 حفظ الملاحظة
+// حفظ الملاحظة
 async function saveObservation(title, description, file) {
-  try {
-    let imageBase64 = null;
-    if (file) imageBase64 = await toBase64(file);
-    await addDoc(collection(db, "observations"), {
-      title,
-      description,
-      imageBase64,
-      createdAt: serverTimestamp()
-    });
-    alert("✅ تم حفظ الملاحظة بنجاح!");
-  } catch (error) {
-    console.error("❌ خطأ أثناء الحفظ:", error);
-  }
+  let imageBase64 = null;
+  if (file) imageBase64 = await toBase64(file);
+
+  await addDoc(collection(db, "observations"), {
+    title,
+    description,
+    imageBase64,
+    createdAt: serverTimestamp(),
+  });
+
+  alert("✅ تم حفظ الملاحظة بنجاح!");
 }
 
-// 🟢 عرض الملاحظات (بشكل مباشر + مؤجل قليلًا بعد التحميل)
-function startObservationsListener() {
+// تحميل الملاحظات عند فتح الصفحة (قراءة فورية)
+async function loadObservations() {
+  const snapshot = await getDocs(collection(db, "observations"));
+  renderObservations(snapshot);
+}
+
+// الاستماع المباشر لأي تغييرات في Firestore
+function listenForChanges() {
+  const q = collection(db, "observations");
+  onSnapshot(q, (snapshot) => {
+    renderObservations(snapshot);
+  });
+}
+
+// دالة العرض في الصفحة
+function renderObservations(snapshot) {
   const container = document.getElementById("observationsContainer");
   if (!container) return;
-
-  // ننتظر ثانيتين قبل التشغيل لتأكيد الاتصال بفايربيس
-  setTimeout(() => {
-    const q = collection(db, "observations");
-    onSnapshot(q, (snapshot) => {
-      container.innerHTML = "";
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const card = document.createElement("div");
-        card.classList.add("observation-card");
-        card.innerHTML = `
-          <h3>${data.title}</h3>
-          <p>${data.description || ""}</p>
-          ${data.imageBase64 ? `<img src="${data.imageBase64}" style="max-width:200px;border-radius:10px;">` : ""}
-          <small>${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString("ar-SA") : ""}</small>
-          <hr>
-        `;
-        container.appendChild(card);
-      });
-    });
-  }, 2000);
+  container.innerHTML = "";
+  snapshot.forEach((doc) => {
+    const data = doc.data();
+    const card = document.createElement("div");
+    card.classList.add("observation-card");
+    card.innerHTML = `
+      <h3>${data.title}</h3>
+      <p>${data.description || ""}</p>
+      ${data.imageBase64 ? `<img src="${data.imageBase64}" style="max-width:200px;border-radius:10px;">` : ""}
+      <small>${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString("ar-SA") : ""}</small>
+      <hr>
+    `;
+    container.appendChild(card);
+  });
 }
 
-window.addEventListener("DOMContentLoaded", startObservationsListener);
+// التفعيل عند تحميل الصفحة
+window.addEventListener("DOMContentLoaded", async () => {
+  await loadObservations();   // تحميل أولي من القاعدة
+  listenForChanges();         // متابعة أي تحديثات مباشرة
+});
+
+// جعل الدالة متاحة للأزرار
 window.saveObservation = saveObservation;
 </script>
 
