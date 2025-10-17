@@ -1582,92 +1582,108 @@
 
     </script>
 
-  <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
-// إعداد Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
-  authDomain: "smart-hsr-6c2cf.firebaseapp.com",
-  projectId: "smart-hsr-6c2cf"
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  // إعداد Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
+    authDomain: "smart-hsr-6c2cf.firebaseapp.com",
+    databaseURL: "https://smart-hsr-6c2cf-default-rtdb.firebaseio.com",
+    projectId: "smart-hsr-6c2cf",
+    storageBucket: "smart-hsr-6c2cf.firebasestorage.app",
+    messagingSenderId: "399213527987",
+    appId: "1:399213527987:web:4531958edfe9dbb95a81c6"
+  };
 
-// تحويل الصورة إلى Base64 لتخزينها داخل Firestore
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-// حفظ الملاحظة فعليًا في Firestore
-async function saveObservation(title, status, file) {
-  try {
-    let imageData = null;
-    if (file) imageData = await toBase64(file);
-
-    await addDoc(collection(db, "observations"), {
-      title,
-      status,
-      imageData,
-      createdAt: serverTimestamp()
+  // تحويل الصورة إلى Base64 لتخزينها داخل Firestore
+  function toBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
     });
-
-    alert("✅ تم حفظ الملاحظة بنجاح!");
-    loadObservations();
-  } catch (error) {
-    console.error("❌ خطأ أثناء الحفظ:", error);
   }
-}
 
-// تحميل جميع الملاحظات عند فتح الصفحة
-async function loadObservations() {
-  const snapshot = await getDocs(collection(db, "observations"));
-  const listContainer = document.getElementById("observationsContainer");
-  if (!listContainer) return;
-  listContainer.innerHTML = "";
+  // حفظ الملاحظة فعليًا في Firestore
+  async function saveObservation(title, status, file) {
+    try {
+      let imageData = null;
+      if (file) imageData = await toBase64(file);
 
-  snapshot.forEach((doc) => {
-    const data = doc.data();
-    const div = document.createElement("div");
-    div.classList.add("observation-card");
-  div.classList.add("bg-white", "rounded-2xl", "p-4", "shadow-md", "border", "border-gray-200", "my-4");
-div.innerHTML = `
-  <div class="flex items-center justify-between mb-2">
-    <h3 class="font-bold text-lg text-navy-700">${data.title}</h3>
-    <span class="px-3 py-1 rounded-full text-sm font-semibold ${data.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">
-      ${data.status}
-    </span>
-  </div>
-  ${data.imageData ? `<img src="${data.imageData}" class="w-full rounded-lg mb-3" alt="Observation Image">` : ""}
-  <small class="text-gray-500">🕒 ${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString("ar-SA") : ""}</small>
-`;
+      await addDoc(collection(db, "observations"), {
+        title,
+        status,
+        imageData,
+        createdAt: serverTimestamp()
+      });
 
-    listContainer.appendChild(div);
+      alert("✅ تم حفظ الملاحظة بنجاح!");
+      loadObservations();
+    } catch (error) {
+      console.error("❌ خطأ أثناء الحفظ:", error);
+    }
+  }
+
+  // تحميل جميع الملاحظات عند فتح الصفحة
+  async function loadObservations() {
+    const snapshot = await getDocs(collection(db, "observations"));
+    const listContainer = document.getElementById("observationsContainer");
+    if (!listContainer) return;
+    listContainer.innerHTML = "";
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const div = document.createElement("div");
+      div.classList.add(
+        "bg-white",
+        "rounded-2xl",
+        "p-4",
+        "shadow-md",
+        "border",
+        "border-gray-200",
+        "my-4"
+      );
+      div.innerHTML = `
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-bold text-lg text-navy-700">${data.title}</h3>
+          <span class="px-3 py-1 rounded-full text-sm font-semibold ${
+            data.status === "PENDING"
+              ? "bg-yellow-100 text-yellow-800"
+              : "bg-green-100 text-green-800"
+          }">${data.status}</span>
+        </div>
+        ${data.imageData ? `<img src="${data.imageData}" class="w-full rounded-lg mb-3">` : ""}
+        <small class="text-gray-500">
+          🕒 ${
+            data.createdAt
+              ? new Date(data.createdAt.seconds * 1000).toLocaleString("ar-SA")
+              : ""
+          }
+        </small>
+      `;
+      listContainer.appendChild(div);
+    });
+  }
+
+  // تحميل الملاحظات مباشرة بعد تهيئة Firebase
+  window.addEventListener("DOMContentLoaded", () => {
+    console.log("📥 تم تحميل الملاحظات من Firestore عند فتح الصفحة");
+    loadObservations();
   });
-}
-
-// تحميل الملاحظات مباشرة عند تشغيل الصفحة
-window.addEventListener("DOMContentLoaded", () => {
-  loadObservations();
-  console.log("📥 تم تحميل الملاحظات من Firestore عند فتح الصفحة");
-});
-loadObservations();
-
 </script>
-
-
 </body>
+</html>
 
 </html>
