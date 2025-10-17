@@ -1572,6 +1572,8 @@
 
         function initApp() {
             calculateAndRenderAll();
+        
+                 loadObservations(); // تحميل الملاحظات من Firestore عند فتح الصفحة
             if (currentSelectedObservation && currentSelectedObservation.isComparative) {
                 setupImageComparison();
             }
@@ -1677,13 +1679,10 @@
     });
   }
 
-  // تحميل الملاحظات مباشرة بعد تهيئة Firebase
-  window.addEventListener("DOMContentLoaded", () => {
-    console.log("📥 تم تحميل الملاحظات من Firestore عند فتح الصفحة");
-    loadObservations();
-  });
+
+    
 </script>
 </body>
 </html>
 
-</html>
+
