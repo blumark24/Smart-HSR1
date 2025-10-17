@@ -1152,8 +1152,29 @@ window.addEventListener("DOMContentLoaded", () => {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 </script>
-<div id="smartInputModal">...</div>
-<div id="loginModal">...</div>
+
+    
+<!-- ✅ نافذة الإدخال الذكي -->
+<div id="smartInputModal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000;">
+  <div class="modal-content" style="background:white; border-radius:20px; padding:30px; max-width:500px; width:90%; text-align:center; position:relative;">
+    <span class="close-btn" onclick="closeModal('smartInputModal')" style="position:absolute; top:15px; right:20px; font-size:26px; cursor:pointer;">&times;</span>
+    <h2 style="color:#0ea5a1; font-weight:900;">🧠 الإدخال الذكي للملاحظات</h2>
+    <p style="color:#555; margin-top:10px;">أضف ملاحظتك الجديدة ليقوم النظام بتحليلها وتخزينها مباشرة.</p>
+    <textarea placeholder="اكتب الملاحظة هنا..." style="width:100%; height:120px; border-radius:10px; border:1px solid #ccc; margin-top:15px; padding:10px; font-family:'Tajawal';"></textarea>
+    <button onclick="closeModal('smartInputModal')" style="margin-top:15px; background-color:#0ea5a1; color:white; border:none; border-radius:10px; padding:10px 20px; cursor:pointer;">إرسال</button>
+  </div>
+</div>
+
+<!-- ✅ نافذة تسجيل الدخول -->
+<div id="loginModal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000;">
+  <div class="modal-content" style="background:white; border-radius:20px; padding:30px; max-width:400px; width:90%; text-align:center; position:relative;">
+    <span class="close-btn" onclick="closeModal('loginModal')" style="position:absolute; top:15px; right:20px; font-size:26px; cursor:pointer;">&times;</span>
+    <h2 style="color:#0b2b3a; font-weight:900;">👤 تسجيل الدخول</h2>
+    <input type="email" placeholder="البريد الإلكتروني" style="width:100%; margin-top:15px; padding:10px; border:1px solid #ccc; border-radius:10px; font-family:'Tajawal';">
+    <input type="password" placeholder="كلمة المرور" style="width:100%; margin-top:10px; padding:10px; border:1px solid #ccc; border-radius:10px; font-family:'Tajawal';">
+    <button style="margin-top:20px; background-color:#0b2b3a; color:white; border:none; border-radius:10px; padding:10px 25px; cursor:pointer;">دخول</button>
+  </div>
+</div>
 
 </body>
 </html>
