@@ -1093,6 +1093,44 @@ function showObservationDetail(id) {
 window.addEventListener("DOMContentLoaded", loadObservations);
 
 </script>
+// ✅ إعادة تفعيل أزرار الواجهات (الإدخال الذكي وتسجيل الدخول)
+
+// فتح نافذة الإدخال الذكي
+function openSmartInput() {
+  const modal = document.getElementById("smartInputModal");
+  if (!modal) {
+    alert("⚠️ نافذة الإدخال الذكي غير موجودة في الصفحة!");
+    return;
+  }
+  modal.style.display = "flex";
+  console.log("🧠 تم فتح نافذة الإدخال الذكي");
+}
+
+// إغلاق أي نافذة
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) modal.style.display = "none";
+}
+
+// فتح نافذة تسجيل الدخول (إن وُجدت)
+function openLogin() {
+  const modal = document.getElementById("loginModal");
+  if (!modal) {
+    alert("⚠️ نافذة تسجيل الدخول غير موجودة!");
+    return;
+  }
+  modal.style.display = "flex";
+  console.log("👤 تم فتح نافذة تسجيل الدخول");
+}
+
+// تفعيل الأزرار إذا وُجدت
+window.addEventListener("DOMContentLoaded", () => {
+  const addBtn = document.getElementById("addObservationBtn");
+  const loginBtn = document.getElementById("loginBtn");
+  
+  if (addBtn) addBtn.addEventListener("click", openSmartInput);
+  if (loginBtn) loginBtn.addEventListener("click", openLogin);
+});
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
