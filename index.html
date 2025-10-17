@@ -1655,6 +1655,85 @@
     console.log("✅ تمت قراءة الملاحظات من Firestore:", window.observationsData);
   });
 </script>
+
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
+    authDomain: "smart-hsr-6c2cf.firebaseapp.com",
+    databaseURL: "https://smart-hsr-6c2cf-default-rtdb.firebaseio.com",
+    projectId: "smart-hsr-6c2cf",
+    storageBucket: "smart-hsr-6c2cf.firebasestorage.app",
+    messagingSenderId: "399213527987",
+    appId: "1:399213527987:web:4531958edfe9dbb95a81c6"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 🔹 تحميل الملاحظات عند فتح الصفحة
+  async function loadObservations() {
+    const snapshot = await getDocs(collection(db, "observations"));
+    const data = [];
+    snapshot.forEach(doc => data.push(doc.data()));
+    console.log("Loaded observations:", data);
+    renderObservations(data);
+  }
+
+  // 🔹 حفظ ملاحظة جديدة مع الصورة
+  async function saveObservation(title, description, file) {
+    let imageBase64 = null;
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        imageBase64 = e.target.result;
+        await addDoc(collection(db, "observations"), {
+          title,
+          description,
+          imageBase64,
+          createdAt: serverTimestamp()
+        });
+        alert("✅ تم حفظ الملاحظة والصورة بنجاح!");
+        loadObservations();
+      };
+      reader.readAsDataURL(file);
+    } else {
+      await addDoc(collection(db, "observations"), {
+        title,
+        description,
+        createdAt: serverTimestamp()
+      });
+      alert("✅ تم حفظ الملاحظة بدون صورة!");
+      loadObservations();
+    }
+  }
+
+  // 🔹 دالة عرض الملاحظات في الصفحة (تحافظ على التصميم)
+  function renderObservations(observations) {
+    const container = document.getElementById("observationsContainer");
+    if (!container) return;
+    container.innerHTML = "";
+    observations.forEach(obs => {
+      const div = document.createElement("div");
+      div.classList.add("observation-card");
+      div.innerHTML = `
+        <h3>${obs.title}</h3>
+        <p>${obs.description || ""}</p>
+        ${obs.imageBase64 ? `<img src="${obs.imageBase64}" style="max-width:200px;">` : ""}
+        <hr>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // استدعاء عند تحميل الصفحة
+  window.addEventListener("DOMContentLoaded", loadObservations);
+  window.saveObservation = saveObservation;
+</script>
+
 </body>
 
 </html>
