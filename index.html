@@ -1577,48 +1577,58 @@
         window.onload = initApp;
 
     </script>
-    <script type="module">
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
     authDomain: "smart-hsr-6c2cf.firebaseapp.com",
-    databaseURL: "https://smart-hsr-6c2cf-default-rtdb.firebaseio.com",
     projectId: "smart-hsr-6c2cf",
-    storageBucket: "smart-hsr-6c2cf.firebasestorage.app",
-    messagingSenderId: "399213527987",
-    appId: "1:399213527987:web:4531958edfe9dbb95a81c6"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // حفظ ملاحظة جديدة (بصورة Base64)
-  async function saveObservation(title, desc, file) {
-    let fileBase64 = "";
+  // 🟢 تحميل الملاحظات عند فتح الصفحة
+  window.addEventListener("DOMContentLoaded", async () => {
+    const snapshot = await getDocs(collection(db, "observations"));
+    window.observationsData = [];
+    snapshot.forEach(doc => {
+      window.observationsData.push({ id: doc.id, ...doc.data() });
+    });
+
+    // استدعاء دالة العرض الموجودة عندك لتحديث الواجهة
+    if (typeof renderObservationsList === "function") {
+      renderObservationsList(window.observationsData);
+    }
+
+    console.log("✅ تم تحميل الملاحظات من Firestore:", window.observationsData);
+  });
+
+  // 🟢 دالة حفظ الملاحظات (مع الصورة base64)
+  window.saveObservation = async function(title, desc, file) {
+    let base64 = "";
     if (file) {
       const reader = new FileReader();
       reader.onload = async (e) => {
-        fileBase64 = e.target.result;
+        base64 = e.target.result;
         await addDoc(collection(db, "observations"), {
-          title: title,
-          description: desc,
-          fileBase64: fileBase64,
-          createdAt: new Date()
+          title, desc,
+          image: base64,
+          createdAt: serverTimestamp(),
         });
         alert("✅ تم حفظ الملاحظة بنجاح!");
       };
       reader.readAsDataURL(file);
     } else {
       await addDoc(collection(db, "observations"), {
-        title: title,
-        description: desc,
-        createdAt: new Date()
+        title, desc,
+        createdAt: serverTimestamp(),
       });
       alert("✅ تم حفظ الملاحظة بدون مرفق.");
     }
-  }
+  };
 </script>
 
 </body>
