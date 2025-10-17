@@ -1097,7 +1097,6 @@ window.addEventListener("DOMContentLoaded", loadObservations);
 <script>
 // ✅ إعادة تفعيل أزرار الواجهات (الإدخال الذكي وتسجيل الدخول)
 
-
 // فتح نافذة الإدخال الذكي
 function openSmartInput() {
   const modal = document.getElementById("smartInputModal");
@@ -1134,6 +1133,7 @@ window.addEventListener("DOMContentLoaded", () => {
   if (addBtn) addBtn.addEventListener("click", openSmartInput);
   if (loginBtn) loginBtn.addEventListener("click", openLogin);
 });
+</script>  <!-- ✅ هذا السطر ضروري -->
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
@@ -1153,8 +1153,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const db = getFirestore(app);
 </script>
 
-
 </body>
 </html>
+
 
 
