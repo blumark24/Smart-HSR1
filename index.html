@@ -1576,7 +1576,323 @@
 
         window.onload = initApp;
 
-    </script>
+  
+</script>
+
+    <!-- Smart HSR — Firebase + Firestore + Storage + Auth (v12.4.0) -->
+<script type="module">
+  // ===== Firebase SDKs (نسخة ثابتة موجودة) =====
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+    signOut, setPersistence, browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, doc, updateDoc, onSnapshot,
+    serverTimestamp, query, orderBy, getDoc, getDocs
+  } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+  import {
+    getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL, deleteObject
+  } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-storage.js";
+
+  // ===== Project Config (خاص بمشروعك Smart HSR) =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
+    authDomain: "smart-hsr-6c2cf.firebaseapp.com",
+    databaseURL: "https://smart-hsr-6c2cf-default-rtdb.firebaseio.com",
+    projectId: "smart-hsr-6c2cf",
+    storageBucket: "smart-hsr-6c2cf.firebasestorage.app",
+    messagingSenderId: "399213527987",
+    appId: "1:399213527987:web:4531958edfe9dbb95a81c6"
+  };
+
+  // ===== Init =====
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+  setPersistence(auth, browserLocalPersistence).catch(()=>{});
+
+  // حماية الصفحة: لو ما في مستخدم → يحوّل على login.html
+  onAuthStateChanged(auth, (user) => {
+    try {
+      const here = (location.pathname || '').toLowerCase();
+      if (!user && !here.endsWith('login.html')) window.location.href = 'login.html';
+    } catch {}
+  });
+
+  // كائن موحّد لاستخدامه من أي سكربت موجود لديك
+  window.SmartHSR = {
+    auth, db, storage,
+    // دخول/تسجيل قياسي (لو احتجته في أزرارك الحالية)
+    emailSignup: (email,pass)=>createUserWithEmailAndPassword(auth,email,pass).then(c=>c.user),
+    emailLogin: (email,pass)=>signInWithEmailAndPassword(auth,email,pass).then(c=>c.user),
+    logout: ()=>signOut(auth),
+
+    // بث مباشر للملاحظات (Firestore → مصفوفة الواجهة)
+    observeObservations(cb){
+      const qy = query(collection(db,'observations'), orderBy('createdAt','desc'));
+      return onSnapshot(qy, s=>cb(s.docs.map(d=>({id:d.id, ...d.data()}))));
+    },
+
+    // إضافة ملاحظة + رفع ملف (صورة/فيديو) اختياري
+    async addObservation({type,title,details,priority,lat,lng,file}={}){
+      const isVideo = file ? (file.type||'').startsWith('video') : false;
+      const mediaMime = file ? file.type : null;
+      const refDoc = await addDoc(collection(db,'observations'), {
+        type: type||'QUALITY',
+        title: title||'—',
+        details: details||'',
+        status: 'PENDING',
+        location: (lat!=null && lng!=null) ? `${(+lat).toFixed(5)}, ${(+lng).toFixed(5)}` : '',
+        actionPlan: null,
+        riskAssessment: { priority: (priority||'Medium'), timeframe: (priority==='High'?'24h':'72h') },
+        hasImage: !!file, isVideo, mediaUrl: null, mediaMime,
+        afterImageUrl: null, resolutionNote: null,
+        createdAt: serverTimestamp()
+      });
+
+      if(file){
+        const path = `observations/${refDoc.id}/${isVideo?'before.mp4':'before.jpg'}`;
+        const r = ref(storage, path);
+        await uploadBytesResumable(r, file);
+        const url = await getDownloadURL(r);
+        await updateDoc(doc(db,'observations',refDoc.id), { mediaUrl: url });
+      }
+      return refDoc.id;
+    },
+
+    updateStatus: (id,status)=>updateDoc(doc(db,'observations',id), { status }),
+
+    async completeObservation(id, afterFile, note){
+      if(afterFile){
+        const p = `observations/${id}/after.jpg`;
+        const r = ref(storage, p);
+        await uploadBytes(r, afterFile);
+        const url = await getDownloadURL(r);
+        await updateDoc(doc(db,'observations',id), {
+          status:'COMPLETED',
+          afterImageUrl:url,
+          resolutionNote: (note || `تم الإغلاق في ${new Date().toLocaleString('ar-SA')}`)
+        });
+      } else {
+        await updateDoc(doc(db,'observations',id), {
+          status:'COMPLETED',
+          resolutionNote: (note || `تم الإغلاق في ${new Date().toLocaleString('ar-SA')}`)
+        });
+      }
+    },
+
+    async deleteObservation(id){
+      await updateDoc(doc(db,'observations',id), {}); // مجرد تأكيد وجود الوثيقة
+      // حذف الوثيقة + الملفات (لو موجودة)
+      await import('https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js')
+      .then(async()=>{ const {deleteDoc} = await import('https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js'); await deleteDoc(doc(db,'observations',id)); });
+      await deleteObject(ref(storage, `observations/${id}/before.jpg`)).catch(()=>{});
+      await deleteObject(ref(storage, `observations/${id}/after.jpg`)).catch(()=>{});
+    },
+
+    async getKpis(){
+      const s = await getDocs(query(collection(db,'observations')));
+      const arr = s.docs.map(d=>({id:d.id, ...d.data()}));
+      const total = arr.length;
+      const open = arr.filter(x=>x.status!=='COMPLETED').length;
+      const closed = total - open;
+      const withImg = arr.filter(x=>x.mediaUrl).length;
+      return { total, open, closed, withImg };
+    }
+  };
+
+  console.log('[SmartHSR] Firebase Patch ready.');
+</script>
+
+<!-- Smart HSR — ربط البيانات الحيّة مع واجهتك (بدون تغيير أي ستايل/DOM) -->
+<script>
+  (function bindLiveList(){
+    if(!window.SmartHSR) return;
+    // ملاحظة: نتوقع أن عندك المتغيرات/الدوال التالية في الكود الأصلي:
+    // observationsData, handleFilterChange, showObservationDetail, calculateKPIs, renderKPIs
+    const keepSelection = ()=> (window.currentSelectedObservation && window.currentSelectedObservation.id) || null;
+
+    window.SmartHSR.observeObservations((rows)=>{
+      // تحويل بيانات Firestore لشكل الواجهة الحالي
+      const mapped = rows.map(r=>{
+        let ts = Date.now();
+        try {
+          if (r.createdAt?.toMillis) ts = r.createdAt.toMillis();
+          else if (r.createdAt?.seconds) ts = r.createdAt.seconds*1000;
+        } catch {}
+        const dateStr = new Date(ts).toISOString().slice(0,10);
+        return {
+          id: r.id,
+          type: r.type || 'QUALITY',
+          date: dateStr,
+          title: r.title || '—',
+          status: r.status || 'PENDING',
+          details: r.details || '',
+          hasImage: !!r.mediaUrl,
+          isComparative: !!r.afterImageUrl,
+          location: r.location || '',
+          isVideo: !!r.isVideo,
+          imagePath: r.mediaUrl || '',
+          fileMimeType: r.mediaMime || '',
+          actionPlan: r.actionPlan || '',
+          riskAssessment: r.riskAssessment || { priority: 'Medium', timeframe: '72h' },
+          resolutionNote: r.resolutionNote || null,
+          afterImagePath: r.afterImageUrl || null,
+          createdAt: ts,
+          ai: r.ai || null
+        };
+      });
+
+      const selId = keepSelection();
+      if (Array.isArray(window.observationsData)) {
+        window.observationsData.length = 0;
+        Array.prototype.push.apply(window.observationsData, mapped);
+      }
+
+      if (typeof window.handleFilterChange === 'function') window.handleFilterChange();
+      if (selId && typeof window.showObservationDetail === 'function') {
+        const found = (window.observationsData || []).find(o=>o.id===selId);
+        if (found) window.showObservationDetail(selId);
+      }
+
+      try {
+        const el = document.getElementById('userInfo');
+        if (el) el.textContent = 'بيانات مباشرة من Firestore ✅';
+      } catch {}
+    });
+  })();
+</script>
+
+<!-- Smart HSR — Gemini Vision (مفتاحك مدمج) -->
+<script type="module">
+  const GEMINI_API_KEY = "AIzaSyCstRnAY_9TO9f4l49TTHEjVaoqjtZriJk"; // مفتاحك
+
+  const safeLog = (...a)=>{ try{console.log('[SmartHSR-AI]',...a);}catch{} };
+  const safeErr = (...a)=>{ try{console.error('[SmartHSR-AI]',...a);}catch{} };
+
+  async function urlToBase64(url){
+    const resp = await fetch(url);
+    const blob = await resp.blob();
+    return new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onloadend = ()=>resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function extractAI(text){
+    const out = { summary: (text||'').trim() };
+    const lc = (text||'').toLowerCase();
+    if(lc.includes('حفر') || lc.includes('هبوط') || lc.includes('asphalt') || lc.includes('pothole')) out.category = 'PAVEMENT';
+    if(lc.includes('إنارة') || lc.includes('light')) out.category = (out.category ? out.category + '+LIGHT' : 'LIGHT');
+    if(lc.includes('نفايات') || lc.includes('waste')) out.category = (out.category ? out.category + '+WASTE' : 'WASTE');
+    if(lc.includes('عالي') || lc.includes('high')) out.severity = 'HIGH';
+    else if(lc.includes('متوسط') || lc.includes('medium')) out.severity = 'MEDIUM';
+    else out.severity = 'LOW';
+    out.confidence = lc.length > 50 ? 0.8 : 0.6;
+    const m = (text||'').match(/(?:ينبغي|يُنصح|التوصية|المعالجة|fix|repair|inspect|clean).{0,140}/i);
+    if(m) out.action = m[0];
+    return out;
+  }
+
+  async function geminiAnalyzeImage({mediaUrl, mediaMime, title, details}){
+    if(!GEMINI_API_KEY){
+      return { summary:"(محاكاة) تحليل مبدئي", category:"MAINTENANCE", severity:"MEDIUM", action:"فحص خلال 48 ساعة", confidence:0.7 };
+    }
+    try{
+      const base64 = await urlToBase64(mediaUrl);
+      const body = {
+        contents:[{
+          parts:[
+            { text: `حلّل الصورة لملاحظة طرق. أعد: ملخص، تصنيف، خطورة (LOW/MEDIUM/HIGH)، توصية قصيرة بالعربية.\nالعنوان: ${title||'-'}\nالوصف: ${details||'-'}` },
+            { inline_data: { mime_type: mediaMime || 'image/jpeg', data: base64 } }
+          ]
+        }]
+      };
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,{
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)
+      });
+      const json = await res.json();
+      const text = json?.candidates?.[0]?.content?.parts?.map(p=>p.text).join('\n') || '';
+      return extractAI(text);
+    }catch(e){
+      safeErr('Gemini failed', e);
+      return { summary:"تعذّر التحليل", severity:"LOW", confidence:0.0 };
+    }
+  }
+
+  async function analyzeObservationById(id){
+    try{
+      const { doc, getDoc, updateDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js");
+      const dref = doc(SmartHSR.db, 'observations', id);
+      const snap = await getDoc(dref);
+      if(!snap.exists()) return false;
+      const data = snap.data();
+      if(!data?.mediaUrl) return false;
+
+      const ai = await geminiAnalyzeImage({
+        mediaUrl: data.mediaUrl, mediaMime: data.mediaMime, title: data.title, details: data.details
+      });
+      await updateDoc(dref, {
+        ai: {
+          summary: ai.summary || null,
+          category: ai.category || null,
+          severity: ai.severity || null,
+          action: ai.action || null,
+          confidence: ai.confidence ?? null,
+          analyzedAt: serverTimestamp()
+        }
+      });
+      return true;
+    }catch(e){
+      safeErr('analyzeObservationById error', e);
+      return false;
+    }
+  }
+
+  // اجعلها متاحة عالمياً بدون لمس واجهتك
+  window.SmartHSR = Object.assign(window.SmartHSR||{}, {
+    analyzeNow: analyzeObservationById
+  });
+
+  // اجعل زر التحليل الحالي يقرأ من AI إن وُجد أو يطلب التحليل
+  window.analyzeImage = async function(tool){
+    const obs = window.currentSelectedObservation;
+    const titleEl = document.getElementById('aiResultTitle');
+    const box = document.getElementById('aiResultContainer');
+    const content = document.getElementById('aiResultContent');
+    const titleMap = {'vision':'تحليل الرؤية (Vision)', 'root-cause':'تحليل السبب الجذري'};
+
+    if (!titleEl || !box || !content) return;
+    titleEl.textContent = `نتائج ${titleMap[tool]||'التحليل'}:`;
+    box.classList.remove('hidden');
+
+    if (tool !== 'vision') {
+      content.innerHTML = `<div class="text-gray-600">سيتم اشتقاق السبب الجذري من ملخص AI.</div>`;
+      return;
+    }
+
+    if (obs?.ai) {
+      const conf = (obs.ai.confidence!=null) ? Math.round(obs.ai.confidence*100)+'%' : '-';
+      content.innerHTML = `
+        <div class="communication-draft">
+          <b>ملخص:</b> ${obs.ai.summary||'-'}<br>
+          <b>تصنيف:</b> ${obs.ai.category||'-'}<br>
+          <b>الخطورة:</b> ${obs.ai.severity||'-'} • <b>الثقة:</b> ${conf}<br>
+          <b>توصية:</b> ${obs.ai.action||'-'}
+        </div>`;
+    } else if (obs?.imagePath) {
+      content.innerHTML = `<div class="text-gray-600">جاري طلب التحليل للصورة… أعد النقر بعد ثوانٍ.</div>`;
+      try { await window.SmartHSR.analyzeNow(obs.id); } catch(e){ console.error(e); }
+    } else {
+      content.innerHTML = `<div class="text-gray-600">لا توجد صورة مرتبطة بهذه الملاحظة.</div>`;
+    }
+  };
+</script>
+
 </body>
 
 </html>
