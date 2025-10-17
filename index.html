@@ -1577,162 +1577,78 @@
         window.onload = initApp;
 
     </script>
+
+    <!-- Firebase: حفظ الملاحظات مع الصور داخل Firestore -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
-    authDomain: "smart-hsr-6c2cf.firebaseapp.com",
-    projectId: "smart-hsr-6c2cf",
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
+  authDomain: "smart-hsr-6c2cf.firebaseapp.com",
+  projectId: "smart-hsr-6c2cf"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  // 🟢 تحميل الملاحظات عند فتح الصفحة
-  window.addEventListener("DOMContentLoaded", async () => {
-    const snapshot = await getDocs(collection(db, "observations"));
-    window.observationsData = [];
-    snapshot.forEach(doc => {
-      window.observationsData.push({ id: doc.id, ...doc.data() });
-    });
+// 🟢 تحويل الصورة إلى Base64
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
 
-    // استدعاء دالة العرض الموجودة عندك لتحديث الواجهة
-    if (typeof renderObservationsList === "function") {
-      renderObservationsList(window.observationsData);
-    }
+// 🟢 حفظ الملاحظة مع الصورة داخل Firestore
+async function saveObservation(title, description, file) {
+  let imageBase64 = null;
+  if (file) imageBase64 = await toBase64(file);
 
-    console.log("✅ تم تحميل الملاحظات من Firestore:", window.observationsData);
+  await addDoc(collection(db, "observations"), {
+    title,
+    description,
+    imageBase64,
+    createdAt: serverTimestamp(),
   });
 
-  // 🟢 دالة حفظ الملاحظات (مع الصورة base64)
-  window.saveObservation = async function(title, desc, file) {
-    let base64 = "";
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        base64 = e.target.result;
-        await addDoc(collection(db, "observations"), {
-          title, desc,
-          image: base64,
-          createdAt: serverTimestamp(),
-        });
-        alert("✅ تم حفظ الملاحظة بنجاح!");
-      };
-      reader.readAsDataURL(file);
-    } else {
-      await addDoc(collection(db, "observations"), {
-        title, desc,
-        createdAt: serverTimestamp(),
-      });
-      alert("✅ تم حفظ الملاحظة بدون مرفق.");
-    }
-  };
-</script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  alert("✅ تم حفظ الملاحظة والصورة بنجاح!");
+  loadObservations();
+}
 
-  const app = initializeApp({
-    apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
-    authDomain: "smart-hsr-6c2cf.firebaseapp.com",
-    projectId: "smart-hsr-6c2cf"
+// 🟢 تحميل الملاحظات من قاعدة البيانات وعرضها
+async function loadObservations() {
+  const querySnapshot = await getDocs(collection(db, "observations"));
+  const container = document.getElementById("observationsContainer");
+  if (!container) return;
+  container.innerHTML = "";
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    const card = document.createElement("div");
+    card.classList.add("observation-card");
+    card.innerHTML = `
+      <h3>${data.title}</h3>
+      <p>${data.description || ""}</p>
+      ${data.imageBase64 ? `<img src="${data.imageBase64}" style="max-width:200px;border-radius:10px;">` : ""}
+      <small>${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString("ar-SA") : ""}</small>
+      <hr>
+    `;
+    container.appendChild(card);
   });
+}
 
-  const db = getFirestore(app);
-
-  // 🟢 جلب الملاحظات من Firestore بعد تحميل الصفحة
-  window.addEventListener("DOMContentLoaded", async () => {
-    const snapshot = await getDocs(collection(db, "observations"));
-    window.observationsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-    // دالة العرض الحالية في موقعك
-    if (typeof renderObservationsList === "function") {
-      renderObservationsList(window.observationsData);
-    }
-
-    console.log("✅ تمت قراءة الملاحظات من Firestore:", window.observationsData);
-  });
+window.addEventListener("DOMContentLoaded", loadObservations);
+window.saveObservation = saveObservation;
 </script>
-
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
-    authDomain: "smart-hsr-6c2cf.firebaseapp.com",
-    databaseURL: "https://smart-hsr-6c2cf-default-rtdb.firebaseio.com",
-    projectId: "smart-hsr-6c2cf",
-    storageBucket: "smart-hsr-6c2cf.firebasestorage.app",
-    messagingSenderId: "399213527987",
-    appId: "1:399213527987:web:4531958edfe9dbb95a81c6"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // 🔹 تحميل الملاحظات عند فتح الصفحة
-  async function loadObservations() {
-    const snapshot = await getDocs(collection(db, "observations"));
-    const data = [];
-    snapshot.forEach(doc => data.push(doc.data()));
-    console.log("Loaded observations:", data);
-    renderObservations(data);
-  }
-
-  // 🔹 حفظ ملاحظة جديدة مع الصورة
-  async function saveObservation(title, description, file) {
-    let imageBase64 = null;
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        imageBase64 = e.target.result;
-        await addDoc(collection(db, "observations"), {
-          title,
-          description,
-          imageBase64,
-          createdAt: serverTimestamp()
-        });
-        alert("✅ تم حفظ الملاحظة والصورة بنجاح!");
-        loadObservations();
-      };
-      reader.readAsDataURL(file);
-    } else {
-      await addDoc(collection(db, "observations"), {
-        title,
-        description,
-        createdAt: serverTimestamp()
-      });
-      alert("✅ تم حفظ الملاحظة بدون صورة!");
-      loadObservations();
-    }
-  }
-
-  // 🔹 دالة عرض الملاحظات في الصفحة (تحافظ على التصميم)
-  function renderObservations(observations) {
-    const container = document.getElementById("observationsContainer");
-    if (!container) return;
-    container.innerHTML = "";
-    observations.forEach(obs => {
-      const div = document.createElement("div");
-      div.classList.add("observation-card");
-      div.innerHTML = `
-        <h3>${obs.title}</h3>
-        <p>${obs.description || ""}</p>
-        ${obs.imageBase64 ? `<img src="${obs.imageBase64}" style="max-width:200px;">` : ""}
-        <hr>
-      `;
-      container.appendChild(div);
-    });
-  }
-
-  // استدعاء عند تحميل الصفحة
-  window.addEventListener("DOMContentLoaded", loadObservations);
-  window.saveObservation = saveObservation;
-</script>
+<div style="padding:20px;">
+  <input type="text" id="title" placeholder="عنوان الملاحظة"><br>
+  <textarea id="desc" placeholder="التفاصيل"></textarea><br>
+  <input type="file" id="img"><br>
+  <button onclick="saveObservation(title.value, desc.value, img.files[0])">💾 حفظ الملاحظة</button>
+</div>
+<div id="observationsContainer"></div>
 
 </body>
 
