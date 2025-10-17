@@ -1630,7 +1630,31 @@
     }
   };
 </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+  const app = initializeApp({
+    apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
+    authDomain: "smart-hsr-6c2cf.firebaseapp.com",
+    projectId: "smart-hsr-6c2cf"
+  });
+
+  const db = getFirestore(app);
+
+  // 🟢 جلب الملاحظات من Firestore بعد تحميل الصفحة
+  window.addEventListener("DOMContentLoaded", async () => {
+    const snapshot = await getDocs(collection(db, "observations"));
+    window.observationsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    // دالة العرض الحالية في موقعك
+    if (typeof renderObservationsList === "function") {
+      renderObservationsList(window.observationsData);
+    }
+
+    console.log("✅ تمت قراءة الملاحظات من Firestore:", window.observationsData);
+  });
+</script>
 </body>
 
 </html>
