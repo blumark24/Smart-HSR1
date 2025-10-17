@@ -1578,19 +1578,18 @@
 
     </script>
 
-    <!-- Firebase: حفظ الملاحظات مع الصور (دائمًا محفوظة بعد التحديث) -->
-<script type="module">
+    <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { 
-  getFirestore, collection, addDoc, getDocs, onSnapshot, serverTimestamp 
+  getFirestore, collection, addDoc, onSnapshot, serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+// ✅ إعداد Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
   authDomain: "smart-hsr-6c2cf.firebaseapp.com",
   projectId: "smart-hsr-6c2cf"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -1604,47 +1603,51 @@ function toBase64(file) {
   });
 }
 
-// 🟢 حفظ الملاحظة في Firestore
+// 🟢 حفظ الملاحظة
 async function saveObservation(title, description, file) {
-  let imageBase64 = null;
-  if (file) imageBase64 = await toBase64(file);
-
-  await addDoc(collection(db, "observations"), {
-    title,
-    description,
-    imageBase64,
-    createdAt: serverTimestamp(),
-  });
-
-  alert("✅ تم حفظ الملاحظة بنجاح!");
+  try {
+    let imageBase64 = null;
+    if (file) imageBase64 = await toBase64(file);
+    await addDoc(collection(db, "observations"), {
+      title,
+      description,
+      imageBase64,
+      createdAt: serverTimestamp()
+    });
+    alert("✅ تم حفظ الملاحظة بنجاح!");
+  } catch (error) {
+    console.error("❌ خطأ أثناء الحفظ:", error);
+  }
 }
 
-// 🟢 تحميل وعرض الملاحظات بشكل مباشر Live
-function listenForObservations() {
+// 🟢 عرض الملاحظات (بشكل مباشر + مؤجل قليلًا بعد التحميل)
+function startObservationsListener() {
   const container = document.getElementById("observationsContainer");
   if (!container) return;
 
-  const q = collection(db, "observations");
-  onSnapshot(q, (snapshot) => {
-    container.innerHTML = "";
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      const card = document.createElement("div");
-      card.classList.add("observation-card");
-      card.innerHTML = `
-        <h3>${data.title}</h3>
-        <p>${data.description || ""}</p>
-        ${data.imageBase64 ? `<img src="${data.imageBase64}" style="max-width:200px;border-radius:10px;">` : ""}
-        <small>${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString("ar-SA") : ""}</small>
-        <hr>
-      `;
-      container.appendChild(card);
+  // ننتظر ثانيتين قبل التشغيل لتأكيد الاتصال بفايربيس
+  setTimeout(() => {
+    const q = collection(db, "observations");
+    onSnapshot(q, (snapshot) => {
+      container.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const card = document.createElement("div");
+        card.classList.add("observation-card");
+        card.innerHTML = `
+          <h3>${data.title}</h3>
+          <p>${data.description || ""}</p>
+          ${data.imageBase64 ? `<img src="${data.imageBase64}" style="max-width:200px;border-radius:10px;">` : ""}
+          <small>${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString("ar-SA") : ""}</small>
+          <hr>
+        `;
+        container.appendChild(card);
+      });
     });
-  });
+  }, 2000);
 }
 
-// 🔹 التفعيل التلقائي عند فتح الصفحة
-window.addEventListener("DOMContentLoaded", listenForObservations);
+window.addEventListener("DOMContentLoaded", startObservationsListener);
 window.saveObservation = saveObservation;
 </script>
 
