@@ -5,24 +5,112 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Smart HSR - تسجيل الدخول</title>
 <style>
-  :root{ --primary1:#0ea5a1; --primary2:#0b7285; --card-bg:#ffffff; }
+  :root{
+    --primary1:#0ea5a1;
+    --primary2:#0b7285;
+    --card-bg:#ffffff;
+  }
   *{box-sizing:border-box}
-  body{ margin:0; font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background:linear-gradient(180deg,#f7f9fb 0%, #ffffff 100%); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:30px; }
-  .card{ width:380px; background:var(--card-bg); border-radius:16px; box-shadow:0 12px 30px rgba(10,20,50,0.09); padding:26px; position:relative; overflow:hidden; }
-  .card:before{ content:""; position:absolute; left:-40px; top:-40px; width:160px; height:60px; background:linear-gradient(90deg,var(--primary1),var(--primary2)); border-radius:0 0 20px 20px; transform:rotate(6deg); opacity:0.95; }
-  h1{ margin:0 0 8px 0; text-align:center; font-size:26px; color:#0b2b3a; }
-  p.lead{ margin:0 0 18px 0; text-align:center; color:#0b7b75; font-weight:600; }
-  .field{margin-bottom:12px} .field label{display:block;margin-bottom:6px;color:#6b7a86;font-size:13px}
-  input[type="text"],input[type="email"],input[type="password"],input[type="tel"]{ width:100%; padding:12px 14px; border-radius:10px; border:1px solid #e6eef2; background:#fbfeff; font-size:15px; outline:none; }
-  input:focus{ box-shadow:0 6px 18px rgba(11,39,55,0.06); border-color:#cfeff0; }
+  body{
+    margin:0;
+    font-family: "Tajawal", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(180deg,#f7f9fb 0%, #ffffff 100%);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+  }
+
+  .card{
+    width: 380px;
+    background:var(--card-bg);
+    border-radius:16px;
+    box-shadow: 0 12px 30px rgba(10,20,50,0.09);
+    padding:26px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card:before{
+    content:"";
+    position:absolute;
+    left:-40px;
+    top:-40px;
+    width:160px;
+    height:60px;
+    background:linear-gradient(90deg,var(--primary1),var(--primary2));
+    border-radius:0 0 20px 20px;
+    transform:rotate(6deg);
+    opacity:0.95;
+  }
+
+  h1{
+    margin:0 0 8px 0;
+    text-align:center;
+    font-size:26px;
+    color:#0b2b3a;
+  }
+  p.lead{
+    margin:0 0 18px 0;
+    text-align:center;
+    color: #0b7b75;
+    font-weight:600;
+  }
+
+  .field{margin-bottom:12px}
+  .field label{
+    display:block;
+    margin-bottom:6px;
+    color:#6b7a86;
+    font-size:13px;
+  }
+  input[type="text"], input[type="email"], input[type="password"], input[type="tel"]{
+    width:100%;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid #e6eef2;
+    background:#fbfeff;
+    font-size:15px;
+    outline:none;
+  }
+  input:focus{box-shadow:0 6px 18px rgba(11,39,55,0.06); border-color: #cfeff0;}
+
   .row{display:flex; gap:8px}
-  .btn{ width:100%; padding:12px; border-radius:10px; border:none; cursor:pointer; font-weight:700; font-size:15px; }
-  .btn-primary{ background:linear-gradient(90deg,var(--primary1),var(--primary2)); color:white; box-shadow:0 8px 18px rgba(11,39,55,0.08); }
-  .btn-ghost{ background:transparent; border:1px solid #e6eef2; color:#0b2b3a; }
-  .muted{font-size:13px;color:#7b8a90;text-align:center;margin-top:10px}
-  .message{text-align:center;margin-top:10px;font-weight:600}
-  .error{color:#d04444} .success{color:#0b9b76}
-  @media (max-width:420px){ .card{width:92%} }
+  .btn{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:700;
+    font-size:15px;
+  }
+  .btn-primary{
+    background:linear-gradient(90deg,var(--primary1),var(--primary2));
+    color:white;
+    box-shadow:0 8px 18px rgba(11,39,55,0.08);
+  }
+  .btn-ghost{
+    background:transparent;
+    border:1px solid #e6eef2;
+    color:#0b2b3a;
+  }
+
+  .muted {font-size:13px; color:#7b8a90; text-align:center; margin-top:10px}
+  .switch{color:var(--primary2); cursor:pointer; font-weight:700}
+
+  .message{
+    text-align:center;
+    margin-top:10px;
+    font-weight:600;
+  }
+  .error{color:#d04444}
+  .success{color:#0b9b76}
+
+  /* small screens */
+  @media (max-width:420px){
+    .card{width:92%}
+  }
 </style>
 </head>
 <body>
@@ -31,12 +119,13 @@
   <h1>Smart HSR</h1>
   <p class="lead">تسجيل الدخول إلى لوحة القيادة</p>
 
+  <!-- toggle -->
   <div style="display:flex;gap:8px;margin-bottom:14px;justify-content:center">
-    <button id="mode-email" class="btn btn-ghost" style="max-width:160px">ايميل / كلمة مرور</button>
-    <button id="mode-phone" class="btn btn-ghost" style="max-width:160px">رقم الجوال (OTP)</button>
+    <button id="mode-email" class="btn btn-ghost" style="max-width:160px" type="button">ايميل / كلمة مرور</button>
+    <button id="mode-phone" class="btn btn-ghost" style="max-width:160px" type="button">رقم الجوال (OTP)</button>
   </div>
 
-  <!-- EMAIL -->
+  <!-- EMAIL FORM -->
   <div id="email-box">
     <div class="field">
       <label>البريد الإلكتروني:</label>
@@ -47,12 +136,12 @@
       <input id="password" type="password" placeholder="كلمة المرور" />
     </div>
     <div class="row" style="margin-top:6px">
-      <button class="btn btn-primary" onclick="signInWithEmail()">تسجيل الدخول</button>
-      <button class="btn btn-ghost" onclick="signupWithEmail()">إنشاء حساب</button>
+      <button class="btn btn-primary" id="btnEmailLogin" type="button">تسجيل الدخول</button>
+      <button class="btn btn-ghost" id="btnEmailSignup" type="button">إنشاء حساب</button>
     </div>
   </div>
 
-  <!-- PHONE -->
+  <!-- PHONE FORM -->
   <div id="phone-box" style="display:none">
     <div class="field">
       <label>رقم الجوال (مثال: +9665xxxxxxxx)</label>
@@ -60,8 +149,8 @@
     </div>
     <div id="recaptcha-container"></div>
     <div class="row" style="margin-top:6px">
-      <button class="btn btn-primary" onclick="sendOTP()">أرسل رمز التحقق</button>
-      <button class="btn btn-ghost" onclick="clearPhone()">مسح</button>
+      <button class="btn btn-primary" id="btnSendOtp" type="button">أرسل رمز التحقق</button>
+      <button class="btn btn-ghost" id="btnClearPhone" type="button">مسح</button>
     </div>
     <div id="otp-section" style="display:none;margin-top:10px">
       <label>أدخل رمز التحقق (SMS):</label>
@@ -69,8 +158,8 @@
         <input id="otp-code" type="text" inputmode="numeric" placeholder="123456" />
       </div>
       <div class="row">
-        <button class="btn btn-primary" onclick="verifyOTP()">تحقق وانضم</button>
-        <button class="btn btn-ghost" onclick="resendOTP()">إعادة الإرسال</button>
+        <button class="btn btn-primary" id="btnVerifyOtp" type="button">تحقق وانضم</button>
+        <button class="btn btn-ghost" id="btnResendOtp" type="button">إعادة الإرسال</button>
       </div>
     </div>
   </div>
@@ -79,13 +168,13 @@
   <div class="muted">باستخدام تسجيل الدخول توافق على سياسة الاستخدام</div>
 </div>
 
-<!-- Firebase compat (ثابتة الشكل، بدون تغيير تصميم) -->
+<!-- Firebase compat SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-  // Firebase Config — الخاص بك
+  // إعدادات Firebase الخاصة بك (حسب ما أرسلته)
   const firebaseConfig = {
     apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
     authDomain: "smart-hsr-6c2cf.firebaseapp.com",
@@ -99,68 +188,100 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
-  const msgEl = document.getElementById('msg');
 
-  // تبديل الوضع
+  // حافظ الجلسة محليًا
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
   const emailBox = document.getElementById('email-box');
   const phoneBox = document.getElementById('phone-box');
-  document.getElementById('mode-email').onclick = ()=>{ emailBox.style.display='block'; phoneBox.style.display='none'; msg(''); };
-  document.getElementById('mode-phone').onclick = ()=>{ emailBox.style.display='none'; phoneBox.style.display='block'; msg(''); };
+  const msgEl = document.getElementById('msg');
 
-  function msg(t, type){ msgEl.textContent=t||''; msgEl.className = 'message ' + (type||''); }
+  function msg(text, type) { msgEl.innerText = text || ''; msgEl.className = 'message ' + (type || ''); }
 
-  // Email/Password
-  function signupWithEmail(){
+  document.getElementById('mode-email').addEventListener('click', () => {
+    emailBox.style.display = 'block'; phoneBox.style.display = 'none'; msg('');
+  });
+  document.getElementById('mode-phone').addEventListener('click', () => {
+    emailBox.style.display = 'none'; phoneBox.style.display = 'block'; msg('');
+  });
+
+  // Email signup/login
+  document.getElementById('btnEmailSignup').onclick = () => {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     if(!email || !password){ msg('أدخل الايميل وكلمة المرور', 'error'); return; }
-    auth.createUserWithEmailAndPassword(email, password).then(async({user})=>{
-      await db.collection('users').doc(user.uid).set({ email:user.email, createdAt:firebase.firestore.FieldValue.serverTimestamp(), provider:'email' },{merge:true});
-      msg('تم إنشاء الحساب بنجاح', 'success');
-    }).catch(err=>msg(err.message,'error'));
-  }
-  function signInWithEmail(){
+    auth.createUserWithEmailAndPassword(email, password)
+      .then((cred)=>{
+        db.collection('users').doc(cred.user.uid).set({
+          email: cred.user.email, createdAt: firebase.firestore.FieldValue.serverTimestamp(), provider: 'email'
+        }, {merge:true});
+        msg('تم إنشاء الحساب بنجاح', 'success');
+        window.location.href = 'index.html';
+      }).catch(e=>msg(e.message,'error'));
+  };
+  document.getElementById('btnEmailLogin').onclick = () => {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     if(!email || !password){ msg('أدخل الايميل وكلمة المرور', 'error'); return; }
-    auth.signInWithEmailAndPassword(email, password).then(()=>{
-      msg('تم تسجيل الدخول بنجاح','success');
-      window.location.href = 'index.html';
-    }).catch(err=>msg(err.message,'error'));
-  }
+    auth.signInWithEmailAndPassword(email, password)
+      .then(()=>{ msg('تم تسجيل الدخول بنجاح','success'); window.location.href = 'index.html'; })
+      .catch(e=>msg(e.message,'error'));
+  };
 
   // Phone OTP
-  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size:'invisible' });
-  let confirmationResultGlobal=null, lastPhoneUsed='';
-  function sendOTP(){
+  let confirmationResultGlobal = null;
+  let lastPhoneUsed = '';
+  window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+
+  document.getElementById('btnSendOtp').onclick = () => {
     const phone = document.getElementById('phone').value.trim();
-    if(!phone){ msg('أدخل رقم الجوال بصيغة دولية مثل +9665xxxxxxx','error'); return; }
-    auth.signInWithPhoneNumber(phone, window.recaptchaVerifier).then(cr=>{
-      confirmationResultGlobal=cr; lastPhoneUsed=phone;
-      document.getElementById('otp-section').style.display='block';
-      msg('تم إرسال رمز التحقق. أدخله ثم اضغط تحقق.','success');
-    }).catch(err=>msg(err.message||'خطأ في إرسال الرمز','error'));
-  }
-  function verifyOTP(){
+    if(!phone){ msg('أدخل رقم الجوال بصيغة دولية مثل +9665xxxxxxx', 'error'); return; }
+    msg('جاري إرسال رمز التحقق...', '');
+    const appVerifier = window.recaptchaVerifier;
+    auth.signInWithPhoneNumber(phone, appVerifier).then((confirmationResult)=>{
+      confirmationResultGlobal = confirmationResult; lastPhoneUsed = phone;
+      msg('تم إرسال رمز التحقق. أدخله واضغط تحقق.', 'success');
+      document.getElementById('otp-section').style.display = 'block';
+    }).catch((error)=>{
+      msg(error.message || 'خطأ في إرسال الرمز', 'error');
+      window.recaptchaVerifier.render().then(widgetId => { grecaptcha.reset(widgetId); }).catch(()=>{});
+    });
+  };
+
+  document.getElementById('btnVerifyOtp').onclick = () => {
     const code = document.getElementById('otp-code').value.trim();
-    if(!code || !confirmationResultGlobal){ msg('أدخل رمز التحقق أولاً','error'); return; }
-    confirmationResultGlobal.confirm(code).then(async({user})=>{
-      await db.collection('users').doc(user.uid).set({ phone:user.phoneNumber, createdAt:firebase.firestore.FieldValue.serverTimestamp(), provider:'phone' },{merge:true});
-      msg('تم التحقق وتسجيل الدخول بنجاح','success');
+    if(!code || !confirmationResultGlobal){ msg('أدخل رمز التحقق أولاً', 'error'); return; }
+    confirmationResultGlobal.confirm(code).then((result)=>{
+      const user = result.user;
+      db.collection('users').doc(user.uid).set({
+        phone: user.phoneNumber, createdAt: firebase.firestore.FieldValue.serverTimestamp(), provider: 'phone'
+      }, {merge:true});
+      msg('تم التحقق وتسجيل الدخول بنجاح', 'success');
       window.location.href = 'index.html';
-    }).catch(err=>msg(err.message||'رمز غير صحيح','error'));
-  }
-  function resendOTP(){
-    if(!lastPhoneUsed){ msg('أرسل رقم الجوال أولاً','error'); return; }
+    }).catch(err=>msg(err.message || 'رمز غير صحيح','error'));
+  };
+
+  document.getElementById('btnResendOtp').onclick = () => {
+    if(!lastPhoneUsed){ msg('أرسل رقم الجوال أولاً', 'error'); return; }
     window.recaptchaVerifier.clear();
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container',{size:'invisible'});
-    auth.signInWithPhoneNumber(lastPhoneUsed, window.recaptchaVerifier).then(cr=>{
-      confirmationResultGlobal=cr; msg('أُعيد إرسال رمز التحقق','success');
-    }).catch(err=>msg(err.message||'فشل إعادة الإرسال','error'));
-  }
-  function clearPhone(){
-    document.getElementById('phone').value=''; document.getElementById('otp-code').value=''; document.getElementById('otp-section').style.display='none'; msg('');
-  }
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+    msg('جاري إعادة الإرسال...', '');
+    auth.signInWithPhoneNumber(lastPhoneUsed, window.recaptchaVerifier).then((confirmationResult)=>{
+      confirmationResultGlobal = confirmationResult; msg('أُعيد إرسال رمز التحقق','success');
+    }).catch(err=>msg(err.message || 'فشل إعادة الإرسال', 'error'));
+  };
+
+  document.getElementById('btnClearPhone').onclick = () => {
+    document.getElementById('phone').value = '';
+    document.getElementById('otp-code').value = '';
+    document.getElementById('otp-section').style.display = 'none';
+    msg('');
+  };
+
+  // Redirect if already logged in
+  auth.onAuthStateChanged((user)=>{
+    if(user){ window.location.href = 'index.html'; }
+  });
 </script>
 </body>
 </html>
