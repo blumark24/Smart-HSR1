@@ -968,37 +968,7 @@
 
     <script>
         // --- 1. MOCK DATA FOR OBSERVATIONS LIST (Using an array named 'observationsData' for easier manipulation) ---
-        const observationsData = [
-            // تم تحديث الملاحظة 1 (الافتراضية) لتتضمن حقول الوسائط الكاملة
-            {
-                id: 1, type: "SAFETY", date: "2024-10-01", title: "ملاحظة عدم ارتداء معدات الحماية", status: "PENDING", details: "تم رصد فريق عمل في المنطقة C بدون خوذات أمان.",
-                hasImage: true, isComparative: false, location: "24.5247, 46.7135", isVideo: false, imagePath: 'https://picsum.photos/800/600?random=1', fileMimeType: 'image/jpeg',
-                actionPlan: "إصدار أمر عمل فوري لتعزيز الالتزام بمعدات الحماية الشخصية (PPE).", riskAssessment: {priority: "High", timeframe: "24 hours"},
-                resolutionNote: null, afterImagePath: null, isNewInput: false, createdAt: new Date("2024-10-01T10:00:00").getTime()
-            },
-            // ملاحظة تمت معالجتها وموثقة بصورة قبل وبعد (isComparative: true)
-            {
-                id: 2, type: "QUALITY", date: "2024-09-28", title: "تصدع في الأسفلت وإعادة رصف", status: "COMPLETED", details: "تم رصد تصدع كبير في المقطع A. تم إغلاقه بنجاح بعد عملية الإصلاح الكامل.",
-                hasImage: true, isComparative: true, location: "24.5247, 46.7135", isVideo: false,
-                imagePath: 'https://picsum.photos/800/600?random=2', // صورة قبل
-                afterImagePath: 'https://picsum.photos/800/600?random=5', // صورة بعد
-                fileMimeType: 'image/jpeg',
-                actionPlan: "إزالة الأسفلت المتضرر وإعادة بناء الطبقات وإعادة الرصف.", riskAssessment: {priority: "Low", timeframe: "7 days"},
-                resolutionNote: "تم إغلاق المقطع A بالكامل حسب المواصفات. تم استخدام خلطة إسفلت جديدة وتم اختبار جودة الرصف بنجاح في 2024-09-30.", isNewInput: false, createdAt: new Date("2024-09-28T14:30:00").getTime()
-            },
-            {
-                id: 3, type: "MAINTENANCE", date: "2024-09-25", title: "عطل في نظام التبريد الرئيسي", status: "IN_PROGRESS", details: "تم إرسال فريق صيانة عاجل لمعالجة الخلل في نظام التبريد بمنطقة B.",
-                hasImage: true, isComparative: false, location: "24.5247, 46.7135", isVideo: false, imagePath: 'https://picsum.photos/800/600?random=3', fileMimeType: 'image/jpeg',
-                actionPlan: "توفير قطع الغيار اللازمة وإصلاح العطل خلال 48 ساعة.", riskAssessment: {priority: "Medium", timeframe: "48 hours"},
-                resolutionNote: null, afterImagePath: null, isNewInput: false, createdAt: new Date("2024-09-25T08:15:00").getTime()
-            },
-            {
-                id: 4, type: "QUALITY", date: "2024-09-20", title: "تآكل في لوحة إرشادية (الشعار غير واضح)", status: "PENDING", details: "تظهر الصورة تآكلاً واضحاً في لوحة إرشادية على طريق الخدمة، مما يؤثر على وضوح الشعار والعلامات الإرشادية.",
-                hasImage: true, isComparative: false, location: "24.5247, 46.7135", isVideo: false, imagePath: 'https://picsum.photos/800/600?random=4', fileMimeType: 'image/jpeg',
-                actionPlan: "الطلب من فريق الصيانة استبدال اللوحة بلوحة جديدة ذات مواصفات عالية الجودة.", riskAssessment: {priority: "High", timeframe: "7 days"},
-                resolutionNote: null, afterImagePath: null, isNewInput: false, createdAt: new Date("2024-09-20T16:45:00").getTime()
-            }
-        ];
+        const observationsData = [];
 
         let currentSelectedObservation = observationsData[0]; // Set initial selection
         const statusMap = {
@@ -1050,7 +1020,7 @@
                 kpiContainer.innerHTML += kpiHTML;
             });
             lucide.createIcons();
-            document.getElementById('userInfo').innerHTML = 'تم تحديث البيانات بنجاح (وضع ثابت).';
+            document.getElementById('userInfo').innerHTML = 'بيانات مباشرة من Firestore ✅';
         }
 
         function renderObservationsList(observations) {
@@ -1841,6 +1811,90 @@
     }
   }
   window.deleteObservation = deleteObservation;
+</script>
+
+<!-- Smart HSR — MVP FIX: Live Firestore binding + AI display -->
+<script type="module">
+  // 1) اربط القائمة مباشرة بـ Firestore (بدون تغيير تصميمك)
+  try {
+    SmartHSR.observeObservations(async (rows)=>{
+      const mapped = rows.map(r=>{
+        let ts = Date.now();
+        try {
+          if (r.createdAt?.toMillis) ts = r.createdAt.toMillis();
+          else if (r.createdAt?.seconds) ts = r.createdAt.seconds*1000;
+        } catch {}
+        const dateStr = new Date(ts).toISOString().slice(0,10);
+        return {
+          id: r.id,
+          type: r.type || 'QUALITY',
+          date: dateStr,
+          title: r.title || '—',
+          status: r.status || 'PENDING',
+          details: r.details || '',
+          hasImage: !!r.mediaUrl,
+          isComparative: !!r.afterImageUrl,
+          location: r.location || '',
+          isVideo: !!r.isVideo,
+          imagePath: r.mediaUrl || '',
+          fileMimeType: r.mediaMime || '',
+          actionPlan: r.actionPlan || '',
+          riskAssessment: r.riskAssessment || { priority: 'Medium', timeframe: '72h' },
+          resolutionNote: r.resolutionNote || null,
+          afterImagePath: r.afterImageUrl || null,
+          createdAt: ts,
+          ai: r.ai || null
+        };
+      });
+      const selId = (window.currentSelectedObservation && window.currentSelectedObservation.id) || null;
+      window.observationsData.splice(0, window.observationsData.length, *mapped);
+      // إعادة العرض
+      window.handleFilterChange();
+      if (selId && window.observationsData.find(o=>o.id===selId)) {
+        window.showObservationDetail(selId);
+      }
+      try {
+        const el = document.getElementById('userInfo');
+        if (el) el.textContent = 'بيانات مباشرة من Firestore ✅';
+      } catch {}
+    });
+    console.log('[SmartHSR] Live Firestore binding active.');
+  } catch (e) {
+    console.error('[SmartHSR] Live bind failed', e);
+  }
+
+  // 2) اجعل زر التحليل يقرأ نتيجة AI المحفوظة للصورة الفعلية
+  window.analyzeImage = async function(tool){
+    const titleMap = {'vision':'تحليل الرؤية (Vision)', 'root-cause':'تحليل السبب الجذري'};
+    const obs = window.currentSelectedObservation;
+    const container = document.getElementById('aiAnalysisSection');
+    const titleEl = document.getElementById('aiResultTitle');
+    const box = document.getElementById('aiResultContainer');
+    const content = document.getElementById('aiResultContent');
+
+    titleEl.textContent = `نتائج ${titleMap[tool]||'التحليل'}:`;
+    box.classList.remove('hidden');
+
+    if (tool === 'vision') {
+      if (obs?.ai) {
+        const conf = (obs.ai.confidence!=null) ? Math.round(obs.ai.confidence*100)+'%' : '-';
+        content.innerHTML = `
+          <div class="communication-draft">
+            <b>ملخص:</b> ${obs.ai.summary||'-'}<br>
+            <b>تصنيف:</b> ${obs.ai.category||'-'}<br>
+            <b>الخطورة:</b> ${obs.ai.severity||'-'} • <b>الثقة:</b> ${conf}<br>
+            <b>توصية:</b> ${obs.ai.action||'-'}
+          </div>`;
+      } else if (obs?.imagePath) {
+        content.innerHTML = `<div class="text-gray-600">جاري طلب التحليل للصورة الفعلية… أعد النقر بعد ثوانٍ.</div>`;
+        try { await SmartHSR.analyzeNow(obs.id); } catch(e){ console.error(e); }
+      } else {
+        content.innerHTML = `<div class="text-gray-600">لا توجد صورة مرتبطة بهذه الملاحظة.</div>`;
+      }
+    } else {
+      content.innerHTML = `<div class="text-gray-600">سيتم اشتقاق السبب الجذري من ملخص AI.</div>`;
+    }
+  };
 </script>
 </body>
 
