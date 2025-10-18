@@ -969,6 +969,19 @@
     </div>
 
 
+<script type="module">
+// ✅ 1. إعداد Firebase وربط قاعدة Firestore الحقيقية
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+// تهيئة Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
+  authDomain: "smart-hsr-6c2cf.firebaseapp.com",
+  projectId: "smart-hsr-6c2cf",
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // ✅ 2. مصفوفة فارغة
 let observationsData = [];
@@ -1025,8 +1038,23 @@ async function saveObservation(title, status, file) {
   }
 }
 
+// ✅ 5. إدخال ملاحظة جديدة من النافذة الذكية
+async function processSmartInput() {
+  const rawText = document.querySelector('#smartInputModal textarea').value.trim();
 
-// ✅ 5. عرض الملاحظات (نفس التصميم الأصلي)
+  if (!rawText) {
+    alert("⚠️ الرجاء كتابة الملاحظة قبل الإرسال.");
+    return;
+  }
+
+  // حفظ الملاحظة في قاعدة البيانات
+  await saveObservation(rawText, "PENDING", null);
+
+  // إغلاق النافذة بعد الإرسال
+  closeModal('smartInputModal');
+}
+
+// ✅ 6. عرض الملاحظات
 function renderKPIs() {
   const totalReports = observationsData.length;
   const openReports = observationsData.filter(obs => obs.status !== 'COMPLETED').length;
@@ -1065,47 +1093,7 @@ function renderObservationsList(observations) {
   });
 }
 
-
-function showObservationDetail(id) {
-  const obs = observationsData.find(o => o.id === id);
-  if (!obs) return;
-  document.getElementById('detailTitle').textContent = obs.title;
-  document.getElementById('detailStatus').textContent = obs.status;
-  document.getElementById('detailDescription').textContent = obs.details;
-    // ✅ إدخال ملاحظة جديدة (Smart Input)
-function processSmartInput() {
-  const rawText = document.getElementById('rawObservationInput').value.trim();
-
-  if (!rawText) {
-    alert("⚠️ الرجاء كتابة الملاحظة قبل الإرسال.");
-    return;
-  }
-
-  const newObservation = {
-    id: observationsData.length + 1,
-    title: rawText,
-    status: "PENDING",
-    date: new Date().toISOString().slice(0, 10),
-  };
-
-  observationsData.unshift(newObservation);
-  renderObservationsList(observationsData);
-  renderKPIs();
-
-  alert("✅ تمت إضافة الملاحظة بنجاح!");
-  closeModal('smartInputModal');
-}
-
-  if (obs.imagePath) {
-    document.getElementById('mediaContent').innerHTML = `<img src="${obs.imagePath}" class="rounded-xl shadow-lg w-full">`;
-  } else {
-    document.getElementById('mediaContent').innerHTML = `<div class="text-gray-500 text-center p-4">لا توجد صورة مرفقة</div>`;
-  }
-}
-
-// ✅ 6. تحميل البيانات عند فتح الصفحة
 window.addEventListener("DOMContentLoaded", loadObservations);
-
 </script>
 
 <script>
@@ -1158,7 +1146,7 @@ window.addEventListener("DOMContentLoaded", () => {
     <h2 style="color:#0ea5a1; font-weight:900;">🧠 الإدخال الذكي للملاحظات</h2>
     <p style="color:#555; margin-top:10px;">أضف ملاحظتك الجديدة ليقوم النظام بتحليلها وتخزينها مباشرة.</p>
     <textarea placeholder="اكتب الملاحظة هنا..." style="width:100%; height:120px; border-radius:10px; border:1px solid #ccc; margin-top:15px; padding:10px; font-family:'Tajawal';"></textarea>
-    <button onclick="closeModal('smartInputModal')" style="margin-top:15px; background-color:#0ea5a1; color:white; border:none; border-radius:10px; padding:10px 20px; cursor:pointer;">إرسال</button>
+   <button onclick="processSmartInput()" style="margin-top:15px; background-color:#0ea5a1; color:white; border:none; border-radius:10px; padding:10px 20px; cursor:pointer;">إرسال</button>
   </div>
 </div>
 
