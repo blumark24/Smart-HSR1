@@ -968,19 +968,7 @@
         </div>
     </div>
 
-<script type="module">
-// ✅ 1. إعداد Firebase وربط قاعدة Firestore الحقيقية
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
-// تهيئة Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
-  authDomain: "smart-hsr-6c2cf.firebaseapp.com",
-  projectId: "smart-hsr-6c2cf",
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 // ✅ 2. مصفوفة فارغة
 let observationsData = [];
@@ -1037,6 +1025,7 @@ async function saveObservation(title, status, file) {
   }
 }
 
+
 // ✅ 5. عرض الملاحظات (نفس التصميم الأصلي)
 function renderKPIs() {
   const totalReports = observationsData.length;
@@ -1075,6 +1064,7 @@ function renderObservationsList(observations) {
       </div>`;
   });
 }
+
 
 function showObservationDetail(id) {
   const obs = observationsData.find(o => o.id === id);
@@ -1182,33 +1172,6 @@ window.addEventListener("DOMContentLoaded", () => {
     <button style="margin-top:20px; background-color:#0b2b3a; color:white; border:none; border-radius:10px; padding:10px 25px; cursor:pointer;">دخول</button>
   </div>
 </div>
-<!-- 🔚 أسفل الصفحة -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCRrBnPYtdc86JffEQHERf732uAif7vwho",
-  authDomain: "smart-hsr-6c2cf.firebaseapp.com",
-  projectId: "smart-hsr-6c2cf",
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-async function saveToFirestore(title, details) {
-  try {
-    await addDoc(collection(db, "observations"), {
-      title,
-      details,
-      createdAt: serverTimestamp(),
-    });
-    console.log("✅ تم حفظ الملاحظة بنجاح في Firestore!");
-  } catch (error) {
-    console.error("❌ خطأ أثناء الحفظ:", error);
-  }
-}
-</script>
 
 </body>
 </html>
