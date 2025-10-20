@@ -1586,19 +1586,28 @@
         window.onload = initApp;
 
     </script>
-    <!-- 🔐 Smart Role Access Control -->
+<!-- 🔐 Smart Role Access Control (المدير فقط يرى اختيار الدور) -->
 <script>
-let currentUserRole = "";
+// =======================
+// Smart Role Access Control (مدير فقط يرى اختيارات الدور)
+// =======================
+
+let currentUserRole = "";            // "manager" | "inspector" | "contractor" | ""
+let currentUserIsManager = false;    // 🔸 قم بتعيينها true مؤقتاً للاختبار، أو اجعل السيرفر يضبطها تلقائياً
 
 function setUserRole(role) {
-  currentUserRole = role;
+  currentUserRole = role || "";
   updateAccessLocks();
 }
 
 function updateAccessLocks() {
-  const addBtn = document.getElementById("add-observation-btn"); // زر إدخال الملاحظة
-  const inProgressBtn = document.getElementById("updateStatusBtn"); // زر قيد التنفيذ
-  const closeBtn = document.getElementById("completeObservationBtn"); // زر الإغلاق التنفيذي
+  const addBtn = document.getElementById("add-observation-btn"); 
+  const inProgressBtn = document.getElementById("updateStatusBtn"); 
+  const closeBtn = document.getElementById("completeObservationBtn"); 
+  const roleSelector = document.getElementById("roleSelector");
+  const roleSelect = document.getElementById("roleSelect");
+
+  if (!addBtn || !inProgressBtn || !closeBtn) return;
 
   // 🔒 القفل الافتراضي للجميع
   [addBtn, inProgressBtn, closeBtn].forEach(btn => {
@@ -1606,15 +1615,18 @@ function updateAccessLocks() {
     btn.classList.add("opacity-60", "cursor-not-allowed");
   });
 
-  // 👷 المراقب: إدخال فقط
+  // 👷 المراقب: يسمح فقط بإضافة الملاحظة
   if (currentUserRole === "inspector") {
     addBtn.disabled = false;
+    addBtn.classList.remove("opacity-60", "cursor-not-allowed");
   }
 
-  // 🧱 المقاول: قيد التنفيذ + الإغلاق
+  // 🧱 المقاول: يسمح بقيد التنفيذ والإغلاق
   if (currentUserRole === "contractor") {
     inProgressBtn.disabled = false;
     closeBtn.disabled = false;
+    inProgressBtn.classList.remove("opacity-60", "cursor-not-allowed");
+    closeBtn.classList.remove("opacity-60", "cursor-not-allowed");
   }
 
   // 👨‍💼 المدير: صلاحيات كاملة
@@ -1625,13 +1637,42 @@ function updateAccessLocks() {
     });
   }
 
-  // تحديث النصوص
+  // 📝 تحديث نصوص الأزرار
   addBtn.innerHTML = addBtn.disabled ? "🔒 إضافة ملاحظة" : "📝 إضافة ملاحظة جديدة";
   inProgressBtn.innerHTML = inProgressBtn.disabled ? "🔒 قيد التنفيذ" : "🚧 قيد التنفيذ";
   closeBtn.innerHTML = closeBtn.disabled ? "🔒 الإغلاق التنفيذي" : "✅ الإغلاق التنفيذي";
+
+  // 👀 إظهار/إخفاء اختيار الدور — المدير فقط
+  if (roleSelector) {
+    if (currentUserIsManager) {
+      roleSelector.style.display = "block";
+      if (!currentUserRole && roleSelect) {
+        roleSelect.value = "manager";
+        setUserRole("manager");
+      }
+    } else {
+      roleSelector.style.display = "none";
+    }
+  }
 }
+
+// 🔧 تهيئة عند تحميل الصفحة
+function initRoleControls() {
+  // 🔸 فعّل هذا السطر مؤقتاً أثناء الاختبار فقط:
+  // currentUserIsManager = true;
+
+  updateAccessLocks();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initRoleControls);
+} else {
+  initRoleControls();
+}
+
 </script>
 
 </body>
 
 </html>
+    
