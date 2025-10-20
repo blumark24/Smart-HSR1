@@ -1208,8 +1208,8 @@ async function applyRolePermissions() {
 applyRolePermissions();
 </script>
 
-  <script>
-// 🎯 إغلاق الأزرار الثلاثة بشكل ذكي دون حذفها
+<script>
+// 🎯 إغلاق الأزرار الثلاثة بشكل ذكي دون حذفها + تنبيه أنيق
 window.addEventListener('DOMContentLoaded', () => {
   const buttons = [
     document.getElementById('add-observation-btn'),
@@ -1217,15 +1217,45 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('completeObservationBtn')
   ];
 
+  // 🧠 دالة التنبيه الذكي (بدل alert)
+  function showSmartAlert(message) {
+    const alertBox = document.createElement('div');
+    alertBox.innerHTML = `🔒 ${message}`;
+    Object.assign(alertBox.style, {
+      position: 'fixed',
+      bottom: '25px',
+      right: '25px',
+      background: 'linear-gradient(135deg, var(--color-teal), var(--color-navy))',
+      color: 'white',
+      padding: '12px 20px',
+      borderRadius: '30px',
+      fontWeight: 'bold',
+      zIndex: '99999',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.25)',
+      opacity: '0',
+      transition: 'opacity 0.5s ease'
+    });
+    document.body.appendChild(alertBox);
+    setTimeout(()=> alertBox.style.opacity = '1', 100);
+    setTimeout(()=> alertBox.style.opacity = '0', 2000);
+    setTimeout(()=> alertBox.remove(), 2600);
+  }
+
   buttons.forEach(btn => {
     if (btn) {
-      // تعطيل الزر
+      // قفل الزر
       btn.disabled = true;
       btn.style.opacity = '0.45';
       btn.style.cursor = 'not-allowed';
       btn.title = '🔒 الصلاحية محدودة — الزر مغلق مؤقتاً';
 
-      // تأثير أنيق عند مرور الفأرة
+      // ⚠️ عند الضغط — يظهر تنبيه أنيق
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showSmartAlert('لا تملك صلاحية تنفيذ هذا الإجراء (عرض فقط)');
+      });
+
+      // تأثير مرور الماوس
       btn.addEventListener('mouseover', () => {
         btn.style.opacity = '0.6';
       });
@@ -1236,6 +1266,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+
 
 </body>
 </html>
