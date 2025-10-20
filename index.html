@@ -1676,6 +1676,67 @@ if (document.readyState === "loading") {
 }
 
 </script>
+<!-- 🔹 الزر الذكي لصلاحيات المدير (تصميم بسيط وثابت) -->
+<div id="smartRoleButton"
+  title="صلاحيات المدير"
+  class="fixed bottom-6 left-6 z-50 cursor-pointer"
+  style="background:rgba(24,165,162,0.15);
+         border:2px solid var(--color-teal);
+         backdrop-filter:blur(8px);
+         width:58px; height:58px;
+         border-radius:50%;
+         display:flex; align-items:center; justify-content:center;
+         box-shadow:0 4px 15px rgba(24,165,162,0.25);
+         transition:all .3s ease; opacity:0.7;"
+  onclick="toggleSmartRolePanel()"
+  onmouseover="this.style.opacity='1'"
+  onmouseleave="this.style.opacity='0.7'">
+  <i data-lucide="shield" class="w-5 h-5 text-[--color-teal]"></i>
+</div>
+
+<!-- 🔹 لوحة التحكم المنبثقة -->
+<div id="smartRolePanel"
+  class="hidden fixed bottom-24 left-6 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50"
+  style="width:280px; padding:20px; backdrop-filter:blur(12px); animation:fadeIn .4s ease;">
+  <h3 class="text-lg font-bold text-[--color-navy] mb-3">صلاحيات النظام</h3>
+  <select id="roleSelect" onchange="setUserRole(this.value)"
+    class="ai-button-primary rounded-full px-4 py-2 font-bold w-full mb-3">
+    <option value="">اختر الدور</option>
+    <option value="manager">👨‍💼 المدير</option>
+    <option value="inspector">👷 المراقب</option>
+    <option value="contractor">🧱 المقاول</option>
+  </select>
+  <button class="ai-button-secondary rounded-full px-4 py-2 font-bold w-full" onclick="toggleSmartRolePanel()">إغلاق</button>
+</div>
+
+<style>
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(10px);}
+  to {opacity:1; transform:translateY(0);}
+}
+</style>
+
+<script>
+// 🔐 إظهار/إخفاء اللوحة
+function toggleSmartRolePanel() {
+  document.getElementById('smartRolePanel').classList.toggle('hidden');
+}
+
+// 🔑 الزر يظهر دائمًا (عرض فقط)
+const isManager = true;
+
+// 🎹 اختصار Alt + M لفتح اللوحة
+document.addEventListener('keydown', e=>{
+  if (e.altKey && e.key.toLowerCase()==='m') toggleSmartRolePanel();
+});
+
+// 📋 عرض تجريبي فقط
+function setUserRole(role) {
+  if (!role) return;
+  alert(`✅ تم اختيار الدور (${role}) - عرض فقط`);
+  toggleSmartRolePanel();
+}
+</script>
 
 </body>
 
