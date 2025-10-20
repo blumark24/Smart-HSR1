@@ -545,6 +545,18 @@
             <p class="mt-4 text-lg max-w-4xl mx-auto text-gray-500 font-medium">"منصة تنفيذية ذكية لإدارة الجودة والمراقبة الرقمية، توفر رؤية دقيقة للأداء وتدعم اتخاذ القرار المبني على البيانات."</p>
         </section>
 
+        <!-- 🔹 اختيار الدور (مدير / مراقب / مقاول) -->
+<div class="text-center my-6 no-print">
+  <label class="font-bold text-gray-700 text-lg">اختيار الدور:</label>
+  <select onchange="setUserRole(this.value)" class="ai-button-primary p-2 rounded-xl ml-2">
+    <option value="">اختر الدور</option>
+    <option value="manager">👨‍💼 المدير</option>
+    <option value="inspector">👷 المراقب</option>
+    <option value="contractor">🧱 المقاول</option>
+  </select>
+</div>
+
+
         <section id="observations-log" class="my-20">
             <div class="text-center mb-12 no-print">
                 <h3 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3" style="color: var(--color-navy);">سجل
@@ -694,33 +706,30 @@
                                 </button>
                             </div>
 
-                            <div id="aiResultContainer"
-                                class="mt-5 p-4 bg-gray-50 rounded-xl border border-gray-200 hidden">
-                                <h6 id="aiResultTitle" class="font-bold text-lg mb-2" style="color: var(--color-teal);">
-                                </h6>
-                                <div id="aiResultContent" class="text-gray-700"></div>
-                            </div>
-                        </div>
+<div id="actionButtons"
+    class="mt-6 pt-4 border-t border-gray-300 flex justify-end gap-3 no-print">
 
-                        <div id="actionButtons"
-                            class="mt-6 pt-4 border-t border-gray-300 flex justify-end gap-3 no-print">
-                            <button id="updateStatusBtn"
-                                class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-150"
-                                onclick="alert('تم تحويل الحالة إلى قيد التنفيذ (تجريبي)')">
-                                تحديث الحالة إلى "قيد التنفيذ"
-                            </button>
-                            <button id="completeObservationBtn"
-                                class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-150"
-                                onclick="openModal('closeoutModal')">
-                                <i data-lucide="lock" class="w-4 h-4 ml-2"></i> الإغلاق التنفيذي (صورة بعد)
-                            </button>
-                            <button id="alreadyCompletedBtn"
-                                class="bg-green-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-150 hidden"
-                                disabled>
-                                <i data-lucide="check" class="w-4 h-4 ml-2"></i> الملاحظة مغلقة وموثقة
-                            </button>
-                        </div>
-                    </div>
+    <!-- 🚧 زر قيد التنفيذ -->
+    <button id="updateStatusBtn"
+        class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-150"
+        onclick="alert('تم تحويل الحالة إلى قيد التنفيذ (تجريبي)')">
+        تحديث الحالة إلى "قيد التنفيذ"
+    </button>
+
+    <!-- ✅ زر الإغلاق التنفيذي -->
+    <button id="completeObservationBtn"
+        class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-150"
+        onclick="openModal('closeoutModal')">
+        <i data-lucide="lock" class="w-4 h-4 ml-2"></i> الإغلاق التنفيذي (صورة بعد)
+    </button>
+
+    <!-- 🔒 زر الحالة المغلقة -->
+    <button id="alreadyCompletedBtn"
+        class="bg-green-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-150 hidden"
+        disabled>
+        <i data-lucide="check" class="w-4 h-4 ml-2"></i> الملاحظة مغلقة وموثقة
+    </button>
+</div>
 
                     <div id="detailPlaceholder" class="text-center space-y-4">
                         <p class="text-gray-500 mt-16 text-lg">الرجاء اختيار ملاحظة من القائمة لعرض الصورة والمذكرة
