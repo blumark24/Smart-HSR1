@@ -1208,5 +1208,34 @@ async function applyRolePermissions() {
 applyRolePermissions();
 </script>
 
+  <script>
+// 🎯 إغلاق الأزرار الثلاثة بشكل ذكي دون حذفها
+window.addEventListener('DOMContentLoaded', () => {
+  const buttons = [
+    document.getElementById('add-observation-btn'),
+    document.getElementById('updateStatusBtn'),
+    document.getElementById('completeObservationBtn')
+  ];
+
+  buttons.forEach(btn => {
+    if (btn) {
+      // تعطيل الزر
+      btn.disabled = true;
+      btn.style.opacity = '0.45';
+      btn.style.cursor = 'not-allowed';
+      btn.title = '🔒 الصلاحية محدودة — الزر مغلق مؤقتاً';
+
+      // تأثير أنيق عند مرور الفأرة
+      btn.addEventListener('mouseover', () => {
+        btn.style.opacity = '0.6';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.opacity = '0.45';
+      });
+    }
+  });
+});
+</script>
+
 </body>
 </html>
