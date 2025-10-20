@@ -1577,6 +1577,52 @@
         window.onload = initApp;
 
     </script>
+    <!-- 🔐 Smart Role Access Control -->
+<script>
+let currentUserRole = "";
+
+function setUserRole(role) {
+  currentUserRole = role;
+  updateAccessLocks();
+}
+
+function updateAccessLocks() {
+  const addBtn = document.getElementById("add-observation-btn"); // زر إدخال الملاحظة
+  const inProgressBtn = document.getElementById("updateStatusBtn"); // زر قيد التنفيذ
+  const closeBtn = document.getElementById("completeObservationBtn"); // زر الإغلاق التنفيذي
+
+  // 🔒 القفل الافتراضي للجميع
+  [addBtn, inProgressBtn, closeBtn].forEach(btn => {
+    btn.disabled = true;
+    btn.classList.add("opacity-60", "cursor-not-allowed");
+  });
+
+  // 👷 المراقب: إدخال فقط
+  if (currentUserRole === "inspector") {
+    addBtn.disabled = false;
+  }
+
+  // 🧱 المقاول: قيد التنفيذ + الإغلاق
+  if (currentUserRole === "contractor") {
+    inProgressBtn.disabled = false;
+    closeBtn.disabled = false;
+  }
+
+  // 👨‍💼 المدير: صلاحيات كاملة
+  if (currentUserRole === "manager") {
+    [addBtn, inProgressBtn, closeBtn].forEach(btn => {
+      btn.disabled = false;
+      btn.classList.remove("opacity-60", "cursor-not-allowed");
+    });
+  }
+
+  // تحديث النصوص
+  addBtn.innerHTML = addBtn.disabled ? "🔒 إضافة ملاحظة" : "📝 إضافة ملاحظة جديدة";
+  inProgressBtn.innerHTML = inProgressBtn.disabled ? "🔒 قيد التنفيذ" : "🚧 قيد التنفيذ";
+  closeBtn.innerHTML = closeBtn.disabled ? "🔒 الإغلاق التنفيذي" : "✅ الإغلاق التنفيذي";
+}
+</script>
+
 </body>
 
 </html>
