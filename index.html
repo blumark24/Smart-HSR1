@@ -545,16 +545,19 @@
             <p class="mt-4 text-lg max-w-4xl mx-auto text-gray-500 font-medium">"منصة تنفيذية ذكية لإدارة الجودة والمراقبة الرقمية، توفر رؤية دقيقة للأداء وتدعم اتخاذ القرار المبني على البيانات."</p>
         </section>
 
-        <!-- 🔹 اختيار الدور (مدير / مراقب / مقاول) -->
-<div class="text-center my-6 no-print">
-  <label class="font-bold text-gray-700 text-lg">اختيار الدور:</label>
-  <select onchange="setUserRole(this.value)" class="ai-button-primary p-2 rounded-xl ml-2">
+<!-- 🔹 اختيار الدور (يظهر فقط للمدير) -->
+<div id="roleSelector" class="text-center my-8 no-print" style="display:none;">
+  <label class="font-bold text-gray-700 text-lg mr-2">اختيار الدور:</label>
+  <select id="roleSelect"
+    onchange="setUserRole(this.value)"
+    class="ai-button-primary rounded-full px-4 py-2 font-bold transition duration-200 hover:scale-105 focus:ring-2 focus:ring-[--color-teal]">
     <option value="">اختر الدور</option>
     <option value="manager">👨‍💼 المدير</option>
     <option value="inspector">👷 المراقب</option>
     <option value="contractor">🧱 المقاول</option>
   </select>
 </div>
+
 
 
         <section id="observations-log" class="my-20">
