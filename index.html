@@ -498,9 +498,15 @@ function setText(id, text) {
   if (el) el.textContent = text;
 }
 </script>
+  
+<script>
+// ✅ دالة توليد معرف عشوائي فريد (ID)
+function cryptoRandom() {
+  return crypto.getRandomValues(new Uint32Array(2)).join('');
+}
+</script>
 
   <script>
-
 // ✅ عرض تفاصيل الملاحظة في القسم الأيمن
 function showObservationDetail(docId) {
   const obs = observationsData.find(o => o.docId === docId);
