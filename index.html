@@ -110,7 +110,7 @@
       </h1>
       <h2 class="text-xl md:text-3xl font-extrabold text-gray-600 mt-4">نظام المراقبة وإدارة الجودة الرقمي</h2>
       <p class="mt-4 text-lg max-w-4xl mx-auto text-gray-500 font-medium">
-منصة رقمية متكاملة ترتقي بإدارة الجودة وتُحسّن الأداء عبر تحليلات دقيقة وقرارات ذكية مبنية على البيانات.
+        "منصة تنفيذية ذكية لإدارة الجودة والمراقبة الرقمية، توفر رؤية دقيقة للأداء وتدعم اتخاذ القرار المبني على البيانات."
       </p>
     </section>
 
@@ -417,14 +417,14 @@ import {
 
 // إعدادات Firebase الخاصة بك
 const firebaseConfig = {
-  apiKey: "AIzaSyC5HTAq-LeJn4GObn08REwKdqIeokKmwds",
-  authDomain: "smart-hsr.firebaseapp.com",
-  projectId: "smart-hsr",
-  storageBucket: "smart-hsr.firebasestorage.app",
-  messagingSenderId: "885545362431",
-  appId: "1:885545362431:web:2487096393f0fcbf29bdca"
+  apiKey: "AIzaSyBfClVxFIXgUXL4olEv5SepUDtzk0dq3lo",
+  authDomain: "gen-lang-client-0349944917.firebaseapp.com",
+  projectId: "gen-lang-client-0349944917",
+  storageBucket: "gen-lang-client-0349944917.firebasestorage.app",
+  messagingSenderId: "883065484771",
+  appId: "1:883065484771:web:c907bb5a51f68caad75cd6",
+  measurementId: "G-V8WG5M8V5B"
 };
-
 
 // تهيئة التطبيق وقاعدة البيانات
 let app, db, FIREBASE_READY = false;
@@ -980,12 +980,63 @@ function setButtonBusy(buttonId, busy) {
 
   </script>
   
-<script>
-const OPENAI_API_KEY = "sk-....";
+  <script>
+// ضع هنا مفتاح OpenAI الخاص بك 👇
+const OPENAI_API_KEY = "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"; 
 
-// analyzeWithOpenAI(...)
+// دالة التحليل الفعلي بالذكاء الاصطناعي
+async function analyzeWithOpenAI(base64Image, prompt="حلل الصورة التالية ضمن سياق الجودة الميدانية") {
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        input: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              { type: "image_url", image_url: base64Image }
+            ]
+          }
+        ]
+      })
+    });
+    const data = await response.json();
+    return data.output?.[0]?.content?.[0]?.text || "❌ لم يتمكن الذكاء الاصطناعي من التحليل.";
+  } catch (error) {
+    console.error(error);
+    return "حدث خطأ أثناء التحليل.";
+  }
+}
+
+// استبدل وظيفة التحليل الحالية بهذه 👇
 async function analyzeImage(tool) {
-  ...
+  const title = {'vision':'تحليل الصورة','root-cause':'السبب الجذري'}[tool] || 'التحليل';
+  const obs = window.currentSelectedObservation;
+  
+  if (!obs || !obs.imagePath) {
+    alert("❌ لا توجد صورة للتحليل!");
+    return;
+  }
+
+  document.getElementById("aiResultTitle").innerText = `🔍 جاري ${title} باستخدام OpenAI...`;
+  document.getElementById("aiResultContent").innerHTML = "<p>⏳ الرجاء الانتظار...</p>";
+
+const result = await analyzeWithOpenAI(
+  obs.imagePath,
+  tool === 'vision'
+    ? "تحليل فني هندسي للمشهد الميداني: صف بدقة ما يظهر في الصورة، وحدد إن كان الخلل يتعلق بسلامة البنية التحتية (مثل ميل عمود إنارة، سقوط، صدأ، أو خلل إنشائي). اذكر نوع العيب وتأثيره المحتمل على السلامة العامة، ثم اقترح الإجراء الفني التصحيحي."
+    : "باستخدام منهجية 5 Why، حلّل السبب الجذري للخلل الظاهر في الصورة (مثل ميل عمود، كسر، تلف في الأساس، أو ضعف تثبيت)."
+);
+
+
+  document.getElementById("aiResultTitle").innerText = `✅ نتائج ${title}`;
+  document.getElementById("aiResultContent").innerHTML = `<p class='communication-draft'>${result}</p>`;
 }
 </script>
 
