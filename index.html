@@ -1194,7 +1194,7 @@ const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// 🎯 عند تسجيل الدخول نتحقق من الدور ونطبّق الصلاحيات
+// 🎯 عند تسجيل الدخول — التحقق من الدور وتطبيق الصلاحيات
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("✅ تم تسجيل الدخول:", user.email);
@@ -1213,84 +1213,90 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// ⚙️ تطبيق الصلاحيات (الأزرار لا تختفي — فقط شفافة أو فعالة)
+// ⚙️ تطبيق الصلاحيات حسب الدور
 function applyRoleUI(role) {
-  const addBtn = document.getElementById("add-observation-btn");
-  const closeBtn = document.getElementById("completeObservationBtn");
-  const updateBtn = document.getElementById("updateStatusBtn");
-  const buttons = [addBtn, closeBtn, updateBtn];
+  const addBtn = document.getElementById("add-observation-btn");     // زر المراقب
+  const updateBtn = document.getElementById("updateStatusBtn");       // زر المقاول
+  const closeBtn = document.getElementById("completeObservationBtn"); // زر المقاول
+  const rolePanel = document.getElementById("smartRoleButton");       // زر اختيار الدور
 
-  // 🔧 أولاً: جميع الأزرار تظهر ولكن تكون مقفلة بشكل افتراضي
-  buttons.forEach(btn => {
-    if (btn) {
-      btn.style.display = "inline-flex";
-      btn.style.opacity = "0.4";
-      btn.disabled = true;
-      btn.style.cursor = "not-allowed";
-    }
-  });
+  // 🔹 أولاً: كل الأزرار تكون مفعّلة بصريًا ولكن غير صالحة إلا حسب الدور
+  const buttons = { addBtn, updateBtn, closeBtn };
 
-  // 🟢 المدير: كل شيء مفعّل
+  // 🔹 المدير
   if (role === "manager") {
-    buttons.forEach(btn => {
-      if (btn) {
-        btn.disabled = false;
-        btn.style.opacity = "1";
-        btn.style.cursor = "pointer";
-      }
-    });
-    showNotice("🟢 تم تفعيل صلاحيات المدير بالكامل");
+    enableAll(buttons);
+    if (rolePanel) rolePanel.style.display = "flex"; // المدير فقط يرى زر اختيار الدور
+    showNotice("👨‍💼 المدير: جميع الأزرار تعمل ✅");
   }
 
-  // 🟡 المراقب: فقط إضافة ملاحظة
+  // 🔹 المراقب
   else if (role === "inspector") {
-    if (addBtn) {
-      addBtn.disabled = false;
-      addBtn.style.opacity = "1";
-      addBtn.style.cursor = "pointer";
-    }
-    showNotice("🟡 المراقب: يمكنه إضافة الملاحظات فقط");
+    enableOnly(buttons, ["addBtn"]);
+    if (rolePanel) rolePanel.style.display = "none"; // لا يرى زر اختيار الدور
+    showNotice("👷 المراقب: يمكنه فقط إضافة ملاحظات ✅");
   }
 
-  // 🔵 المقاول: فقط تحديث وإغلاق
+  // 🔹 المقاول
   else if (role === "contractor") {
-    [updateBtn, closeBtn].forEach(btn => {
-      if (btn) {
-        btn.disabled = false;
-        btn.style.opacity = "1";
-        btn.style.cursor = "pointer";
-      }
-    });
-    showNotice("🔵 المقاول: يمكنه تحديث أو إغلاق الملاحظات");
+    enableOnly(buttons, ["updateBtn", "closeBtn"]);
+    if (rolePanel) rolePanel.style.display = "none"; // لا يرى زر اختيار الدور
+    showNotice("🧱 المقاول: يمكنه فقط تحديث أو إغلاق الملاحظات ✅");
   }
 
-  // عرض الدور أسفل الصفحة
+  // 🧾 عرض الدور في الفوتر
   const info = document.getElementById("userInfo");
   if (info) info.textContent = `🔐 الصلاحيات الحالية: ${role}`;
 }
 
-// 🎨 تنبيه أنيق أسفل الصفحة
+// 🔸 تفعيل الكل
+function enableAll(buttons) {
+  Object.values(buttons).forEach(btn => {
+    if (btn) {
+      btn.disabled = false;
+      btn.onclick = null;
+      btn.style.cursor = "pointer";
+    }
+  });
+}
+
+// 🔸 السماح فقط لأزرار محددة
+function enableOnly(buttons, allowed) {
+  Object.entries(buttons).forEach(([key, btn]) => {
+    if (!btn) return;
+    btn.disabled = false;
+    btn.style.cursor = "pointer";
+    btn.onclick = null;
+
+    // إذا الزر غير مسموح به
+    if (!allowed.includes(key)) {
+      btn.onclick = () => showNotice("🚫 لا تملك صلاحية تنفيذ هذا الإجراء");
+    }
+  });
+}
+
+// 🎨 إشعار جميل أسفل الشاشة
 function showNotice(message) {
   const notice = document.createElement("div");
-  notice.innerHTML = message;
+  notice.textContent = message;
   Object.assign(notice.style, {
     position: "fixed",
     bottom: "25px",
     right: "25px",
     background: "linear-gradient(135deg, #0ea5a1, #0b2b3a)",
     color: "white",
-    padding: "14px 20px",
+    padding: "14px 22px",
     borderRadius: "30px",
     fontWeight: "bold",
     zIndex: "99999",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.25)",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
     opacity: "0",
-    transition: "opacity 0.5s ease"
+    transition: "opacity 0.4s ease"
   });
   document.body.appendChild(notice);
   setTimeout(() => (notice.style.opacity = "1"), 100);
-  setTimeout(() => (notice.style.opacity = "0"), 4000);
-  setTimeout(() => notice.remove(), 4500);
+  setTimeout(() => (notice.style.opacity = "0"), 3500);
+  setTimeout(() => notice.remove(), 4000);
 }
 </script>
 
