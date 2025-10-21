@@ -476,7 +476,10 @@ async function updateObservationInFirestore(docId,fields){
   await updateDoc(doc(db,"observations",docId),fields);
 }
 
+<script>
+const GEMINI_API_KEY = "AIzaSyCstRnAY_9TO9f4l49TTHEjVaoqjtZriJk";
 </script>
+
 <!-- ✅ دالة تحليل الصورة بالرؤية (Gemini Vision) -->
 <script>
 window.analyzeImage = async function() {
