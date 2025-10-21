@@ -1266,6 +1266,60 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBfClVxFIXgUXL4olEv5SepUDtzk0dq3lo",
+  authDomain: "gen-lang-client-0349944917.firebaseapp.com",
+  projectId: "gen-lang-client-0349944917",
+  storageBucket: "gen-lang-client-0349944917.firebasestorage.app",
+  messagingSenderId: "883065484771",
+  appId: "1:883065484771:web:c907bb5a51f68caad75cd6"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 🎯 عند تسجيل الدخول، نتحقق من المستخدم ونجلب صلاحياته
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    console.log("✅ تم تسجيل الدخول:", user.email);
+
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+
+    if (snap.exists()) {
+      const role = snap.data().role;
+      console.log("🎯 الدور:", role);
+      if (role === "manager") {
+        enableManagerButtons();
+      } else {
+        alert("🚫 هذا الحساب لا يملك صلاحية المدير.");
+      }
+    } else {
+      alert("⚠️ لم يتم العثور على المستخدم في قاعدة البيانات.");
+    }
+  }
+});
+
+// ⚙️ تفعيل الأزرار للمدير فقط
+function enableManagerButtons() {
+  const addBtn = document.getElementById("add-observation-btn");
+  const closeBtn = document.getElementById("completeObservationBtn");
+  const updateBtn = document.getElementById("updateStatusBtn");
+
+  addBtn?.classList.remove("hidden");
+  closeBtn?.classList.remove("hidden");
+  updateBtn?.classList.remove("hidden");
+
+  console.log("✅ تم تفعيل صلاحيات المدير");
+}
+</script>
+
 
 </body>
 </html>
