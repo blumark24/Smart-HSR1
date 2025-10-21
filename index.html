@@ -497,15 +497,53 @@ async function uploadImageBase64(file) {
       lucide.createIcons();
     }
 
-    function renderObservationsList(observations) {
-      const list = document.getElementById('observationsList');
-      list.innerHTML = '';
-      if (!observations || observations.length === 0) {
-        list.innerHTML = '<div class="text-center text-gray-500 mt-10 p-4 bg-gray-100 rounded-xl">لا توجد ملاحظات.</div>';
-        document.getElementById('detailPlaceholder').classList.remove('hidden');
-        document.getElementById('observationDetail').classList.add('hidden');
-        return;
-      }
+ function renderObservationsList(observations) {
+  const list = document.getElementById('observationsList');
+  list.innerHTML = '';
+
+  // 🧠 خريطة الرموز التعبيرية لكل نوع ملاحظة
+  const emojiMap = {
+    LIGHTING: '💡',      // إنارة
+    ROAD: '🛣️',         // طريق
+    TREE: '🌳',          // أشجار / بيئة
+    ENVIRONMENT: '🌍',   // نظافة عامة
+    MAINTENANCE: '🛠️',  // صيانة عامة
+    SAFETY: '⚠️',       // سلامة
+    QUALITY: '📋'        // جودة
+  };
+
+  if (!observations || observations.length === 0) {
+    list.innerHTML = `
+      <div class="text-center text-gray-500 mt-10 p-4 bg-gray-100 rounded-xl">
+        لا توجد ملاحظات.
+      </div>`;
+    document.getElementById('detailPlaceholder').classList.remove('hidden');
+    document.getElementById('observationDetail').classList.add('hidden');
+    return;
+  }
+
+  observations.forEach(obs => {
+    const st = statusMap[obs.status] || { color: 'bg-gray-500', text: obs.status };
+    const isSel = currentSelectedObservation && obs.docId === currentSelectedObservation.docId ? 'active' : '';
+
+    // 🔹 نحدد الرمز المناسب للفئة
+    const emoji = emojiMap[obs.type?.toUpperCase()] || '📌';
+
+    list.innerHTML += `
+      <div class="observation-item p-3 rounded-lg flex justify-between items-center ${isSel}" onclick="showObservationDetail('${obs.docId}')">
+        <div>
+          <p class="text-md font-bold text-gray-800 truncate max-w-[200px]">
+            ${emoji} ${escapeHTML(obs.title || '')}
+          </p>
+          <p class="text-xs text-gray-500 mt-1">
+            ${obs.date || ''} | ${emoji} ${escapeHTML(obs.type || '')}
+          </p>
+        </div>
+        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full ${st.color} text-white">${st.text}</span>
+      </div>`;
+  });
+}
+
       observations.forEach(obs=>{
         const st = statusMap[obs.status] || {color:'bg-gray-500', text:obs.status};
         const isSel = currentSelectedObservation && obs.docId === currentSelectedObservation.docId ? 'active':'';
