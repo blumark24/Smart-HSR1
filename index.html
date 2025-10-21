@@ -818,6 +818,78 @@ async function toBase64FromUrl(url) {
 }
 </script>
 
+<script>
+// ✅ تصفية الملاحظات من القائمة
+function handleFilterChange() {
+  const filter = document.getElementById("observationFilter").value;
+  const list = document.getElementById("observationsList");
+  if (!list) return;
+
+  list.innerHTML = ""; // تفريغ القائمة قبل التصفية
+
+  const filtered = (filter === "الكل")
+    ? observationsData
+    : observationsData.filter(o => o.type === filter || o.status === filter);
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<p class="text-center text-gray-500 mt-4">لا توجد ملاحظات مطابقة.</p>`;
+    return;
+  }
+
+  filtered.forEach(o => {
+    const div = document.createElement("div");
+    div.className = "observation-item p-3 rounded-lg bg-gray-50 border cursor-pointer";
+    div.innerHTML = `
+      <p class="font-bold text-[var(--color-navy)]">${o.title}</p>
+      <p class="text-sm text-gray-600">${o.date || ""}</p>
+      <p class="text-xs text-gray-500">${o.status || ""}</p>
+    `;
+    div.onclick = () => showObservationDetail(o.docId);
+    list.appendChild(div);
+  });
+}
+</script>
+<script>
+// ✅ دالة رفع الصورة وتحويلها إلى Base64 (متاحة للعالم)
+window.uploadImageBase64 = function(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
+// ✅ دالة تصفية الملاحظات حسب النوع أو الحالة
+function handleFilterChange() {
+  const filter = document.getElementById("observationFilter").value;
+  const list = document.getElementById("observationsList");
+  if (!list) return;
+
+  list.innerHTML = ""; // تفريغ القائمة قبل التصفية
+
+  const filtered = (filter === "الكل")
+    ? observationsData
+    : observationsData.filter(o => o.type === filter || o.status === filter);
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<p class="text-center text-gray-500 mt-4">لا توجد ملاحظات مطابقة.</p>`;
+    return;
+  }
+
+  filtered.forEach(o => {
+    const div = document.createElement("div");
+    div.className = "observation-item p-3 rounded-lg bg-gray-50 border cursor-pointer";
+    div.innerHTML = `
+      <p class="font-bold text-[var(--color-navy)]">${o.title}</p>
+      <p class="text-sm text-gray-600">${o.date || ""}</p>
+      <p class="text-xs text-gray-500">${o.status || ""}</p>
+    `;
+    div.onclick = () => showObservationDetail(o.docId);
+    list.appendChild(div);
+  });
+}
+</script>
 
 </body>
 </html>
