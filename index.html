@@ -1040,32 +1040,22 @@ const result = await analyzeWithOpenAI(
 }
 </script>
 
-<!-- 🔹 زر عرض الصلاحية الحالي -->
+<!-- زر عرض الدور الحالي -->
 <div id="smartRoleButton"
-  title="الدور الحالي"
-  style="
-    position: fixed;
-    bottom: 25px;
-    left: 25px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: linear-gradient(135deg, #0ea5a1, #0b2b3a);
-    color: white;
-    font-family: 'Tajawal', sans-serif;
-    font-weight: bold;
-    border-radius: 40px;
-    padding: 12px 20px;
-    box-shadow: 0 0 0 rgba(14,165,161,0.4);
-    cursor: pointer;
-    transition: 0.3s ease;
-    backdrop-filter: blur(10px);
-    z-index: 99999;
-    animation: pulse 2.5s infinite;
-  "
-  onclick="toggleRolePanel()">
-  <span id="roleIcon" style="display:inline-block; animation: spin 3s linear infinite;">⚙️</span>
-  <span id="roleText">جاري التحقق من الصلاحية...</span>
+     style="
+       position: fixed;
+       bottom: 25px;
+       left: 25px;
+       background: linear-gradient(135deg, #0ea5a1, #0b2b3a);
+       color: white;
+       font-family: 'Tajawal', sans-serif;
+       font-weight: bold;
+       border-radius: 40px;
+       padding: 12px 20px;
+       box-shadow: 0 0 10px rgba(14,165,161,0.5);
+       z-index: 9999;
+     ">
+  👷 المراقب الميداني
 </div>
 
 <!-- 🔸 لوحة معلومات الصلاحيات -->
