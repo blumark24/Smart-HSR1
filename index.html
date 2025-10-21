@@ -476,7 +476,29 @@ async function updateObservationInFirestore(docId,fields){
   await updateDoc(doc(db,"observations",docId),fields);
 }
 </script> <!-- اغلاق سكربت Firebase -->
-  
+  <script>
+// ✅ دوال الواجهة الأساسية العامة (ليست داخل module)
+function hide(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('hidden');
+}
+
+function unhide(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('hidden');
+}
+
+function setHTML(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+
+function setText(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+</script>
+
   <script>
 
 // ✅ عرض تفاصيل الملاحظة في القسم الأيمن
