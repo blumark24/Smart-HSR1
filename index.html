@@ -876,146 +876,162 @@ async function uploadImageBase64(file) {
       }, 1200);
     };
 
-    window.generateCommunicationDraft = function(){
-      setText('aiResultTitle','صياغة أمر العمل الآلي...');
-      setHTML('aiResultContent', `<div class="flex items-center text-teal-700 font-bold"><div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin-left: 8px;"></div> يرجى الانتظار</div>`);
-      unhide('aiResultContainer');
-      setTimeout(()=>{
-        const o = currentSelectedObservation || {};
-        setText('aiResultTitle','صياغة أمر العمل الآلي (مكتملة):');
-        setHTML('aiResultContent', `
-          <div class="communication-draft p-4 border rounded-lg">
-            <p class="font-bold text-lg mb-2 text-red-800">أمر عمل عاجل: معالجة ${escapeHTML(o.title||'—')} [ID: ${o.id||'—'}]</p>
-            <p class="mt-3 font-bold text-sm text-red-600">الأولوية: ${o.riskAssessment?.priority||'-'} | الإطار الزمني المستهدف: ${o.riskAssessment?.timeframe||'-'}</p>
-          </div>`);
-      }, 900);
-    };
+<script>
+window.generateCommunicationDraft = function(){
+  setText('aiResultTitle','صياغة أمر العمل الآلي...');
+  setHTML('aiResultContent', `<div class="flex items-center text-teal-700 font-bold"><div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin-left: 8px;"></div> يرجى الانتظار</div>`);
+  unhide('aiResultContainer');
+  setTimeout(()=>{
+    const o = currentSelectedObservation || {};
+    setText('aiResultTitle','صياغة أمر العمل الآلي (مكتملة):');
+    setHTML('aiResultContent', `
+      <div class="communication-draft p-4 border rounded-lg">
+        <p class="font-bold text-lg mb-2 text-red-800">أمر عمل عاجل: معالجة ${escapeHTML(o.title||'—')} [ID: ${o.id||'—'}]</p>
+        <p class="mt-3 font-bold text-sm text-red-600">الأولوية: ${o.riskAssessment?.priority||'-'} | الإطار الزمني المستهدف: ${o.riskAssessment?.timeframe||'-'}</p>
+      </div>`);
+  }, 900);
+};
 
-    window.generateKpiInsights = function(){
-      const { openReports } = kpis();
-      setHTML('kpi-insight-result', `
-        <div class="kpi-insight-container p-4 mt-4 bg-white">
-          <p class="font-bold text-lg text-teal-700">ملخص تنفيذي:</p>
-          <p class="text-gray-700 mt-2">
-            يوجد ${openReports} ملاحظة مفتوحة. نوصي بتسريع توثيق صور الإغلاق لتقليل زمن المعالجة وتحسين الجودة.
-          </p>
-        </div>`);
-    };
+window.generateKpiInsights = function(){
+  const { openReports } = kpis();
+  setHTML('kpi-insight-result', `
+    <div class="kpi-insight-container p-4 mt-4 bg-white">
+      <p class="font-bold text-lg text-teal-700">ملخص تنفيذي:</p>
+      <p class="text-gray-700 mt-2">
+        يوجد ${openReports} ملاحظة مفتوحة. نوصي بتسريع توثيق صور الإغلاق لتقليل زمن المعالجة وتحسين الجودة.
+      </p>
+    </div>`);
+};
 
-    window.generatePdfReport = function(){ window.print(); };
+window.generatePdfReport = function(){ window.print(); };
 
-    window.smartLogout = function(){
-      const button = document.getElementById('logout-btn');
-      button.disabled = true;
-      button.innerHTML = '<div class="loading-spinner" style="border-top:4px solid var(--color-teal);"></div> جاري تسجيل الخروج...';
-      button.classList.add('flex-row-reverse','justify-center'); button.style.backgroundColor='gray';
-      setTimeout(()=>{ alert('تم تسجيل الخروج.'); window.location.href='login.html'; }, 800);
-    };
+window.smartLogout = function(){
+  const button = document.getElementById('logout-btn');
+  button.disabled = true;
+  button.innerHTML = '<div class="loading-spinner" style="border-top:4px solid var(--color-teal);"></div> جاري تسجيل الخروج...';
+  button.classList.add('flex-row-reverse','justify-center');
+  button.style.backgroundColor='gray';
+  setTimeout(()=>{ alert('تم تسجيل الخروج.'); window.location.href='login.html'; }, 800);
+};
 
-    // =============================
-    // 7) أدوات مساعدة UI
-    // =============================
-    function setText(id, text){ const el=document.getElementById(id); if(el) el.textContent = text ?? ''; }
-    function setHTML(id, html){ const el=document.getElementById(id); if(el) el.innerHTML = html ?? ''; }
-    function hide(id){ const el=document.getElementById(id); if(el) el.classList.add('hidden'); }
-    function unhide(id){ const el=document.getElementById(id); if(el) el.classList.remove('hidden'); }
-    function toggleHidden(id, cond){ const el=document.getElementById(id); if(el) cond?el.classList.add('hidden'):el.classList.remove('hidden'); }
-    function loaderHTML(msg){ return `<div class="text-center py-10"><div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24,165,162,.3); margin:0 auto; width:40px; height:40px;"></div><p class="mt-4 text-xl font-extrabold text-teal-700">${msg}</p></div>`; }
-    function successHTML(msg){ return `<div class="p-6 bg-green-50 rounded-xl border-4 border-green-200 text-center"><i data-lucide="check-circle" class="w-10 h-10 mx-auto text-green-600 mb-3"></i><h4 class="text-2xl font-extrabold text-green-700">${msg}</h4></div>`; }
-    function errorHTML(msg){ return `<div class="p-6 bg-red-50 rounded-xl border-4 border-red-200 text-center"><i data-lucide="x-circle" class="w-10 h-10 mx-auto text-red-600 mb-3"></i><h4 class="text-2xl font-extrabold text-red-700">${msg}</h4></div>`; }
-    function escapeHTML(str){ return (str||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
-    function cryptoRandom(){ return (crypto.getRandomValues(new Uint32Array(2)).join('')); }
+// أدوات مساعدة للـ UI
+function setText(id, text){ const el=document.getElementById(id); if(el) el.textContent = text ?? ''; }
+function setHTML(id, html){ const el=document.getElementById(id); if(el) el.innerHTML = html ?? ''; }
+function hide(id){ const el=document.getElementById(id); if(el) el.classList.add('hidden'); }
+function unhide(id){ const el=document.getElementById(id); if(el) el.classList.remove('hidden'); }
+function toggleHidden(id, cond){ const el=document.getElementById(id); if(el) cond?el.classList.add('hidden'):el.classList.remove('hidden'); }
+function escapeHTML(str){ return (str||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+</script>
 
-    // وضع تجريبي محلي (في حال عدم ضبط Firebase)
-    function seedLocalDemo(){
-      observationsData = [
-        { docId:'local-4', id:4, type:'QUALITY', date:'2024-09-20', title:'تآكل في لوحة إرشادية (الشعار غير واضح)', status:'PENDING', details:'تآكل واضح بلوحة إرشادية.', hasImage:true, isComparative:false, location:'24.5247, 46.7135', isVideo:false, imagePath:'https://picsum.photos/800/600?random=4', fileMimeType:'image/jpeg', actionPlan:'استبدال اللوحة.', riskAssessment:{priority:'High', timeframe:'7 days'}, resolutionNote:null, afterImagePath:null, createdAt: new Date("2024-09-20T16:45:00").getTime(), isNewInput:false },
-        { docId:'local-2', id:2, type:'QUALITY', date:'2024-09-28', title:'تصدع في الأسفلت وإعادة رصف', status:'COMPLETED', details:'تم إغلاقه بعد الإصلاح الكامل.', hasImage:true, isComparative:true, location:'24.5247, 46.7135', isVideo:false, imagePath:'https://picsum.photos/800/600?random=2', afterImagePath:'https://picsum.photos/800/600?random=5', fileMimeType:'image/jpeg', actionPlan:'إعادة بناء الطبقات.', riskAssessment:{priority:'Low', timeframe:'7 days'}, resolutionNote:'تم الإغلاق حسب المواصفات.', createdAt: new Date("2024-09-28T14:30:00").getTime(), isNewInput:false },
-        { docId:'local-3', id:3, type:'MAINTENANCE', date:'2024-09-25', title:'عطل في نظام التبريد الرئيسي', status:'IN_PROGRESS', details:'إرسال فريق عاجل.', hasImage:true, isComparative:false, location:'24.5247, 46.7135', isVideo:false, imagePath:'https://picsum.photos/800/600?random=3', fileMimeType:'image/jpeg', actionPlan:'توفير قطع الغيار.', riskAssessment:{priority:'Medium', timeframe:'48 hours'}, resolutionNote:null, afterImagePath:null, createdAt: new Date("2024-09-25T08:15:00").getTime(), isNewInput:false },
-        { docId:'local-1', id:1, type:'SAFETY', date:'2024-10-01', title:'ملاحظة عدم ارتداء معدات الحماية', status:'PENDING', details:'فريق بدون خوذات أمان.', hasImage:true, isComparative:false, location:'24.5247, 46.7135', isVideo:false, imagePath:'https://picsum.photos/800/600?random=1', fileMimeType:'image/jpeg', actionPlan:'تعزيز الالتزام بـ PPE.', riskAssessment:{priority:'High', timeframe:'24 hours'}, resolutionNote:null, afterImagePath:null, createdAt: new Date("2024-10-01T10:00:00").getTime(), isNewInput:false }
-      ].sort((a,b)=>b.createdAt-a.createdAt);
-    }
-
-    // =============================
-    // 8) بدء التشغيل
-    // =============================
-    async function initApp(){
-      try {
-        await loadFromFirestore();
-      } catch (e) {
-        console.warn('Loading from Firestore failed, fallback to local demo.', e);
-        seedLocalDemo();
-      }
-      // عرض
-      renderKPIs();
-      observationsData.sort((a,b)=> (b.createdAt||0)-(a.createdAt||0));
-      renderObservationsList(observationsData);
-      if (observationsData.length>0) showObservationDetail(observationsData[0].docId);
-      lucide.createIcons();
-    }
-    window.onload = initApp;
-
-        window.onload = initApp;
-
-// =============================
-// أداة مساعدة لتغيير حالة الأزرار أثناء التحميل
-// =============================
-function setButtonBusy(buttonId, busy) {
-  const btn = document.getElementById(buttonId);
-  if (!btn) return;
-  if (busy) {
-    btn.disabled = true;
-    btn.innerHTML = `
-      <div class="loading-spinner" 
-           style="border-top:4px solid var(--color-teal);
-                  width:20px;height:20px;
-                  margin-inline-end:8px;"></div> جاري المعالجة...`;
-    btn.classList.add('flex','items-center','justify-center','gap-2');
-  } else {
-    btn.disabled = false;
-    btn.innerHTML = 'تأكيد الإغلاق';
-    btn.classList.remove('flex','items-center','justify-center','gap-2');
+<script>
+  // وضع تجريبي محلي (بدون Firebase)
+  function seedLocalDemo() {
+    observationsData = [
+      { docId:'local-4', id:4, type:'QUALITY', date:'2024-09-20', title:'تآكل في لوحة إرشادية (الشعار غير واضح)', status:'PENDING', details:'تآكل واضح بلوحة إرشادية.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=4', fileMimeType:'image/jpeg', actionPlan:'استبدال اللوحة.', riskAssessment:{priority:'High', timeframe:'7 days'}, createdAt: new Date("2024-09-20T16:45:00").getTime()},
+      { docId:'local-2', id:2, type:'QUALITY', date:'2024-09-28', title:'تصدع في الأسفلت وإعادة رصف', status:'COMPLETED', details:'تم إغلاقه بعد الإصلاح الكامل.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=2', afterImagePath:'https://picsum.photos/800/600?random=5', fileMimeType:'image/jpeg', actionPlan:'إعادة بناء الطبقات.', riskAssessment:{priority:'Low', timeframe:'7 days'}, createdAt: new Date("2024-09-28T14:30:00").getTime()},
+      { docId:'local-3', id:3, type:'MAINTENANCE', date:'2024-09-25', title:'عطل في نظام التبريد الرئيسي', status:'IN_PROGRESS', details:'إرسال فريق عاجل.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=3', fileMimeType:'image/jpeg', actionPlan:'توفير قطع الغيار.', riskAssessment:{priority:'Medium', timeframe:'48 hours'}, createdAt: new Date("2024-09-25T08:15:00").getTime()},
+      { docId:'local-1', id:1, type:'SAFETY', date:'2024-10-01', title:'ملاحظة عدم ارتداء معدات الحماية', status:'PENDING', details:'فريق بدون خوذات أمان.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=1', fileMimeType:'image/jpeg', actionPlan:'تعزيز الالتزام بـ PPE.', riskAssessment:{priority:'High', timeframe:'24 hours'}, createdAt: new Date("2024-10-01T10:00:00").getTime()}
+    ].sort((a,b)=>b.createdAt-a.createdAt);
   }
-}
 
-  </script>
-  
-  <script>
-// ضع هنا مفتاح OpenAI الخاص بك 👇
-const OPENAI_API_KEY = "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"; 
+  async function initApp(){
+    try {
+      await loadFromFirestore();
+    } catch (e) {
+      console.warn('⚠️ فشل التحميل من Firestore، تشغيل الوضع المحلي.', e);
+      seedLocalDemo();
+    }
+    renderKPIs();
+    renderObservationsList(observationsData);
+    if (observationsData.length>0) showObservationDetail(observationsData[0].docId);
+    lucide.createIcons();
+  }
+  window.onload = initApp;
 
-// دالة التحليل الفعلي بالذكاء الاصطناعي
-async function analyzeWithOpenAI(base64Image, prompt="حلل الصورة التالية ضمن سياق الجودة الميدانية") {
+  function setButtonBusy(buttonId, busy) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
+    if (busy) {
+      btn.disabled = true;
+      btn.innerHTML = `
+        <div class="loading-spinner" 
+             style="border-top:4px solid var(--color-teal);
+                    width:20px;height:20px;
+                    margin-inline-end:8px;"></div> جاري المعالجة...`;
+      btn.classList.add('flex','items-center','justify-center','gap-2');
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = 'تأكيد الإغلاق';
+      btn.classList.remove('flex','items-center','justify-center','gap-2');
+    }
+  }
+</script>
+
+<!-- 🚀 تحليل الصور المحلي بـ TensorFlow.js -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+<script>
+async function analyzeImageWithTF() {
+  const obs = window.currentSelectedObservation;
+  if (!obs || !obs.imagePath) {
+    alert("❌ لا توجد صورة للتحليل!");
+    return;
+  }
+
+  const resultTitle = document.getElementById("aiResultTitle");
+  const resultContent = document.getElementById("aiResultContent");
+  resultTitle.innerText = "🔍 جاري تحليل الصورة عبر TensorFlow.js...";
+  resultContent.innerHTML = "<p>⏳ جاري المعالجة...</p>";
+  unhide("aiResultContainer");
+
   try {
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        input: [
-          {
-            role: "user",
-            content: [
-              { type: "text", text: prompt },
-              { type: "image_url", image_url: base64Image }
-            ]
-          }
-        ]
-      })
-    });
-    const data = await response.json();
-    return data.output?.[0]?.content?.[0]?.text || "❌ لم يتمكن الذكاء الاصطناعي من التحليل.";
-  } catch (error) {
-    console.error(error);
-    return "حدث خطأ أثناء التحليل.";
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = obs.imagePath;
+
+    img.onload = async () => {
+      const model = await cocoSsd.load();
+      const predictions = await model.detect(img);
+
+      if (predictions.length === 0) {
+        resultTitle.innerText = "✅ لا توجد ملاحظات ظاهرة بالصورة";
+        resultContent.innerHTML = "<p class='text-gray-600'>لم يتم الكشف عن عناصر ميدانية ذات صلة.</p>";
+        return;
+      }
+
+      let resultHTML = "<div class='communication-draft'><h4>📸 العناصر المكتشفة:</h4>";
+      predictions.forEach((p) => {
+        resultHTML += `<p>🔹 <b>${p.class}</b> — دقة (${(p.score * 100).toFixed(1)}%)</p>`;
+      });
+      resultHTML += "</div>";
+
+      resultTitle.innerText = "✅ نتائج التحليل الميداني (Coco SSD)";
+      resultContent.innerHTML = resultHTML;
+
+      const hasPole = predictions.some(p => p.class.includes("pole") || p.class.includes("street"));
+      const hasPerson = predictions.some(p => p.class === "person");
+      const hasTruck = predictions.some(p => p.class.includes("truck") || p.class.includes("car"));
+      const hasRoad = predictions.some(p => p.class.includes("road") || p.class.includes("pavement"));
+
+      if (hasPole) {
+        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">🔎 ملاحظة مقترحة: قد يكون الخلل في عمود إنارة أو إشارة مرور. يُوصى بفحص الاستقامة والتوصيلات.</p>`;
+      } else if (hasRoad) {
+        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">🛣️ ملاحظة: احتمال وجود ضرر بالطبقة الإسفلتية أو هبوط أرضي، يُنصح بالفحص الميداني.</p>`;
+      } else if (hasTruck) {
+        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">🚧 رُصدت مركبات ثقيلة بالموقع، قد تكون سببًا لتلف الطبقة السطحية.</p>`;
+      } else if (hasPerson) {
+        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">👷 ملاحظة: تم رصد عمال ميدانيين، يرجى التأكد من الالتزام بمعدات السلامة (PPE).</p>`;
+      }
+    };
+  } catch (err) {
+    console.error(err);
+    resultTitle.innerText = "❌ حدث خطأ أثناء التحليل";
+    resultContent.innerHTML = "<p class='text-red-600'>تعذر تحليل الصورة. تحقق من الاتصال.</p>";
   }
 }
+</script>
 
-// استبدل وظيفة التحليل الحالية بهذه 👇
-async function analyzeImage(tool) {
+  
   const title = {'vision':'تحليل الصورة','root-cause':'السبب الجذري'}[tool] || 'التحليل';
   const obs = window.currentSelectedObservation;
   
