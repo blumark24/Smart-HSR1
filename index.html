@@ -422,11 +422,16 @@ try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
   FIREBASE_READY = !!db;
+
+  // ✅ مهم جداً: نجعل المتغير متاحاً لباقي السكربتات
+  window.FIREBASE_READY = FIREBASE_READY;
+
   document.getElementById('userInfo').textContent = '✅ تم الاتصال بـ Firebase بنجاح.';
 } catch (e) {
   console.warn('Firebase init failed:', e);
   document.getElementById('userInfo').textContent = '⚠️ تشغيل محلي بدون Firebase.';
 }
+
 
 // =============================
 // أدوات عامة
