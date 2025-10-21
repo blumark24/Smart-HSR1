@@ -475,6 +475,59 @@ async function updateObservationInFirestore(docId,fields){
   if(!FIREBASE_READY) return;
   await updateDoc(doc(db,"observations",docId),fields);
 }
+<script>
+// ✅ عرض تفاصيل الملاحظة في القسم الأيمن
+function showObservationDetail(docId) {
+  const obs = observationsData.find(o => o.docId === docId);
+  if (!obs) return;
+
+  currentSelectedObservation = obs;
+  unhide("observationDetail");
+  hide("detailPlaceholder");
+
+  setText("detailTitle", obs.title || "—");
+  setText("detailType", obs.type || "—");
+  setText("detailLocation", obs.location || "—");
+  setText("detailDate", obs.date || "—");
+  setText("detailID", obs.displayId || "—");
+
+  const st = {
+    PENDING: "bg-red-600",
+    IN_PROGRESS: "bg-yellow-500",
+    COMPLETED: "bg-green-600"
+  }[obs.status] || "bg-gray-400";
+
+  const statusEl = document.getElementById("detailStatus");
+  statusEl.className = `inline-block px-3 py-1 text-sm font-semibold rounded-full text-white ${st}`;
+  statusEl.textContent = obs.status || "—";
+
+  setText("detailDescription", obs.details || "—");
+
+  // ✅ إظهار تحليل الذكاء الصناعي إن وُجد
+  const aiContainerId = "aiSavedAnalysis";
+  let container = document.getElementById(aiContainerId);
+  if (!container) {
+    const div = document.createElement("div");
+    div.id = aiContainerId;
+    div.className = "bg-blue-50 p-5 rounded-2xl shadow-md mb-6 border-l-4 border-blue-400";
+    div.innerHTML = `
+      <h5 class="text-xl font-bold mb-3 text-blue-800">📘 تحليل الذكاء الصناعي المحفوظ</h5>
+      <p id="aiAnalysisText" class="text-gray-700 leading-relaxed"></p>
+    `;
+    const detailSection = document.getElementById("observationDetail");
+    detailSection.insertBefore(div, document.getElementById("aiAnalysisSection"));
+  }
+
+  if (obs.aiAnalysis) {
+    unhide(aiContainerId);
+    setText("aiAnalysisText", obs.aiAnalysis);
+  } else {
+    hide(aiContainerId);
+  }
+
+  lucide.createIcons();
+}
+</script>
 
 <script>
 const GEMINI_API_KEY = "AIzaSyCstRnAY_9TO9f4l49TTHEjVaoqjtZriJk";
