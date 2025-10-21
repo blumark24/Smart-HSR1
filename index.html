@@ -984,14 +984,14 @@ function setButtonBusy(buttonId, busy) {
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
 
 <script>
-// تحليل الصور محلياً باستخدام TensorFlow.js وحفظ النتيجة داخل Firestore
+// ✅ تحليل الصور محلياً باستخدام TensorFlow.js وحفظ النتيجة داخل Firestore
 async function analyzeWithTensorFlow(imageURL, docId) {
   try {
     const model = await mobilenet.load();
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.src = imageURL;
-    
+
     img.onload = async () => {
       const predictions = await model.classify(img);
       const result = predictions[0];
@@ -1002,7 +1002,7 @@ async function analyzeWithTensorFlow(imageURL, docId) {
         ✅ التحليل تم بالكامل داخل المتصفح بدون أي اتصال بالإنترنت.
       `;
 
-      // عرض النتيجة في الواجهة
+      // عرض النتيجة في الصفحة
       document.getElementById("aiResultTitle").innerText = "✅ نتيجة التحليل المحلي (TensorFlow.js)";
       document.getElementById("aiResultContent").innerHTML = `
         <div class="communication-draft">
@@ -1012,7 +1012,7 @@ async function analyzeWithTensorFlow(imageURL, docId) {
         </div>
       `;
 
-      // ✅ حفظ النتيجة داخل Firestore إذا متصل
+      // ✅ حفظ النتيجة داخل Firestore (إن كان متصل)
       if (window.FIREBASE_READY && docId) {
         try {
           const { updateDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
@@ -1033,8 +1033,8 @@ async function analyzeWithTensorFlow(imageURL, docId) {
   }
 }
 
-// زر تحليل الصورة
-async function analyzeImage(tool) {
+// 🔘 استدعاء التحليل عند الضغط على زر “تحليل الصور بالرؤية”
+async function analyzeImage() {
   const obs = window.currentSelectedObservation;
   if (!obs || !obs.imagePath) {
     alert("❌ لا توجد صورة للتحليل!");
@@ -1043,14 +1043,17 @@ async function analyzeImage(tool) {
 
   document.getElementById("aiResultTitle").innerText = "🔍 جاري التحليل...";
   document.getElementById("aiResultContent").innerHTML = `
-    <div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin:0 auto;"></div>
+    <div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24,165,162,.3); margin:0 auto;"></div>
     <p class="text-center mt-3">جاري تحليل الصورة باستخدام الذكاء المحلي...</p>
   `;
 
-  // تنفيذ التحليل المحلي وحفظ النتيجة
   await analyzeWithTensorFlow(obs.imagePath, obs.docId);
 }
+
+// ✅ حتى يتعرف عليه الزر
+window.analyzeImage = analyzeImage;
 </script>
+
 
 
  <!-- 🔹 زر صلاحيات ذكي عائم للمدير فقط -->
