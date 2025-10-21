@@ -684,7 +684,7 @@ function checkSmartInputState() {
 </script>
   
 <script>
-// ✅ دالة الإدخال الذكي (تحليل تلقائي بالذكاء الصناعي)
+// ✅ دالة الإدخال الذكي المطورة (عنوان + تحليل كامل + حفظ تلقائي)
 async function processSmartInput() {
   const rawText = document.getElementById('rawObservationInput').value.trim();
   const lat = document.getElementById('inputLatitude').value || "غير محدد";
@@ -700,12 +700,16 @@ async function processSmartInput() {
       uploadedUrl = await uploadImageBase64(window.currentFile);
     }
 
-    // ✅ تحليل الصورة للحصول على اسم الملاحظة الذكي
+    // 🧠 تحليل الصورة الكامل (العنوان + الوصف الفني)
     let aiTitle = rawText;
+    let aiDescription = "";
     if (!rawText && uploadedUrl) {
-      aiTitle = await getSmartTitleFromGemini(uploadedUrl);
-      if (!aiTitle) aiTitle = "ملاحظة ميدانية جديدة (تحليل تلقائي)";
-    } else if (!rawText) {
+      const ai = await getFullSmartAnalysis(uploadedUrl);
+      aiTitle = ai.title || "ملاحظة ميدانية (تحليل تلقائي)";
+      aiDescription = ai.description || "";
+    } else if (rawText) {
+      aiTitle = rawText;
+    } else {
       aiTitle = "ملاحظة ميدانية جديدة";
     }
 
@@ -717,10 +721,10 @@ async function processSmartInput() {
       status: "جديد",
       location: `(${lat}, ${lon})`,
       imagePath: uploadedUrl,
+      aiAnalysis: aiDescription, // ✅ التحليل النصي الكامل
       createdAt: Date.now()
     };
 
-    // ✅ حفظ الملاحظة في Firebase إذا متصل
     let docId = "local-" + cryptoRandom();
     if (FIREBASE_READY) {
       const ref = await addObservationToFirestore(payload);
@@ -728,17 +732,21 @@ async function processSmartInput() {
     }
 
     observationsData.unshift({ docId, ...payload });
-    setHTML('modalResultContent', `✅ تمت إضافة الملاحظة "${aiTitle}" بنجاح.`);
+
+    setHTML(
+      'modalResultContent',
+      `✅ تمت إضافة الملاحظة "${aiTitle}" وتحليلها بنجاح.<br><br>
+      <div class="communication-draft">${aiDescription || "لم يتم توليد تحليل نصي."}</div>`
+    );
   } catch (err) {
     console.error(err);
     setHTML('modalResultContent', "❌ فشل في معالجة الملاحظة.");
   }
 }
 
-// ✅ دالة فرعية تستدعي Gemini لتوليد اسم الملاحظة من الصورة
-async function getSmartTitleFromGemini(imageUrl) {
-  const GEMINI_API_KEY = "AIzaSyCstRnAY_9TO9f4l49TTHEjVaoqjtZriJk"; // مفتاحك الحالي
-
+// ✅ تحليل الصورة باستخدام Gemini Vision (العنوان + الوصف الفني)
+async function getFullSmartAnalysis(imageUrl) {
+  const GEMINI_API_KEY = "AIzaSyCstRnAY_9TO9f4l49TTHEjVaoqjtZriJk";
   try {
     const imageBase64 = await toBase64FromUrl(imageUrl);
     const response = await fetch(
@@ -751,7 +759,11 @@ async function getSmartTitleFromGemini(imageUrl) {
             {
               parts: [
                 {
-                  text: "صف محتوى الصورة في كلمتين أو ثلاث فقط كعنوان هندسي دقيق، مثل (عمود إنارة مائل) أو (حفرة في الطريق) أو (تشققات في الأسفلت) أو (أشجار تحتاج تقليم)."
+                  text: `حلل الصورة التالية بلغة JSON مرتبة تحتوي على:
+{
+  "title": "عنوان الملاحظة (مثلاً: عمود إنارة مائل، حفرة في الطريق، أشجار تحتاج تقليم)",
+  "description": "تحليل فني قصير يصف الحالة، السبب المحتمل، الإجراء المقترح، وتقييم الخطورة."
+}`
                 },
                 { inline_data: { mime_type: "image/jpeg", data: imageBase64 } }
               ]
@@ -762,16 +774,17 @@ async function getSmartTitleFromGemini(imageUrl) {
     );
 
     const data = await response.json();
-    const title = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-    console.log("🎯 عنوان ذكي متولد:", title);
-    return title;
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    console.log("📡 تحليل Gemini:", text);
+    const parsed = JSON.parse(text || "{}");
+    return parsed;
   } catch (error) {
-    console.error("❌ خطأ في تحليل العنوان:", error);
-    return null;
+    console.error("❌ فشل تحليل Gemini:", error);
+    return { title: null, description: null };
   }
 }
 
-// ✅ دالة لتحويل الصورة إلى Base64 من الرابط
+// ✅ تحويل الصورة إلى Base64
 async function toBase64FromUrl(url) {
   const res = await fetch(url);
   const blob = await res.blob();
