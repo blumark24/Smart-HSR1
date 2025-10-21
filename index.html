@@ -1040,178 +1040,48 @@ const result = await analyzeWithOpenAI(
 }
 </script>
 
-<!-- زر عرض الدور الحالي -->
-<div id="smartRoleButton"
-     style="
-       position: fixed;
-       bottom: 25px;
-       left: 25px;
-       background: linear-gradient(135deg, #0ea5a1, #0b2b3a);
-       color: white;
-       font-family: 'Tajawal', sans-serif;
-       font-weight: bold;
-       border-radius: 40px;
-       padding: 12px 20px;
-       box-shadow: 0 0 10px rgba(14,165,161,0.5);
-       z-index: 9999;
-     ">
-  👷 المراقب الميداني
+ <!-- 🔹 زر صلاحيات ذكي عائم للمدير فقط -->
+<button id="roleFloatingBtn"
+  onclick="toggleRoleMenu()"
+  title="إعدادات المدير"
+  style="display:none;"
+  class="fixed bottom-6 left-6 bg-[--color-teal] text-white rounded-full p-4 shadow-xl hover:bg-[--color-navy] transition duration-300 hover:scale-110 z-50">
+  <i data-lucide="lock" class="w-5 h-5"></i>
+</button>
+
+<!-- القائمة العائمة -->
+<div id="roleMenu"
+  class="hidden fixed bottom-20 left-6 bg-white border border-gray-200 rounded-xl shadow-2xl p-4 w-60 text-center z-50">
+  <label class="block text-gray-700 font-bold mb-2">اختيار الدور:</label>
+  <select id="roleSelect"
+    onchange="setUserRole(this.value)"
+    class="ai-button-primary rounded-full px-3 py-1 font-bold w-full">
+    <option value="">اختر الدور</option>
+    <option value="manager">👨‍💼 المدير</option>
+    <option value="inspector">👷 المراقب</option>
+    <option value="contractor">🧱 المقاول</option>
+  </select>
 </div>
 
-<!-- 🔸 لوحة معلومات الصلاحيات -->
-<div id="roleInfoPanel"
-  style="
-    display: none;
-    position: fixed;
-    bottom: 90px;
-    left: 25px;
-    width: 300px;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    padding: 20px;
-    font-family: 'Tajawal', sans-serif;
-    z-index: 99998;
-  ">
-  <h3 style="color:#0b2b3a; font-weight:800; font-size:18px; margin-bottom:10px;">🧩 تفاصيل الصلاحيات</h3>
-  <ul style="list-style:none; padding:0; margin:0; line-height:1.8;">
-    <li>👷 <b>المراقب الميداني:</b> يمكنه <span style="color:#0ea5a1;">إضافة الملاحظات فقط</span>.</li>
-    <li>🧱 <b>المقاول التنفيذي:</b> يمكنه <span style="color:#f59e0b;">تحديث الحالة والإغلاق فقط</span>.</li>
-  </ul>
-  <button onclick="toggleRolePanel()" style="
-      margin-top:15px;
-      width:100%;
-      background:#0ea5a1;
-      color:white;
-      border:none;
-      border-radius:25px;
-      padding:10px;
-      font-weight:bold;
-      cursor:pointer;
-    ">إغلاق</button>
-</div>
-
-<!-- 🌈 الحركات -->
-<style>
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(14,165,161,0.4); }
-  70% { box-shadow: 0 0 0 12px rgba(14,165,161,0); }
-  100% { box-shadow: 0 0 0 0 rgba(14,165,161,0); }
-}
-</style>
-
-<script type="module">
-import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBfClVxFIXgUXL4olEv5SepUDtzk0dq3lo",
-  authDomain: "gen-lang-client-0349944917.firebaseapp.com",
-  projectId: "gen-lang-client-0349944917",
-  storageBucket: "gen-lang-client-0349944917.firebasestorage.app",
-  messagingSenderId: "883065484771",
-  appId: "1:883065484771:web:c907bb5a51f68caad75cd6"
-};
-
-// ✅ منع تكرار التهيئة
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// 🎯 عند تسجيل الدخول
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return console.warn("❌ لا يوجد مستخدم مسجل دخول");
-  
-  const userRef = doc(db, "users", user.uid);
-  const snap = await getDoc(userRef);
-
-  if (!snap.exists()) {
-    showNotice("🚫 المستخدم غير مسجل في قاعدة البيانات");
-    return;
-  }
-
-  const role = snap.data().role;
-  console.log("🎯 الدور:", role);
-
-  if (role === "inspector") {
-    activateInspectorMode();
-  } else {
-    showNotice("🚫 ليس لديك صلاحية المراقب");
-  }
-});
-
-// ⚙️ صلاحيات المراقب
-function activateInspectorMode() {
-  const addBtn = document.getElementById("add-observation-btn");
-  const updateBtn = document.getElementById("updateStatusBtn");
-  const closeBtn = document.getElementById("completeObservationBtn");
-
-  // عرض الأزرار كلها
-  [addBtn, updateBtn, closeBtn].forEach(btn => {
-    if (btn) {
-      btn.style.display = "inline-flex";
-      btn.disabled = false;
-      btn.style.opacity = "1";
-    }
-  });
-
-  // ✅ يعمل فقط زر الإضافة
-  enableButton(addBtn);
-  lockButton(updateBtn, "🚫 لا تملك صلاحية تحديث الحالة");
-  lockButton(closeBtn, "🚫 لا تملك صلاحية الإغلاق");
-
-  showNotice("👷 تم تفعيل صلاحيات المراقب الميداني (إضافة الملاحظات فقط)");
+<script>
+function toggleRoleMenu() {
+  document.getElementById("roleMenu").classList.toggle("hidden");
 }
 
-// ✅ تفعيل زر
-function enableButton(btn) {
-  if (!btn) return;
-  btn.disabled = false;
-  btn.onclick = null;
-  btn.style.cursor = "pointer";
+// 👇 مؤقتًا لتجربته الآن فقط (يظهر للمدير)
+let currentUserIsManager = true;
+if (currentUserIsManager) {
+  document.getElementById("roleFloatingBtn").style.display = "block";
 }
 
-// 🔒 قفل زر مع تنبيه
-function lockButton(btn, msg) {
-  if (!btn) return;
-  btn.style.cursor = "not-allowed";
-  btn.addEventListener("click", (e) => {
-    e.preventDefault();
-    showNotice(msg);
-  });
-}
-
-// 💬 تنبيه جميل أسفل الشاشة
-function showNotice(msg) {
-  const box = document.createElement("div");
-  box.textContent = msg;
-  Object.assign(box.style, {
-    position: "fixed",
-    bottom: "25px",
-    right: "25px",
-    background: "linear-gradient(135deg, #0ea5a1, #0b2b3a)",
-    color: "#fff",
-    padding: "12px 18px",
-    borderRadius: "25px",
-    fontWeight: "bold",
-    zIndex: "99999",
-    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
-    opacity: "0",
-    transition: "opacity 0.4s ease"
-  });
-  document.body.appendChild(box);
-  setTimeout(() => (box.style.opacity = "1"), 100);
-  setTimeout(() => (box.style.opacity = "0"), 2800);
-  setTimeout(() => box.remove(), 3300);
+function setUserRole(role) {
+  alert(`✅ تم تفعيل صلاحيات: ${role}`);
+  document.getElementById("roleMenu").classList.add("hidden");
 }
 </script>
-
-
-
+ 
+  
 </body>
 </html>
+
+
