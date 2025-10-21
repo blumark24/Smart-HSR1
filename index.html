@@ -1247,21 +1247,37 @@ function applyRoleUI(role) {
 }
 </script>
 
-  <script>
+<script>
 window.addEventListener("load", () => {
-  // ✅ تأكيد ظهور الأزرار بعد تحميل الصفحة
-  const managerButtons = [
+  // نتحقق من أن المستخدم مدير فقط
+  const userRoleInfo = document.getElementById("userInfo")?.textContent || "";
+  const isManager = userRoleInfo.includes("manager");
+
+  const buttons = [
     document.getElementById("add-observation-btn"),
     document.getElementById("completeObservationBtn"),
     document.getElementById("updateStatusBtn")
   ];
-  managerButtons.forEach(btn => {
-    if (btn) {
-      btn.style.display = "inline-flex"; // يظهر الزر
+
+  buttons.forEach(btn => {
+    if (!btn) return;
+
+    if (isManager) {
+      // ✅ المدير فقط تظهر له الأزرار فعلاً
+      btn.style.display = "inline-flex";
       btn.style.opacity = "1";
       btn.disabled = false;
-      btn.classList.remove("hidden"); // يزيل الإخفاء
-      console.log("✅ الزر تم تفعيله:", btn.id);
+      btn.classList.remove("hidden");
+    } else {
+      // 🔒 غير المديرين: الأزرار تبقى مقفلة وغير فعالة
+      btn.style.display = "inline-flex";
+      btn.style.opacity = "0.4";
+      btn.disabled = true;
+      btn.classList.add("locked-btn");
+      btn.addEventListener("click", e => {
+        e.preventDefault();
+        alert("🚫 لا تملك صلاحية تنفيذ هذا الإجراء (عرض فقط)");
+      });
     }
   });
 });
