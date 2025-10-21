@@ -663,6 +663,22 @@ function getLocation() {
   );
 }
 </script>
+<!-- ✅ دوال رفع الملفات والتحقق من الإدخال -->
+<script>
+function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  window.currentFile = file;
+  document.getElementById('fileStatus').textContent = `📸 تم اختيار: ${file.name}`;
+  checkSmartInputState();
+}
+
+function checkSmartInputState() {
+  const text = document.getElementById('rawObservationInput').value.trim();
+  const btn = document.getElementById('processSmartInputBtn');
+  btn.disabled = !text && !window.currentFile;
+}
+</script>
 
 </body>
 </html>
