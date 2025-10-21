@@ -666,22 +666,108 @@ async function uploadImageBase64(file) {
       checkSmartInputState();
     };
 
-    window.processSmartInput = async function(){
-      const rawText = document.getElementById('rawObservationInput').value.trim();
-      const lat = document.getElementById('inputLatitude').value || "غير محدد";
-      const lon = document.getElementById('inputLongitude').value || "غير محدد";
+window.processSmartInput = async function(){
+  let rawText = document.getElementById('rawObservationInput').value.trim();
+  const lat = document.getElementById('inputLatitude').value || "غير محدد";
+  const lon = document.getElementById('inputLongitude').value || "غير محدد";
 
-      if (!rawText && !currentFile) { alert('أدخل وصفاً أو صورة.'); return; }
+  hide('modalStep1'); 
+  unhide('modalResult');
+  setHTML('modalResultContent', loaderHTML('🔍 جاري معالجة البيانات وتحليل الصورة بالذكاء الصناعي...'));
 
-      hide('modalStep1'); unhide('modalResult');
-      setHTML('modalResultContent', loaderHTML('جاري معالجة البيانات...'));
+  try {
+    let uploadedUrl = null;
+    if (currentFile) {
+      uploadedUrl = await uploadImageBase64(currentFile);
+    }
 
-      try {
-        let uploadedUrl = null;
-        if (currentFile) {
-  uploadedUrl = await uploadImageBase64(currentFile);
+    // 🔹 إذا لم يكتب المراقب وصف، نولّد اسم الملاحظة من الصورة بالذكاء الصناعي
+    let autoTitle = rawText;
+    if (!rawText && uploadedUrl) {
+      autoTitle = await getSmartTitleFromGemini(uploadedUrl);
+      if (!autoTitle || autoTitle === "") {
+        autoTitle = "ملاحظة ميدانية جديدة (تحليل تلقائي)";
+      }
+    } else if (!rawText) {
+      autoTitle = "ملاحظة ميدانية جديدة";
+    }
 
-        }
+    const nextDisplayId = (observationsData.reduce((m,o)=>Math.max(m,o.id||0),0) + 1) || 1;
+    const newDate = new Date().toISOString().slice(0,10);
+
+    const payload = {
+      displayId: nextDisplayId,
+      type: "MAINTENANCE",
+      date: newDate,
+      title: autoTitle.substring(0,60),
+      status: "PENDING",
+      details: `**تم توليد هذا التقرير آلياً.**\nالوصف الأولي: "${autoTitle}"\nالموقع: (${lat}, ${lon})`,
+      imagePath: uploadedUrl,
+      isComparative: false,
+      actionPlan: "إجراء فحص ميداني عاجل واتخاذ الإجراء اللازم.",
+      riskAssessment: { priority:"High", timeframe:"48 hours" },
+      location: `${lat}, ${lon}`,
+      resolutionNote: null,
+      afterImagePath: null
+    };
+
+    let docId = 'local-' + cryptoRandom();
+    if (FIREBASE_READY) {
+      docId = await addObservationToFirestore(payload);
+    }
+
+    observationsData.unshift({
+      docId,
+      id: nextDisplayId, ...payload,
+      hasImage: !!payload.imagePath,
+      isVideo: false,
+      fileMimeType: 'image/jpeg',
+      createdAt: Date.now(),
+      isNewInput: true
+    });
+
+    renderObservationsList(observationsData);
+    showObservationDetail(docId);
+
+    setHTML('modalResultContent', successHTML(`تمت إضافة الملاحظة "${autoTitle}" بنجاح.`));
+    lucide.createIcons();
+
+  } catch (err) {
+    console.error(err);
+    setHTML('modalResultContent', errorHTML('تعذر إضافة الملاحظة. تحقق من الاتصال.'));
+  } finally {
+    renderKPIs();
+  }
+};
+
+const GEMINI_API_KEY = "AIzaSyCstRnAY_9TO9f4l49TTHEjVaoqjtZriJk";
+
+// 🎯 توليد اسم الملاحظة تلقائيًا من الصورة فقط
+async function getSmartTitleFromGemini(imageUrl) {
+  try {
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { text: "صف الصورة في كلمة أو كلمتين فقط كمسمى هندسي دقيق، مثل (عمود إنارة مائل) أو (حفرة في الطريق) أو (أشجار تحتاج تقليم)." },
+              { inline_data: { mime_type: "image/jpeg", data: await toBase64FromUrl(imageUrl) } }
+            ]
+          }]
+        })
+      }
+    );
+
+    const data = await response.json();
+    return data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || null;
+  } catch (error) {
+    console.warn("❌ فشل تحليل العنوان:", error);
+    return null;
+  }
+}
 
         // نحسب displayId بسيط: أكبر قيمة + 1
         const nextDisplayId = (observationsData.reduce((m,o)=>Math.max(m,o.id||0),0) + 1) || 1;
