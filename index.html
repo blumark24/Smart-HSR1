@@ -824,62 +824,52 @@ async function uploadImageBase64(file) {
       }
     };
 
-    // =============================
-    // 6) ميزات العرض الأخرى كما هي
-    // =============================
-    window.setupImageComparison = function(){
-      const wrapper = document.getElementById('imageComparisonWrapper');
-      const divider = document.getElementById('comparisonDivider');
-      const afterImageContainer = document.getElementById('afterImageContainer');
-      if (!wrapper) return;
-      afterImageContainer.style.width = '50%'; divider.style.left = '50%';
-      let isDragging = false;
-      const onMove = (clientX)=>{
-        if(!isDragging) return;
-        const r = wrapper.getBoundingClientRect();
-        let left = Math.max(0, Math.min(clientX - r.left, r.width));
-        divider.style.left = `${left}px`; afterImageContainer.style.width = `${left}px`;
-      };
-      const onMouseMove = e=>onMove(e.clientX);
-      const onTouchMove = e=>onMove(e.touches[0].clientX);
-      const onMouseUp = ()=>{
-        isDragging=false; wrapper.classList.remove('dragging');
-        window.removeEventListener('mousemove', onMouseMove);
-        window.removeEventListener('touchmove', onTouchMove);
-        window.removeEventListener('mouseup', onMouseUp);
-        window.removeEventListener('touchend', onMouseUp);
-      };
-      const onMouseDown = e=>{
-        e.preventDefault(); isDragging=true; wrapper.classList.add('dragging');
-        onMove(e.clientX || (e.touches&&e.touches[0].clientX));
-        window.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('touchmove', onTouchMove);
-        window.addEventListener('mouseup', onMouseUp);
-        window.addEventListener('touchend', onMouseUp);
-      };
-      divider.addEventListener('mousedown', onMouseDown);
-      divider.addEventListener('touchstart', onMouseDown);
-      wrapper.addEventListener('mousedown', onMouseDown);
-      wrapper.addEventListener('touchstart', onMouseDown);
-    };
-
-    window.analyzeImage = function(tool){
-      const title = {'vision':'تحليل الرؤية (Vision)','root-cause':'تحليل السبب الجذري'}[tool] || 'التحليل';
-      setText('aiResultTitle', `جاري تنفيذ ${title}...`);
-      setHTML('aiResultContent', `<div class="flex items-center text-teal-700 font-bold"><div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin-left: 8px;"></div> يرجى الانتظار</div>`);
-      unhide('aiResultContainer');
-      setTimeout(()=>{
-        let result = (tool==='vision')
-          ? `<p class="communication-draft">**وصف تقريبي تلقائي:** تظهر مؤشرات تلف/تشققات. يُوصى بإزالة الجزء المتضرر وإعادة السفلتة.</p>`
-          : `<p class="communication-draft">**5 Whys (مقترح):**\n1) لماذا حدث؟ تأخر صيانة.\n2) لماذا؟ نقص متابعة.\n3) لماذا؟ جدول غير محدث.\n4) لماذا؟ بدون أتمتة.\n5) السبب الجذري: غياب آلية تنبيه دوري.</p>`;
-        setText('aiResultTitle', `نتائج ${title} مكتملة:`); setHTML('aiResultContent', result);
-      }, 1200);
-    };
-
 <script>
+// =============================
+// 6) ميزات العرض الأخرى كما هي
+// =============================
+window.setupImageComparison = function(){
+  const wrapper = document.getElementById('imageComparisonWrapper');
+  const divider = document.getElementById('comparisonDivider');
+  const afterImageContainer = document.getElementById('afterImageContainer');
+  if (!wrapper) return;
+  afterImageContainer.style.width = '50%'; divider.style.left = '50%';
+  let isDragging = false;
+  const onMove = (clientX)=>{
+    if(!isDragging) return;
+    const r = wrapper.getBoundingClientRect();
+    let left = Math.max(0, Math.min(clientX - r.left, r.width));
+    divider.style.left = `${left}px`; afterImageContainer.style.width = `${left}px`;
+  };
+  const onMouseMove = e=>onMove(e.clientX);
+  const onTouchMove = e=>onMove(e.touches[0].clientX);
+  const onMouseUp = ()=>{
+    isDragging=false; wrapper.classList.remove('dragging');
+    window.removeEventListener('mousemove', onMouseMove);
+    window.removeEventListener('touchmove', onTouchMove);
+    window.removeEventListener('mouseup', onMouseUp);
+    window.removeEventListener('touchend', onMouseUp);
+  };
+  const onMouseDown = e=>{
+    e.preventDefault(); isDragging=true; wrapper.classList.add('dragging');
+    onMove(e.clientX || (e.touches&&e.touches[0].clientX));
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('touchmove', onTouchMove);
+    window.addEventListener('mouseup', onMouseUp);
+    window.addEventListener('touchend', onMouseUp);
+  };
+  divider.addEventListener('mousedown', onMouseDown);
+  divider.addEventListener('touchstart', onMouseDown);
+  wrapper.addEventListener('mousedown', onMouseDown);
+  wrapper.addEventListener('touchstart', onMouseDown);
+};
+
+// =============================
+// 7) أدوات عامة
+// =============================
 window.generateCommunicationDraft = function(){
   setText('aiResultTitle','صياغة أمر العمل الآلي...');
-  setHTML('aiResultContent', `<div class="flex items-center text-teal-700 font-bold"><div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24, 165, 162, 0.3); margin-left: 8px;"></div> يرجى الانتظار</div>`);
+  setHTML('aiResultContent', `<div class="flex items-center text-teal-700 font-bold"><div class="loading-spinner" style="border-top-color: var(--color-teal); border: 4px solid rgba(24,165,162,0.3); margin-left: 8px;"></div> يرجى الانتظار</div>`);
   unhide('aiResultContainer');
   setTimeout(()=>{
     const o = currentSelectedObservation || {};
@@ -924,50 +914,34 @@ function escapeHTML(str){ return (str||'').replace(/[&<>"']/g, m=>({ '&':'&amp;'
 </script>
 
 <script>
-  // وضع تجريبي محلي (بدون Firebase)
-  function seedLocalDemo() {
-    observationsData = [
-      { docId:'local-4', id:4, type:'QUALITY', date:'2024-09-20', title:'تآكل في لوحة إرشادية (الشعار غير واضح)', status:'PENDING', details:'تآكل واضح بلوحة إرشادية.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=4', fileMimeType:'image/jpeg', actionPlan:'استبدال اللوحة.', riskAssessment:{priority:'High', timeframe:'7 days'}, createdAt: new Date("2024-09-20T16:45:00").getTime()},
-      { docId:'local-2', id:2, type:'QUALITY', date:'2024-09-28', title:'تصدع في الأسفلت وإعادة رصف', status:'COMPLETED', details:'تم إغلاقه بعد الإصلاح الكامل.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=2', afterImagePath:'https://picsum.photos/800/600?random=5', fileMimeType:'image/jpeg', actionPlan:'إعادة بناء الطبقات.', riskAssessment:{priority:'Low', timeframe:'7 days'}, createdAt: new Date("2024-09-28T14:30:00").getTime()},
-      { docId:'local-3', id:3, type:'MAINTENANCE', date:'2024-09-25', title:'عطل في نظام التبريد الرئيسي', status:'IN_PROGRESS', details:'إرسال فريق عاجل.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=3', fileMimeType:'image/jpeg', actionPlan:'توفير قطع الغيار.', riskAssessment:{priority:'Medium', timeframe:'48 hours'}, createdAt: new Date("2024-09-25T08:15:00").getTime()},
-      { docId:'local-1', id:1, type:'SAFETY', date:'2024-10-01', title:'ملاحظة عدم ارتداء معدات الحماية', status:'PENDING', details:'فريق بدون خوذات أمان.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=1', fileMimeType:'image/jpeg', actionPlan:'تعزيز الالتزام بـ PPE.', riskAssessment:{priority:'High', timeframe:'24 hours'}, createdAt: new Date("2024-10-01T10:00:00").getTime()}
-    ].sort((a,b)=>b.createdAt-a.createdAt);
-  }
+// =============================
+// 8) الوضع التجريبي المحلي
+// =============================
+function seedLocalDemo() {
+  observationsData = [
+    { docId:'local-4', id:4, type:'QUALITY', date:'2024-09-20', title:'تآكل في لوحة إرشادية (الشعار غير واضح)', status:'PENDING', details:'تآكل واضح بلوحة إرشادية.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=4', actionPlan:'استبدال اللوحة.', riskAssessment:{priority:'High', timeframe:'7 days'}, createdAt: new Date("2024-09-20T16:45:00").getTime()},
+    { docId:'local-2', id:2, type:'QUALITY', date:'2024-09-28', title:'تصدع في الأسفلت وإعادة رصف', status:'COMPLETED', details:'تم الإغلاق بعد الإصلاح.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=2', afterImagePath:'https://picsum.photos/800/600?random=5', actionPlan:'إعادة بناء الطبقات.', riskAssessment:{priority:'Low', timeframe:'7 days'}, createdAt: new Date("2024-09-28T14:30:00").getTime()},
+    { docId:'local-3', id:3, type:'MAINTENANCE', date:'2024-09-25', title:'عطل في نظام التبريد الرئيسي', status:'IN_PROGRESS', details:'إرسال فريق عاجل.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=3', actionPlan:'توفير قطع الغيار.', riskAssessment:{priority:'Medium', timeframe:'48 hours'}, createdAt: new Date("2024-09-25T08:15:00").getTime()},
+    { docId:'local-1', id:1, type:'SAFETY', date:'2024-10-01', title:'ملاحظة عدم ارتداء معدات الحماية', status:'PENDING', details:'فريق بدون خوذات أمان.', hasImage:true, location:'24.5247, 46.7135', imagePath:'https://picsum.photos/800/600?random=1', actionPlan:'تعزيز الالتزام بـ PPE.', riskAssessment:{priority:'High', timeframe:'24 hours'}, createdAt: new Date("2024-10-01T10:00:00").getTime()}
+  ].sort((a,b)=>b.createdAt-a.createdAt);
+}
 
-  async function initApp(){
-    try {
-      await loadFromFirestore();
-    } catch (e) {
-      console.warn('⚠️ فشل التحميل من Firestore، تشغيل الوضع المحلي.', e);
-      seedLocalDemo();
-    }
-    renderKPIs();
-    renderObservationsList(observationsData);
-    if (observationsData.length>0) showObservationDetail(observationsData[0].docId);
-    lucide.createIcons();
+async function initApp(){
+  try {
+    await loadFromFirestore();
+  } catch (e) {
+    console.warn('⚠️ فشل التحميل من Firestore، تشغيل الوضع المحلي.', e);
+    seedLocalDemo();
   }
-  window.onload = initApp;
-
-  function setButtonBusy(buttonId, busy) {
-    const btn = document.getElementById(buttonId);
-    if (!btn) return;
-    if (busy) {
-      btn.disabled = true;
-      btn.innerHTML = `
-        <div class="loading-spinner" 
-             style="border-top:4px solid var(--color-teal);
-                    width:20px;height:20px;
-                    margin-inline-end:8px;"></div> جاري المعالجة...`;
-      btn.classList.add('flex','items-center','justify-center','gap-2');
-    } else {
-      btn.disabled = false;
-      btn.innerHTML = 'تأكيد الإغلاق';
-      btn.classList.remove('flex','items-center','justify-center','gap-2');
-    }
-  }
+  renderKPIs();
+  renderObservationsList(observationsData);
+  if (observationsData.length>0) showObservationDetail(observationsData[0].docId);
+  lucide.createIcons();
+}
+window.onload = initApp;
 </script>
 
-<!-- 🚀 تحليل الصور المحلي بـ TensorFlow.js -->
+<!-- 🚀 TensorFlow.js لتحليل الصور -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 <script>
@@ -1008,19 +982,20 @@ async function analyzeImageWithTF() {
       resultTitle.innerText = "✅ نتائج التحليل الميداني (Coco SSD)";
       resultContent.innerHTML = resultHTML;
 
+      // تحليل ذكي مخصص لبلدية مكة
       const hasPole = predictions.some(p => p.class.includes("pole") || p.class.includes("street"));
       const hasPerson = predictions.some(p => p.class === "person");
       const hasTruck = predictions.some(p => p.class.includes("truck") || p.class.includes("car"));
       const hasRoad = predictions.some(p => p.class.includes("road") || p.class.includes("pavement"));
 
       if (hasPole) {
-        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">🔎 ملاحظة مقترحة: قد يكون الخلل في عمود إنارة أو إشارة مرور. يُوصى بفحص الاستقامة والتوصيلات.</p>`;
+        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">🔎 ملاحظة: يُحتمل وجود خلل في عمود إنارة أو إشارة مرور — يُوصى بفحص التوصيلات والاستقامة.</p>`;
       } else if (hasRoad) {
-        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">🛣️ ملاحظة: احتمال وجود ضرر بالطبقة الإسفلتية أو هبوط أرضي، يُنصح بالفحص الميداني.</p>`;
+        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">🛣️ ملاحظة: مؤشرات على ضرر بالطبقة الإسفلتية أو هبوط أرضي — يُنصح بالفحص الميداني.</p>`;
       } else if (hasTruck) {
-        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">🚧 رُصدت مركبات ثقيلة بالموقع، قد تكون سببًا لتلف الطبقة السطحية.</p>`;
+        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">🚧 تم رصد مركبات ثقيلة — قد تكون سبباً في تلف السطح.</p>`;
       } else if (hasPerson) {
-        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">👷 ملاحظة: تم رصد عمال ميدانيين، يرجى التأكد من الالتزام بمعدات السلامة (PPE).</p>`;
+        resultContent.innerHTML += `<p class="mt-3 text-teal-700 font-bold">👷 ملاحظة: تم رصد عمال ميدانيين، يُنصح بالتحقق من التزامهم بمعدات السلامة (PPE).</p>`;
       }
     };
   } catch (err) {
