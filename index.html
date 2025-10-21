@@ -1247,5 +1247,25 @@ function applyRoleUI(role) {
 }
 </script>
 
+  <script>
+window.addEventListener("load", () => {
+  // ✅ تأكيد ظهور الأزرار بعد تحميل الصفحة
+  const managerButtons = [
+    document.getElementById("add-observation-btn"),
+    document.getElementById("completeObservationBtn"),
+    document.getElementById("updateStatusBtn")
+  ];
+  managerButtons.forEach(btn => {
+    if (btn) {
+      btn.style.display = "inline-flex"; // يظهر الزر
+      btn.style.opacity = "1";
+      btn.disabled = false;
+      btn.classList.remove("hidden"); // يزيل الإخفاء
+      console.log("✅ الزر تم تفعيله:", btn.id);
+    }
+  });
+});
+</script>
+
 </body>
 </html>
