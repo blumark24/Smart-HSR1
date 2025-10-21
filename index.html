@@ -1040,147 +1040,79 @@ const result = await analyzeWithOpenAI(
 }
 </script>
 
-<!-- 🔹 زر صلاحيات المدير (ثابت وواضح) -->
+<!-- 🔹 زر عرض الصلاحية الحالي -->
 <div id="smartRoleButton"
-  title="صلاحيات المدير"
-  class="fixed bottom-6 left-6 z-[9999] cursor-pointer"
+  title="الدور الحالي"
   style="
     position: fixed;
     bottom: 25px;
     left: 25px;
-    width: 60px;
-    height: 60px;
-    background-color: rgba(14,165,161,0.15);
-    border: 2px solid #0ea5a1;
-    border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px rgba(14,165,161,0.3);
-    backdrop-filter: blur(10px);
+    gap: 8px;
+    background: linear-gradient(135deg, #0ea5a1, #0b2b3a);
+    color: white;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: bold;
+    border-radius: 40px;
+    padding: 12px 20px;
+    box-shadow: 0 4px 15px rgba(14,165,161,0.4);
     cursor: pointer;
-    opacity: 0.9;
-    transition: all 0.3s ease;
+    transition: 0.3s ease;
+    backdrop-filter: blur(10px);
+    z-index: 99999;
   "
-  onclick="toggleSmartRolePanel()"
-  onmouseover="this.style.opacity='1'"
-  onmouseleave="this.style.opacity='0.9'">
-  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#0ea5a1" viewBox="0 0 24 24">
-    <path d="M12 2L3 5v6c0 5.25 3.438 10.74 9 12 5.562-1.26 9-6.75 9-12V5l-9-3z"/>
-  </svg>
+  onclick="toggleRolePanel()">
+  <span id="roleIcon" style="display:inline-block; animation: spin 3s linear infinite;">⚙️</span>
+  <span id="roleText">جاري التحقق من الصلاحية...</span>
 </div>
 
-<!-- 🔹 لوحة صلاحيات المدير -->
-<div id="smartRolePanel"
-  class="hidden"
+<!-- 🔸 لوحة معلومات الصلاحيات -->
+<div id="roleInfoPanel"
   style="
-    position: fixed;
-    bottom: 100px;
-    left: 25px;
-    width: 280px;
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    padding: 20px;
-    z-index: 10000;
     display: none;
+    position: fixed;
+    bottom: 90px;
+    left: 25px;
+    width: 300px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 20px;
+    font-family: 'Tajawal', sans-serif;
+    z-index: 99998;
   ">
-  <h3 style="font-size: 18px; font-weight: 700; color: #0b2b3a; margin-bottom: 10px;">
-    صلاحيات النظام
-  </h3>
-
-  <!-- ✅ حذف قائمة اختيار الدور اليدوية -->
-
-  <button onclick="toggleSmartRolePanel()" 
-    style="
-      width: 100%;
-      background-color: #0ea5a1;
-      color: white;
-      border: none;
-      border-radius: 9999px;
-      padding: 10px;
-      font-weight: bold;
-      cursor: pointer;">
-    إغلاق
-  </button>
+  <h3 style="color:#0b2b3a; font-weight:800; font-size:18px; margin-bottom:10px;">🧩 تفاصيل الصلاحيات</h3>
+  <ul style="list-style:none; padding:0; margin:0; line-height:1.8;">
+    <li>👷 <b>المراقب الميداني:</b> يمكنه <span style="color:#0ea5a1;">إضافة الملاحظات فقط</span>.</li>
+    <li>🧱 <b>المقاول التنفيذي:</b> يمكنه <span style="color:#f59e0b;">تحديث الحالة والإغلاق فقط</span>.</li>
+  </ul>
+  <button onclick="toggleRolePanel()" style="
+      margin-top:15px;
+      width:100%;
+      background:#0ea5a1;
+      color:white;
+      border:none;
+      border-radius:25px;
+      padding:10px;
+      font-weight:bold;
+      cursor:pointer;
+    ">إغلاق</button>
 </div>
 
-<script>
-// ✅ إظهار وإخفاء لوحة المدير
-function toggleSmartRolePanel() {
-  const panel = document.getElementById('smartRolePanel');
-  panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
+<!-- 🌈 الحركة الدورانية -->
+<style>
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
-
-// ✅ الزر دائمًا ظاهر
-document.getElementById('smartRoleButton').style.display = 'flex';
-</script>
-
-<script>
-// 🎯 إغلاق الأزرار الثلاثة بشكل ذكي دون حذفها + تنبيه أنيق
-window.addEventListener('DOMContentLoaded', () => {
-  const buttons = [
-    document.getElementById('add-observation-btn'),
-    document.getElementById('updateStatusBtn'),
-    document.getElementById('completeObservationBtn')
-  ];
-
-  // 🧠 دالة التنبيه الذكي (بدل alert)
-  function showSmartAlert(message) {
-    const alertBox = document.createElement('div');
-    alertBox.innerHTML = `🔒 ${message}`;
-    Object.assign(alertBox.style, {
-      position: 'fixed',
-      bottom: '25px',
-      right: '25px',
-      background: 'linear-gradient(135deg, var(--color-teal), var(--color-navy))',
-      color: 'white',
-      padding: '12px 20px',
-      borderRadius: '30px',
-      fontWeight: 'bold',
-      zIndex: '99999',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.25)',
-      opacity: '0',
-      transition: 'opacity 0.5s ease'
-    });
-    document.body.appendChild(alertBox);
-    setTimeout(()=> alertBox.style.opacity = '1', 100);
-    setTimeout(()=> alertBox.style.opacity = '0', 2000);
-    setTimeout(()=> alertBox.remove(), 2600);
-  }
-
-  buttons.forEach(btn => {
-    if (btn) {
-      // قفل الزر
-      btn.disabled = true;
-      btn.style.opacity = '0.45';
-      btn.style.cursor = 'not-allowed';
-      btn.title = '🔒 الصلاحية محدودة — الزر مغلق مؤقتاً';
-
-      // ⚠️ عند الضغط — يظهر تنبيه أنيق
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        showSmartAlert('لا تملك صلاحية تنفيذ هذا الإجراء (عرض فقط)');
-      });
-
-      // تأثير مرور الماوس
-      btn.addEventListener('mouseover', () => {
-        btn.style.opacity = '0.6';
-      });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.opacity = '0.45';
-      });
-    }
-  });
-});
-</script>
+</style>
 
 <script type="module">
 import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// 🔧 إعداد Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBfClVxFIXgUXL4olEv5SepUDtzk0dq3lo",
   authDomain: "gen-lang-client-0349944917.firebaseapp.com",
@@ -1190,21 +1122,19 @@ const firebaseConfig = {
   appId: "1:883065484771:web:c907bb5a51f68caad75cd6"
 };
 
-// ✅ منع تكرار التهيئة
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// 🎯 عند تسجيل الدخول
+// ✅ التحقق من المستخدم والدور
 onAuthStateChanged(auth, async (user) => {
   if (!user) return console.warn("❌ لا يوجد مستخدم مسجل دخول");
 
-  console.log("✅ تم تسجيل الدخول:", user.email);
   const userRef = doc(db, "users", user.uid);
   const snap = await getDoc(userRef);
 
   if (!snap.exists()) {
-    alert("⚠️ لم يتم العثور على المستخدم في قاعدة البيانات.");
+    updateRoleButton("🚫 مستخدم غير مسجّل في النظام");
     return;
   }
 
@@ -1213,13 +1143,12 @@ onAuthStateChanged(auth, async (user) => {
   applyRolePermissions(role);
 });
 
-// ⚙️ توزيع الصلاحيات
+// ⚙️ تفعيل الصلاحيات حسب الدور
 function applyRolePermissions(role) {
   const addBtn = document.getElementById("add-observation-btn");
   const updateBtn = document.getElementById("updateStatusBtn");
   const closeBtn = document.getElementById("completeObservationBtn");
 
-  // 👀 كل الأزرار ظاهرة للجميع
   [addBtn, updateBtn, closeBtn].forEach(btn => {
     if (!btn) return;
     btn.style.display = "inline-flex";
@@ -1228,50 +1157,45 @@ function applyRolePermissions(role) {
   });
 
   if (role === "inspector") {
-    // 👷 المراقب: فقط إضافة الملاحظة تعمل
     enableButton(addBtn);
-    lockButton(updateBtn, "🚫 المراقب لا يملك صلاحية تحديث الحالة");
-    lockButton(closeBtn, "🚫 المراقب لا يملك صلاحية الإغلاق");
-    showNotice("👷 المراقب: يمكنه فقط إضافة الملاحظات ✅");
+    lockButton(updateBtn, "🚫 لا تملك صلاحية تحديث الحالة");
+    lockButton(closeBtn, "🚫 لا تملك صلاحية الإغلاق");
+    updateRoleButton("👷 المراقب الميداني", "#0ea5a1");
   } 
   else if (role === "contractor") {
-    // 🧱 المقاول: فقط التنفيذ والإغلاق تعمل
-    lockButton(addBtn, "🚫 المقاول لا يملك صلاحية إضافة الملاحظات");
+    lockButton(addBtn, "🚫 لا تملك صلاحية إضافة الملاحظات");
     enableButton(updateBtn);
     enableButton(closeBtn);
-    showNotice("🧱 المقاول: يمكنه تحديث الحالة أو إغلاق الملاحظات ✅");
+    updateRoleButton("🧱 المقاول التنفيذي", "#f59e0b");
   } 
   else {
-    // 🚫 غير معروف أو بدون صلاحية
-    lockButton(addBtn, "🚫 لا تملك صلاحية إضافة الملاحظات");
-    lockButton(updateBtn, "🚫 لا تملك صلاحية تحديث الحالة");
-    lockButton(closeBtn, "🚫 لا تملك صلاحية إغلاق الملاحظات");
-    showNotice("🚫 لم يتم تحديد صلاحيات لهذا المستخدم");
+    lockButton(addBtn, "🚫 لا تملك صلاحيات بعد");
+    lockButton(updateBtn, "🚫 لا تملك صلاحيات بعد");
+    lockButton(closeBtn, "🚫 لا تملك صلاحيات بعد");
+    updateRoleButton("❔ لم يتم تحديد الدور", "#9ca3af");
   }
-
-  // عرض الدور في الفوتر
-  const info = document.getElementById("userInfo");
-  if (info) info.textContent = `🔐 الصلاحيات الحالية: ${role}`;
 }
 
-// ✅ تفعيل الزر فعليًا
+// ✅ تفعيل الزر
 function enableButton(btn) {
   if (!btn) return;
   btn.disabled = false;
   btn.onclick = null;
+  btn.style.cursor = "pointer";
 }
 
-// 🔒 منع الزر مع تنبيه عند الضغط
+// 🔒 قفل الزر مع تنبيه
 function lockButton(btn, msg) {
   if (!btn) return;
-  btn.disabled = false; // يظل ظاهر
+  btn.disabled = false;
+  btn.style.cursor = "not-allowed";
   btn.addEventListener("click", (e) => {
     e.preventDefault();
     showNotice(msg);
   });
 }
 
-// 💬 تنبيه أنيق أسفل الصفحة
+// 💬 إشعار أنيق
 function showNotice(msg) {
   const box = document.createElement("div");
   box.textContent = msg;
@@ -1294,6 +1218,24 @@ function showNotice(msg) {
   setTimeout(() => (box.style.opacity = "0"), 2800);
   setTimeout(() => box.remove(), 3300);
 }
+
+// 🔘 تحديث الزر
+function updateRoleButton(text, color = "#0ea5a1") {
+  const btn = document.getElementById("smartRoleButton");
+  const roleIcon = document.getElementById("roleIcon");
+  const roleText = document.getElementById("roleText");
+
+  if (!btn) return;
+  roleText.textContent = text;
+  btn.style.background = `linear-gradient(135deg, ${color}, #0b2b3a)`;
+  roleIcon.style.animation = "spin 3s linear infinite";
+}
+
+// 🔽 فتح / إغلاق لوحة الصلاحيات
+window.toggleRolePanel = function() {
+  const panel = document.getElementById("roleInfoPanel");
+  panel.style.display = (panel.style.display === "none" || panel.style.display === "") ? "block" : "none";
+};
 </script>
 
 
