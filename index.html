@@ -480,6 +480,11 @@ async function updateObservationInFirestore(docId,fields){
   if(!FIREBASE_READY) return;
   await updateDoc(doc(db,"observations",docId),fields);
 }
+
+ // ✅ جعل الدوال متاحة لباقي السكربتات
+window.addObservationToFirestore = addObservationToFirestore;
+window.updateObservationInFirestore = updateObservationInFirestore; 
+  
 </script> <!-- اغلاق سكربت Firebase -->
   <script>
   let observationsData = [];
