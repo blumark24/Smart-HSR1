@@ -1128,61 +1128,57 @@ const firebaseConfig = {
   appId: "1:883065484771:web:c907bb5a51f68caad75cd6"
 };
 
+// ✅ منع تكرار التهيئة
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ✅ التحقق من المستخدم والدور
+// 🎯 عند تسجيل الدخول
 onAuthStateChanged(auth, async (user) => {
   if (!user) return console.warn("❌ لا يوجد مستخدم مسجل دخول");
-
+  
   const userRef = doc(db, "users", user.uid);
   const snap = await getDoc(userRef);
 
   if (!snap.exists()) {
-    updateRoleButton("🚫 مستخدم غير مسجّل في النظام");
+    showNotice("🚫 المستخدم غير مسجل في قاعدة البيانات");
     return;
   }
 
   const role = snap.data().role;
   console.log("🎯 الدور:", role);
-  applyRolePermissions(role);
+
+  if (role === "inspector") {
+    activateInspectorMode();
+  } else {
+    showNotice("🚫 ليس لديك صلاحية المراقب");
+  }
 });
 
-// ⚙️ تفعيل الصلاحيات حسب الدور
-function applyRolePermissions(role) {
+// ⚙️ صلاحيات المراقب
+function activateInspectorMode() {
   const addBtn = document.getElementById("add-observation-btn");
   const updateBtn = document.getElementById("updateStatusBtn");
   const closeBtn = document.getElementById("completeObservationBtn");
 
+  // عرض الأزرار كلها
   [addBtn, updateBtn, closeBtn].forEach(btn => {
-    if (!btn) return;
-    btn.style.display = "inline-flex";
-    btn.disabled = false;
-    btn.style.opacity = "1";
+    if (btn) {
+      btn.style.display = "inline-flex";
+      btn.disabled = false;
+      btn.style.opacity = "1";
+    }
   });
 
-  if (role === "inspector") {
-    enableButton(addBtn);
-    lockButton(updateBtn, "🚫 لا تملك صلاحية تحديث الحالة");
-    lockButton(closeBtn, "🚫 لا تملك صلاحية الإغلاق");
-    updateRoleButton("👷 المراقب الميداني", "#0ea5a1");
-  } 
-  else if (role === "contractor") {
-    lockButton(addBtn, "🚫 لا تملك صلاحية إضافة الملاحظات");
-    enableButton(updateBtn);
-    enableButton(closeBtn);
-    updateRoleButton("🧱 المقاول التنفيذي", "#f59e0b");
-  } 
-  else {
-    lockButton(addBtn, "🚫 لا تملك صلاحيات بعد");
-    lockButton(updateBtn, "🚫 لا تملك صلاحيات بعد");
-    lockButton(closeBtn, "🚫 لا تملك صلاحيات بعد");
-    updateRoleButton("❔ لم يتم تحديد الدور", "#9ca3af");
-  }
+  // ✅ يعمل فقط زر الإضافة
+  enableButton(addBtn);
+  lockButton(updateBtn, "🚫 لا تملك صلاحية تحديث الحالة");
+  lockButton(closeBtn, "🚫 لا تملك صلاحية الإغلاق");
+
+  showNotice("👷 تم تفعيل صلاحيات المراقب الميداني (إضافة الملاحظات فقط)");
 }
 
-// ✅ تفعيل الزر
+// ✅ تفعيل زر
 function enableButton(btn) {
   if (!btn) return;
   btn.disabled = false;
@@ -1190,10 +1186,9 @@ function enableButton(btn) {
   btn.style.cursor = "pointer";
 }
 
-// 🔒 قفل الزر مع تنبيه
+// 🔒 قفل زر مع تنبيه
 function lockButton(btn, msg) {
   if (!btn) return;
-  btn.disabled = false;
   btn.style.cursor = "not-allowed";
   btn.addEventListener("click", (e) => {
     e.preventDefault();
@@ -1201,7 +1196,7 @@ function lockButton(btn, msg) {
   });
 }
 
-// 💬 إشعار أنيق
+// 💬 تنبيه جميل أسفل الشاشة
 function showNotice(msg) {
   const box = document.createElement("div");
   box.textContent = msg;
@@ -1224,25 +1219,6 @@ function showNotice(msg) {
   setTimeout(() => (box.style.opacity = "0"), 2800);
   setTimeout(() => box.remove(), 3300);
 }
-
-// 🔘 تحديث الزر
-function updateRoleButton(text, color = "#0ea5a1") {
-  const btn = document.getElementById("smartRoleButton");
-  const roleIcon = document.getElementById("roleIcon");
-  const roleText = document.getElementById("roleText");
-
-  if (!btn) return;
-  roleText.textContent = text;
-  btn.style.background = `linear-gradient(135deg, ${color}, #0b2b3a)`;
-  btn.style.animation = "pulse 2.5s infinite";
-  roleIcon.style.animation = "spin 3s linear infinite";
-}
-
-// 🔽 فتح / إغلاق لوحة الصلاحيات
-window.toggleRolePanel = function() {
-  const panel = document.getElementById("roleInfoPanel");
-  panel.style.display = (panel.style.display === "none" || panel.style.display === "") ? "block" : "none";
-};
 </script>
 
 
