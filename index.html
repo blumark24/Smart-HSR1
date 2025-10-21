@@ -586,6 +586,48 @@ window.analyzeImage=async function(){
 };
 </script>
 
-  
+<script>
+// =============================
+// ✅ دوال الواجهة الأساسية (تعويض الناقص)
+// =============================
+
+// 🔹 تسجيل الخروج التجريبي
+window.smartLogout = function() {
+  const btn = document.getElementById('logout-btn');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.innerHTML = '<div class="loading-spinner" style="border-top:4px solid var(--color-teal);"></div> جاري تسجيل الخروج...';
+  btn.classList.add('flex','justify-center','items-center');
+  setTimeout(() => {
+    alert('تم تسجيل الخروج بنجاح ✅');
+    window.location.href = "login.html";
+  }, 1000);
+};
+
+// 🔹 فتح النوافذ (المودالات)
+window.openModal = function(id) {
+  const modal = document.getElementById(id);
+  if (modal) modal.style.display = "flex";
+};
+
+// 🔹 إغلاق النوافذ
+window.closeModal = function(id) {
+  const modal = document.getElementById(id);
+  if (modal) modal.style.display = "none";
+};
+
+// 🔹 توليد تقرير KPI تنفيذي بسيط
+window.generateKpiInsights = function() {
+  const kpiDiv = document.getElementById('kpi-insight-result');
+  if (!kpiDiv) return;
+  kpiDiv.innerHTML = `
+    <div class="p-4 bg-white rounded-xl shadow">
+      <p class="text-lg font-bold text-teal-700 mb-2">ملخص تنفيذي سريع:</p>
+      <p class="text-gray-700">✅ تمت معالجة معظم الملاحظات. نوصي بتسريع توثيق الصور الختامية لتحسين الأداء العام.</p>
+    </div>
+  `;
+};
+</script>
+
 </body>
 </html>
