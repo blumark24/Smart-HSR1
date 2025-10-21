@@ -642,6 +642,27 @@ window.generateKpiInsights = function() {
 };
 </script>
 
+<script>
+function getLocation() {
+  const status = document.getElementById('locationStatus');
+  if (!navigator.geolocation) {
+    status.textContent = "المتصفح لا يدعم تحديد الموقع";
+    return;
+  }
+  status.textContent = "جارٍ تحديد الموقع...";
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      document.getElementById('inputLatitude').value = pos.coords.latitude;
+      document.getElementById('inputLongitude').value = pos.coords.longitude;
+      status.textContent = `تم تحديد الموقع (${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)})`;
+    },
+    (err) => {
+      status.textContent = "❌ فشل تحديد الموقع";
+      console.error(err);
+    }
+  );
+}
+</script>
 
 </body>
 </html>
