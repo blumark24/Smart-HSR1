@@ -791,7 +791,7 @@ async function processSmartInput() {
 async function getFullSmartAnalysis(imageUrl) {
   const GEMINI_API_KEY = "AIzaSyCstRnAY_9TO9f4l49TTHEjVaoqjtZriJk";
   try {
-    // ✅ إصلاح أساسي — تحويل الصورة إلى Base64 قبل الإرسال
+    // ✅ تصحيح أساسي: تحويل الصورة إلى Base64 قبل الإرسال
     const imageBase64 = await toBase64FromUrl(imageUrl);
 
     const response = await fetch(
@@ -806,8 +806,8 @@ async function getFullSmartAnalysis(imageUrl) {
                 {
                   text: `حلل الصورة التالية بلغة JSON تحتوي على:
 {
-  "title": "عنوان الملاحظة (مثلاً: عمود إنارة مائل، حفرة في الطريق، أشجار تحتاج تقليم)",
-  "description": "تحليل فني قصير يصف الحالة، السبب المحتمل، الإجراء المقترح، وتقييم الخطورة."
+  "title": "عنوان الملاحظة (مثل: عمود إنارة مائل، حفرة في الطريق، أشجار تحتاج تقليم)",
+  "description": "تحليل فني قصير يصف الحالة، السبب المحتمل، الإجراء المقترح، ودرجة الخطورة (منخفضة/متوسطة/مرتفعة)."
 }`
                 },
                 { inline_data: { mime_type: "image/jpeg", data: imageBase64 } }
@@ -821,9 +821,9 @@ async function getFullSmartAnalysis(imageUrl) {
     const data = await response.json();
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
     console.log("📡 تحليل Gemini:", text);
+
     const parsed = JSON.parse(text || "{}");
     return parsed;
-
   } catch (error) {
     console.error("❌ فشل تحليل Gemini:", error);
     return { title: null, description: null };
