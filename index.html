@@ -659,95 +659,61 @@ async function uploadImageBase64(file) {
       document.getElementById('processSmartInputBtn').disabled = !(text.length>0 || currentFile || lat);
     };
 
-    window.handleFileUpload = function(e){
-      const file = e.target.files[0];
-      if (!file) {
-        currentFile = null; currentFileUrl = null;
-        setText('fileStatus','لم يتم اختيار ملف بعد'); checkSmartInputState(); return;
-      }
-      if (!file.type.startsWith('image/')) {
-        alert('حالياً يتم دعم الصور فقط للحفظ السحابي.'); e.target.value = ''; return;
-      }
-      currentFile = file;
-      setText('fileStatus', `تم اختيار الملف: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`);
-      checkSmartInputState();
-    };
+window.handleAfterFileUpload = function(e){
+  const file = e.target.files[0];
+  if (!file) {
+    currentAfterFile=null; currentAfterFileUrl=null;
+    setHTML('afterFileStatus','لم يتم اختيار ملف بعد <span class="text-red-500 font-bold">(إلزامي)</span>');
+    document.getElementById('finalCloseoutBtn').disabled=true;
+    return;
+  }
+  if (!file.type.startsWith('image/')) {
+    alert('يجب رفع صورة لإغلاق الملاحظة.');
+    e.target.value='';
+    return;
+  }
+  currentAfterFile = file;
+  setHTML('afterFileStatus', `<span class="text-green-600">تم اختيار الملف:</span> ${file.name}`);
+  document.getElementById('finalCloseoutBtn').disabled = false;
+};
 
-    window.processSmartInput = async function(){
-      const rawText = document.getElementById('rawObservationInput').value.trim();
-      const lat = document.getElementById('inputLatitude').value || "غير محدد";
-      const lon = document.getElementById('inputLongitude').value || "غير محدد";
-
-      if (!rawText && !currentFile) { alert('أدخل وصفاً أو صورة.'); return; }
-
-      hide('modalStep1'); unhide('modalResult');
-      setHTML('modalResultContent', loaderHTML('جاري معالجة البيانات...'));
-
-      try {
-        let uploadedUrl = null;
-        if (currentFile) {
-  uploadedUrl = await uploadImageBase64(currentFile);
-
-        }
-
-        // نحسب displayId بسيط: أكبر قيمة + 1
-        const nextDisplayId = (observationsData.reduce((m,o)=>Math.max(m,o.id||0),0) + 1) || 1;
-        const newDate = new Date().toISOString().slice(0,10);
-
-        const payload = {
-          displayId: nextDisplayId,
-          type: "MAINTENANCE",
-          date: newDate,
-          title: rawText.substring(0,50) + (rawText.length>50?'...':''),
-          status: "PENDING",
-          details: `**تم توليد هذا التقرير آلياً.**\nالوصف الأولي: "${rawText || 'لا يوجد'}"\nالموقع: (${lat}, ${lon})`,
-          imagePath: uploadedUrl,
-          isComparative: false,
-          actionPlan: "إصلاح فوري لأضرار الطريق عبر رقعة الإسفلت (Patching).",
-          riskAssessment: { priority:"High", timeframe:"48 hours" },
-          location: `${lat}, ${lon}`,
-          resolutionNote: null,
-          afterImagePath: null
-        };
-
-        let docId = 'local-' + cryptoRandom();
-        if (FIREBASE_READY) {
-          docId = await addObservationToFirestore(payload);
-        }
-        // حدث الواجهة محلياً
-        observationsData.unshift({
-          docId,
-          id: nextDisplayId, ...payload,
-          hasImage: !!payload.imagePath,
-          isVideo: false,
-          fileMimeType: 'image/jpeg',
-          createdAt: Date.now(),
-          isNewInput: true
-        });
-
-        renderObservationsList(observationsData);
-        showObservationDetail(docId);
-
-        setHTML('modalResultContent', successHTML('تمت معالجة الملاحظة وإضافتها بنجاح.'));
-        lucide.createIcons();
-
-        // تنظيف حقول الإدخال
-        currentFile = null; currentFileUrl = null;
-        document.getElementById('fileUploadInput').value = '';
-        document.getElementById('rawObservationInput').value = '';
-        setText('fileStatus','لم يتم اختيار ملف بعد');
-        setText('locationStatus','لم يتم التحديد بعد');
-        document.getElementById('inputLatitude').value='';
-        document.getElementById('inputLongitude').value='';
-        document.getElementById('processSmartInputBtn').disabled = true;
-
-      } catch (err) {
-        console.error(err);
-        setHTML('modalResultContent', errorHTML('تعذر إضافة الملاحظة. تحقق من الاتصال.'));
-      } finally {
-        renderKPIs();
-      }
-    };
+// ✅ لا تضع <script> هنا
+window.completeObservation = async function() {
+  if (!currentSelectedObservation) return;
+  if (!currentAfterFile) {
+    alert('الرجاء رفع صورة "بعد الإصلاح".');
+    return;
+  }
+  const note = (document.getElementById('resolutionNoteInput').value || '').trim() ||
+    `تم الإغلاق التنفيذي في ${new Date().toLocaleString('ar-SA')} وتوثيقه بالصورة المرفقة.`;
+  try {
+    setButtonBusy('finalCloseoutBtn', true);
+    const afterUrl = await uploadImageBase64(currentAfterFile);
+    if (FIREBASE_READY) {
+      await updateObservationInFirestore(currentSelectedObservation.docId, {
+        status: 'COMPLETED',
+        isComparative: true,
+        afterImagePath: afterUrl,
+        resolutionNote: note
+      });
+    }
+    currentSelectedObservation.status = 'COMPLETED';
+    currentSelectedObservation.isComparative = true;
+    currentSelectedObservation.afterImagePath = afterUrl;
+    currentSelectedObservation.resolutionNote = note;
+    closeModal('closeoutModal');
+    clearAfterUpload();
+    handleFilterChange();
+    showObservationDetail(currentSelectedObservation.docId);
+    alert(`تم إغلاق الملاحظة رقم ${currentSelectedObservation.id} وتوثيقها بنجاح!`);
+  } catch (e) {
+    console.error(e);
+    alert('تعذر إغلاق الملاحظة. تحقق من الاتصال.');
+  } finally {
+    setButtonBusy('finalCloseoutBtn', false);
+    renderKPIs();
+  }
+};
 
     window.openModal = function(id){
       document.getElementById(id).style.display = "flex";
