@@ -1180,6 +1180,7 @@ import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+// 🔧 إعداد Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBfClVxFIXgUXL4olEv5SepUDtzk0dq3lo",
   authDomain: "gen-lang-client-0349944917.firebaseapp.com",
@@ -1189,81 +1190,88 @@ const firebaseConfig = {
   appId: "1:883065484771:web:c907bb5a51f68caad75cd6"
 };
 
-// 🔹 التهيئة الآمنة
+// ✅ منع تكرار التهيئة
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// =======================
-// التحقق من المستخدم والدور
-// =======================
+// 🎯 عند تسجيل الدخول
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    console.warn("❌ لا يوجد مستخدم مسجل دخول");
-    applyRolePermissions("manager"); // 👈 تفعيل صلاحيات المدير مؤقتاً حتى تسجيل الدخول
+  if (!user) return console.warn("❌ لا يوجد مستخدم مسجل دخول");
+
+  console.log("✅ تم تسجيل الدخول:", user.email);
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
+
+  if (!snap.exists()) {
+    alert("⚠️ لم يتم العثور على المستخدم في قاعدة البيانات.");
     return;
   }
 
-  console.log("✅ تم تسجيل الدخول:", user.email);
-  try {
-    const userRef = doc(db, "users", user.uid);
-    const snap = await getDoc(userRef);
-
-    if (snap.exists()) {
-      const role = snap.data().role || "manager";
-      console.log("🎯 الدور:", role);
-      applyRolePermissions(role);
-    } else {
-      console.warn("⚠️ لم يتم العثور على المستخدم في قاعدة البيانات.");
-      applyRolePermissions("manager"); // 👈 في حال لم يجد المستند، يعطي المدير مؤقتاً
-    }
-  } catch (e) {
-    console.error("⚠️ خطأ في قراءة الصلاحية:", e);
-    applyRolePermissions("manager"); // 👈 fallback آمن
-  }
+  const role = snap.data().role;
+  console.log("🎯 الدور:", role);
+  applyRolePermissions(role);
 });
 
-// =======================
-// دالة توزيع الصلاحيات
-// =======================
+// ⚙️ توزيع الصلاحيات
 function applyRolePermissions(role) {
   const addBtn = document.getElementById("add-observation-btn");
   const updateBtn = document.getElementById("updateStatusBtn");
   const closeBtn = document.getElementById("completeObservationBtn");
-  const all = [addBtn, updateBtn, closeBtn];
 
-  // إعادة تفعيل الأزرار بالكامل
-  all.forEach(btn => {
+  // 👀 كل الأزرار ظاهرة للجميع
+  [addBtn, updateBtn, closeBtn].forEach(btn => {
     if (!btn) return;
+    btn.style.display = "inline-flex";
     btn.disabled = false;
     btn.style.opacity = "1";
-    btn.onclick = null;
-    btn.style.cursor = "pointer";
   });
 
-  if (role === "manager") {
-    showNotice("👨‍💼 المدير: جميع الصلاحيات مفعّلة ✅");
-    return;
-  }
-
   if (role === "inspector") {
+    // 👷 المراقب: فقط إضافة الملاحظة تعمل
+    enableButton(addBtn);
+    lockButton(updateBtn, "🚫 المراقب لا يملك صلاحية تحديث الحالة");
+    lockButton(closeBtn, "🚫 المراقب لا يملك صلاحية الإغلاق");
     showNotice("👷 المراقب: يمكنه فقط إضافة الملاحظات ✅");
-    updateBtn.onclick = () => showNotice("🚫 لا تملك صلاحية تنفيذ الحالة");
-    closeBtn.onclick = () => showNotice("🚫 لا تملك صلاحية إغلاق الملاحظة");
+  } 
+  else if (role === "contractor") {
+    // 🧱 المقاول: فقط التنفيذ والإغلاق تعمل
+    lockButton(addBtn, "🚫 المقاول لا يملك صلاحية إضافة الملاحظات");
+    enableButton(updateBtn);
+    enableButton(closeBtn);
+    showNotice("🧱 المقاول: يمكنه تحديث الحالة أو إغلاق الملاحظات ✅");
+  } 
+  else {
+    // 🚫 غير معروف أو بدون صلاحية
+    lockButton(addBtn, "🚫 لا تملك صلاحية إضافة الملاحظات");
+    lockButton(updateBtn, "🚫 لا تملك صلاحية تحديث الحالة");
+    lockButton(closeBtn, "🚫 لا تملك صلاحية إغلاق الملاحظات");
+    showNotice("🚫 لم يتم تحديد صلاحيات لهذا المستخدم");
   }
 
-  if (role === "contractor") {
-    showNotice("🧱 المقاول: يمكنه تنفيذ أو إغلاق الملاحظات فقط ✅");
-    addBtn.onclick = () => showNotice("🚫 لا تملك صلاحية إضافة الملاحظة");
-  }
-
+  // عرض الدور في الفوتر
   const info = document.getElementById("userInfo");
   if (info) info.textContent = `🔐 الصلاحيات الحالية: ${role}`;
 }
 
-// =======================
-// تنبيه أنيق
-// =======================
+// ✅ تفعيل الزر فعليًا
+function enableButton(btn) {
+  if (!btn) return;
+  btn.disabled = false;
+  btn.onclick = null;
+}
+
+// 🔒 منع الزر مع تنبيه عند الضغط
+function lockButton(btn, msg) {
+  if (!btn) return;
+  btn.disabled = false; // يظل ظاهر
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    showNotice(msg);
+  });
+}
+
+// 💬 تنبيه أنيق أسفل الصفحة
 function showNotice(msg) {
   const box = document.createElement("div");
   box.textContent = msg;
@@ -1287,7 +1295,6 @@ function showNotice(msg) {
   setTimeout(() => box.remove(), 3300);
 }
 </script>
-
 
 
 </body>
