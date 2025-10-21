@@ -1189,12 +1189,12 @@ const firebaseConfig = {
   appId: "1:883065484771:web:c907bb5a51f68caad75cd6"
 };
 
-// 🔹 منع تكرار تهيئة التطبيق
+// 🔹 منع التكرار
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// 🎯 عند تسجيل الدخول، جلب الدور من Firestore
+// 🎯 عند تسجيل الدخول نتحقق من الدور ونطبّق الصلاحيات
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("✅ تم تسجيل الدخول:", user.email);
@@ -1213,62 +1213,63 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// ⚙️ تفعيل الصلاحيات حسب الدور
+// ⚙️ تطبيق الصلاحيات (الأزرار لا تختفي — فقط شفافة أو فعالة)
 function applyRoleUI(role) {
   const addBtn = document.getElementById("add-observation-btn");
   const closeBtn = document.getElementById("completeObservationBtn");
   const updateBtn = document.getElementById("updateStatusBtn");
-  const info = document.getElementById("userInfo");
+  const buttons = [addBtn, closeBtn, updateBtn];
 
-  // 🔒 إخفاء جميع الأزرار أولاً
-  [addBtn, closeBtn, updateBtn].forEach(btn => {
+  // 🔧 أولاً: جميع الأزرار تظهر ولكن تكون مقفلة بشكل افتراضي
+  buttons.forEach(btn => {
     if (btn) {
-      btn.style.display = "none";
+      btn.style.display = "inline-flex";
+      btn.style.opacity = "0.4";
       btn.disabled = true;
+      btn.style.cursor = "not-allowed";
     }
   });
 
-  // 🟢 المدير: كل شيء مفتوح
+  // 🟢 المدير: كل شيء مفعّل
   if (role === "manager") {
-    [addBtn, closeBtn, updateBtn].forEach(btn => {
+    buttons.forEach(btn => {
       if (btn) {
-        btn.style.display = "inline-flex";
         btn.disabled = false;
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
       }
     });
     showNotice("🟢 تم تفعيل صلاحيات المدير بالكامل");
   }
 
-  // 🟡 المراقب: فقط زر الإضافة
+  // 🟡 المراقب: فقط إضافة ملاحظة
   else if (role === "inspector") {
     if (addBtn) {
-      addBtn.style.display = "inline-flex";
       addBtn.disabled = false;
+      addBtn.style.opacity = "1";
+      addBtn.style.cursor = "pointer";
     }
-    showNotice("🟡 صلاحيات المراقب: يمكنه إضافة الملاحظات فقط");
+    showNotice("🟡 المراقب: يمكنه إضافة الملاحظات فقط");
   }
 
-  // 🔵 المقاول: يمكنه التحديث والإغلاق فقط
+  // 🔵 المقاول: فقط تحديث وإغلاق
   else if (role === "contractor") {
-    [closeBtn, updateBtn].forEach(btn => {
+    [updateBtn, closeBtn].forEach(btn => {
       if (btn) {
-        btn.style.display = "inline-flex";
         btn.disabled = false;
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
       }
     });
-    showNotice("🔵 صلاحيات المقاول: تحديث أو إغلاق الملاحظات فقط");
-  }
-
-  // ⚠️ في حال لا يوجد دور
-  else {
-    showNotice("⚠️ لا توجد صلاحيات محددة لهذا المستخدم");
+    showNotice("🔵 المقاول: يمكنه تحديث أو إغلاق الملاحظات");
   }
 
   // عرض الدور أسفل الصفحة
+  const info = document.getElementById("userInfo");
   if (info) info.textContent = `🔐 الصلاحيات الحالية: ${role}`;
 }
 
-// 🎨 دالة لإظهار إشعار أنيق أسفل الصفحة
+// 🎨 تنبيه أنيق أسفل الصفحة
 function showNotice(message) {
   const notice = document.createElement("div");
   notice.innerHTML = message;
