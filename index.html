@@ -476,8 +476,6 @@ async function updateObservationInFirestore(docId,fields){
   await updateDoc(doc(db,"observations",docId),fields);
 }
 
-<!-- ✅ دالة الإدخال الذكي -->
-</script>
 
 <!-- ✅ دالة تحليل الصورة بالرؤية (Gemini Vision) -->
 <script>
@@ -519,10 +517,21 @@ window.analyzeImage = async function() {
     );
 
     const data = await response.json();
-    const analysis = data?.candidates?.[0]?.content?.parts?.[0]?.text || "❌ لم يتم تحليل الصورة بنجاح.";
+    const analysis = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "❌ لم يتم تحليل الصورة بنجاح.";
 
+    // ✅ عرض النتيجة للمستخدم
     setText("aiResultTitle", "✅ نتيجة التحليل التفصيلي (HSR Vision AI):");
     setHTML("aiResultContent", `<div class="communication-draft">${analysis}</div>`);
+
+    // ✅ حفظ النتيجة تلقائيًا داخل Firestore (إن وُجد اتصال)
+    if (FIREBASE_READY && obs.docId) {
+      await updateObservationInFirestore(obs.docId, {
+        aiAnalysis: analysis,
+        lastAnalyzedAt: new Date().toISOString()
+      });
+      console.log("✅ تم حفظ نتيجة التحليل داخل الملاحظة:", obs.docId);
+    }
+
   } catch (error) {
     console.error(error);
     setText("aiResultTitle", "❌ فشل التحليل");
@@ -530,6 +539,7 @@ window.analyzeImage = async function() {
   }
 };
 </script>
+
 
 <!-- ✅ دوال الواجهة الأساسية -->
 <script>
