@@ -692,9 +692,11 @@ window.processSmartInput = async function(){
       autoTitle = "ملاحظة ميدانية جديدة";
     }
 
+    // 🔸 نحسب رقم الملاحظة
     const nextDisplayId = (observationsData.reduce((m,o)=>Math.max(m,o.id||0),0) + 1) || 1;
     const newDate = new Date().toISOString().slice(0,10);
 
+    // 🔸 نجهّز البيانات للحفظ
     const payload = {
       displayId: nextDisplayId,
       type: "MAINTENANCE",
@@ -711,11 +713,13 @@ window.processSmartInput = async function(){
       afterImagePath: null
     };
 
+    // 🔸 الحفظ في Firestore
     let docId = 'local-' + cryptoRandom();
     if (FIREBASE_READY) {
       docId = await addObservationToFirestore(payload);
     }
 
+    // 🔸 تحديث الواجهة
     observationsData.unshift({
       docId,
       id: nextDisplayId, ...payload,
@@ -729,20 +733,22 @@ window.processSmartInput = async function(){
     renderObservationsList(observationsData);
     showObservationDetail(docId);
 
-    setHTML('modalResultContent', successHTML(`تمت إضافة الملاحظة "${autoTitle}" بنجاح.`));
+    setHTML('modalResultContent', successHTML(`✅ تمت إضافة الملاحظة "${autoTitle}" بنجاح.`));
     lucide.createIcons();
 
   } catch (err) {
     console.error(err);
-    setHTML('modalResultContent', errorHTML('تعذر إضافة الملاحظة. تحقق من الاتصال.'));
+    setHTML('modalResultContent', errorHTML('❌ تعذر إضافة الملاحظة. تحقق من الاتصال.'));
   } finally {
     renderKPIs();
   }
 };
 
+// =============================
+// 🤖 ذكاء صناعي لتوليد اسم الملاحظة تلقائيًا
+// =============================
 const GEMINI_API_KEY = "AIzaSyCstRnAY_9TO9f4l49TTHEjVaoqjtZriJk";
 
-// 🎯 توليد اسم الملاحظة تلقائيًا من الصورة فقط
 async function getSmartTitleFromGemini(imageUrl) {
   try {
     const response = await fetch(
@@ -753,7 +759,7 @@ async function getSmartTitleFromGemini(imageUrl) {
         body: JSON.stringify({
           contents: [{
             parts: [
-              { text: "صف الصورة في كلمة أو كلمتين فقط كمسمى هندسي دقيق، مثل (عمود إنارة مائل) أو (حفرة في الطريق) أو (أشجار تحتاج تقليم)." },
+              { text: "صف الصورة في كلمتين فقط كمسمى هندسي دقيق لملاحظة بلدية (مثل: عمود إنارة مائل، حفرة بالطريق، أشجار تحتاج تقليم، بلاط مكسور)." },
               { inline_data: { mime_type: "image/jpeg", data: await toBase64FromUrl(imageUrl) } }
             ]
           }]
@@ -768,6 +774,7 @@ async function getSmartTitleFromGemini(imageUrl) {
     return null;
   }
 }
+
 
         // نحسب displayId بسيط: أكبر قيمة + 1
         const nextDisplayId = (observationsData.reduce((m,o)=>Math.max(m,o.id||0),0) + 1) || 1;
