@@ -412,7 +412,7 @@
   let currentFile = null, currentAfterFile = null;
 
   // ===== ذكاء اصطناعي (OpenAI) — موحد وصحيح =====
-  const OPENAI_API_KEY = "ضع_مفتاحك_هنا"; // ← ضع مفتاحك هنا قبل العرض
+  const OPENAI_API_KEY = "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"; // ← ضع مفتاحك هنا قبل العرض
   async function analyzeWithOpenAI(imageUrl, prompt) {
     if (!OPENAI_API_KEY || OPENAI_API_KEY.includes("ضع_مفتاحك")) {
       return "⚠️ لم يتم ضبط مفتاح OpenAI. يرجى إضافة المفتاح قبل العرض الرسمي.";
