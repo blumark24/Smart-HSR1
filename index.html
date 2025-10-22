@@ -845,51 +845,94 @@
       showObservationDetail(currentSelectedObservation.docId);
     }
 
-    // =============================
-    // مُحلل ذكاء اصطناعي محلي (بدون مفاتيح)
-    // =============================
-    function runAI(mode){
-      const titleMap = {vision:'تحليل الرؤية (Vision)', root:'تحليل السبب الجذري'};
-      setText('aiResultTitle', `🔍 جاري ${titleMap[mode] || 'التحليل'} عبر HSR Vision AI...`);
-      setHTML('aiResultContent', `<div class='flex items-center text-teal-700 font-bold'><div class='loading-spinner' style='border-top-color: var(--color-teal); margin-left:8px;'></div> جاري التحليل...</div>`);
-      unhide('aiResultContainer');
+// =============================
+// 🔹 Gemini AI Integration (بديل OpenAI)
+// =============================
+const GEMINI_API_KEY = "AIzaSyCstRnAY_9TO9f4l49TTHEjVaoqjtZriJk"; // مفتاحك من Google AI Studio
 
-      const obs = currentSelectedObservation || {};
-      setTimeout(()=>{
-        const result = localAIResult(mode, obs);
-        setText('aiResultTitle', `✅ نتائج ${titleMap[mode] || 'التحليل'} — HSR Vision AI 🤖✨`);
-        setHTML('aiResultContent', `<div class='communication-draft'>${result}</div><p class="text-xs text-gray-500 mt-4 italic border-t pt-2">🧠 تم التوليد محليًا — نسخة العرض 2025</p>`);
-      }, 900);
+async function runAI(mode) {
+  const titleMap = { vision: "تحليل الرؤية (Vision)", root: "تحليل السبب الجذري" };
+  setText("aiResultTitle", `🔍 جاري ${titleMap[mode] || "التحليل"} عبر HSR Vision AI...`);
+  setHTML(
+    "aiResultContent",
+    `<div class='flex items-center text-teal-700 font-bold'>
+      <div class='loading-spinner' style='border-top-color: var(--color-teal); margin-left:8px;'></div>
+      جاري التحليل عبر Gemini AI...
+    </div>`
+  );
+  unhide("aiResultContainer");
+
+  const obs = currentSelectedObservation || {};
+  const imageUrl = obs.imagePath;
+
+  // نص التحليل حسب نوع الوضع
+  const prompt =
+    mode === "vision"
+      ? "قم بتحليل الصورة كمراقب جودة ميداني، واشرح نوع المشكلة الظاهرة واقترح الإجراء التصحيحي المناسب وفق معايير الجودة."
+      : "قم بتحليل السبب الجذري للمشكلة الظاهرة باستخدام منهجية 5 Whys، واقترح إجراء وقائي فعال.";
+
+  try {
+    const result = await analyzeWithGemini(imageUrl, prompt);
+    setText("aiResultTitle", `✅ نتائج ${titleMap[mode] || "التحليل"} — HSR Vision AI 🤖✨`);
+    setHTML(
+      "aiResultContent",
+      `<div class='communication-draft'>${result}</div>
+       <p class="text-xs text-gray-500 mt-4 italic border-t pt-2">
+       🧠 تم التحليل فعليًا عبر Gemini 1.5 Flash (Google AI)
+       </p>`
+    );
+  } catch (err) {
+    console.error(err);
+    setText("aiResultTitle", "❌ فشل التحليل عبر Gemini AI");
+    setHTML(
+      "aiResultContent",
+      `<p class='text-red-600'>حدث خطأ أثناء التحليل. حاول مرة أخرى.</p>`
+    );
+  }
+}
+
+async function analyzeWithGemini(imageUrl, prompt) {
+  try {
+    let imageBase64 = imageUrl;
+    if (!imageUrl.startsWith("data:image")) {
+      imageBase64 = await toBase64FromUrl(imageUrl);
     }
 
-    function localAIResult(mode, obs){
-      if(mode==='vision'){
-        return `**وصف تقريبي تلقائي:** تظهر مؤشرات تلف/تشققات سطحية في نطاق المقطع المرئي.  
-**التأثير المحتمل:** ازدياد مساحة العيب وتجمع مياه، ما يرفع مخاطر الانزلاق.  
-**التوصية الفنية:**  
-- قصّ الجزء المتضرر وتنظيف الحواف.  
-- تطبيق طبقة رابطة ثم رقعة إسفلت (Patching) مع دكّ طبقي.  
-- إعادة فتح المسار بعد تحقق الجودة بالقياس البصري.`;
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: prompt },
+                {
+                  inline_data: {
+                    mime_type: "image/jpeg",
+                    data: imageBase64.split(",")[1],
+                  },
+                },
+              ],
+            },
+          ],
+        }),
       }
-      // root cause
-      return `**تحليل 5 Whys (مقترح):**  
-1) لماذا حدث؟ تأخر صيانة دورية.  
-2) لماذا؟ جدول غير محدث.  
-3) لماذا؟ غياب تنبيه تلقائي.  
-4) لماذا؟ عدم ربط الملاحظات بمؤشرات الأداء.  
-5) السبب الجذري: نقص أتمتة المتابعة.  
-**إجراء وقائي:** إنشاء تنبيه أسبوعي آلي + مراجعة خطة الصيانة الربع سنوية.`;
-    }
+    );
 
-    function localAIDescribe(text){
-      // توليد خطة ورسك تقريبيين بناءً على الكلمات
-      const high = /تشق|كسر|هبوط|تجمع|مياه|سلامة|طارئ/.test(text);
-      const risk = high ? {priority:'High', timeframe:'48 hours'} : {priority:'Medium', timeframe:'72 hours'};
-      const plan = high
-        ? 'إصلاح فوري عبر القصّ والردم والدمك، ثم رقعة إسفلتية طبقتين.'
-        : 'معالجة موضعية مع تنظيف السطح وإعادة الرصف الجزئي.';
-      return { actionPlan: plan, risk };
-    }
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    return (
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "⚠️ لم يتمكن Gemini AI من توليد تحليل واضح."
+    );
+  } catch (e) {
+    console.error("Gemini AI Error:", e);
+    return "⚠️ حدث خطأ أثناء الاتصال بـ Gemini AI.";
+  }
+}
+
 
     function generateCommunicationDraft(){
       const o = currentSelectedObservation || {};
@@ -1166,47 +1209,5 @@ window.runAI = function(mode){
 };
 </script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBfClVxFIXgUXL4olEv5SepUDtzk0dq3lo",
-  authDomain: "gen-lang-client-0349944917.firebaseapp.com",
-  projectId: "gen-lang-client-0349944917",
-  storageBucket: "gen-lang-client-0349944917.firebasestorage.app",
-  messagingSenderId: "883065484771",
-  appId: "1:883065484771:web:c907bb5a51f68caad75cd6",
-  measurementId: "G-V8WG5M8V5B"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-// ✅ وظيفة رفع الملاحظة للـ Firestore
-window.uploadObservation = async function (obs) {
-  try {
-    // رفع الصورة (Base64)
-    let imageUrl = null;
-    if (obs.imagePath?.startsWith("data:")) {
-      const imgRef = ref(storage, `observations/${obs.docId}_before.jpg`);
-      await uploadString(imgRef, obs.imagePath, "data_url");
-      imageUrl = await getDownloadURL(imgRef);
-    }
-    // رفع بيانات الملاحظة
-    await addDoc(collection(db, "observations"), {
-      ...obs,
-      imagePath: imageUrl || null,
-      createdAt: new Date().toISOString(),
-    });
-    console.log("✅ تم رفع الملاحظة إلى Firebase بنجاح");
-  } catch (err) {
-    console.error("❌ فشل رفع الملاحظة:", err);
-  }
-};
-</script>
-  
 </body>
 </html>
