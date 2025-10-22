@@ -1166,5 +1166,47 @@ window.runAI = function(mode){
 };
 </script>
 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBfClVxFIXgUXL4olEv5SepUDtzk0dq3lo",
+  authDomain: "gen-lang-client-0349944917.firebaseapp.com",
+  projectId: "gen-lang-client-0349944917",
+  storageBucket: "gen-lang-client-0349944917.firebasestorage.app",
+  messagingSenderId: "883065484771",
+  appId: "1:883065484771:web:c907bb5a51f68caad75cd6",
+  measurementId: "G-V8WG5M8V5B"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// ✅ وظيفة رفع الملاحظة للـ Firestore
+window.uploadObservation = async function (obs) {
+  try {
+    // رفع الصورة (Base64)
+    let imageUrl = null;
+    if (obs.imagePath?.startsWith("data:")) {
+      const imgRef = ref(storage, `observations/${obs.docId}_before.jpg`);
+      await uploadString(imgRef, obs.imagePath, "data_url");
+      imageUrl = await getDownloadURL(imgRef);
+    }
+    // رفع بيانات الملاحظة
+    await addDoc(collection(db, "observations"), {
+      ...obs,
+      imagePath: imageUrl || null,
+      createdAt: new Date().toISOString(),
+    });
+    console.log("✅ تم رفع الملاحظة إلى Firebase بنجاح");
+  } catch (err) {
+    console.error("❌ فشل رفع الملاحظة:", err);
+  }
+};
+</script>
+  
 </body>
 </html>
